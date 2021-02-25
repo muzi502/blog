@@ -380,7 +380,7 @@ Mangle 表包含五种内建链：PREROUTING、OUTPUT、FORWARD、INPUT、POSTRO
 
 ### 数据包流程
 
-![img](https://blog.k8s.li/img/iptables.png)
+![](https://p.k8s.li/iptables.png)
 
 在 Linux 下，从任何网络端口进来的每一个 IP 数据包都要从上到下的穿过这张图，iptabales 对从任何端口进入的数据包都会采取相同的处理方式。
 
@@ -427,7 +427,7 @@ Routing decision                                                  |
 
 该流程图描述链了在任何接口上收到的网络数据包是按照怎样的顺序穿过表的交通管制链。
 
-![tables_traverse](https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg)
+![](https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg)
 
 - 第一个路由策略包括决定数据包的目的地是本地主机（这种情况下，数据包穿过 INPUT 链），还是其他主机（数据包穿过 FORWARD 链）；
 

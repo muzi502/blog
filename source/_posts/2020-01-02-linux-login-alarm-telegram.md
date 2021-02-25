@@ -44,21 +44,21 @@ email 发送确实可以，但有些限制，比如 GCP 就 ban 掉了 GCE 的 2
 
 网上教程很多，在此不赘述。推荐某宝买个 Google Voice 来注册，千万千万不要使用 +86 手机号注册，注册完成之后墙裂建议在 app 或者桌面端 的`settings` ==> `Privacy and  Security` 那些设置选项里全部设置为 `Nobody` 。另外再开启 `Local Passcode` 以及 `Two-setp verification` 。千千万万别拿着 +86 的手机号到处冲塔，你快很被安排上的。
 
-![image-20200102212730956](https://blog.k8s.li/img/20200102212730956.png)
+![](https://p.k8s.li/20200102212730956.png)
 
 ### 注册 bot
 
 #### 1.打开与 @BotFather 的对话框
 
-![image-20200102213100935](https://blog.k8s.li/img/20200102213100935.png)
+![](https://p.k8s.li/20200102213100935.png)
 
 #### 2.发送/start 开始会话
 
-![image-20200102213250311](https://blog.k8s.li/img/20200102213250311.png)
+![](https://p.k8s.li/20200102213250311.png)
 
 #### 3.发送/newbot
 
-![image-20200102213314119](https://blog.k8s.li/img/20200102213314119.png)
+![](https://p.k8s.li/20200102213314119.png)
 
 > Alright, a new bot. How are we going to call it? Please choose a name for your bot.
 
@@ -66,13 +66,13 @@ email 发送确实可以，但有些限制，比如 GCP 就 ban 掉了 GCE 的 2
 
 > Good. Now let's choose a username for your bot. It must end in `bot`. Like this, for example: TetrisBot or tetris_bot.
 
-![image-20200102213405851](https://blog.k8s.li/img/20200102213405851.png)
+![](https://p.k8s.li/20200102213405851.png)
 
 bot 有两个名字，第一个发送的是 `first_name`: "linuxloginbot"，第二个发送的是"`username`": "linuxlogin_bot" 。其中 username 有要求，要 `xxx_bot` 来命名 比如 `linuxlogin_bot`
 
 #### 5.得到 Bot 的 token，用于标识这个 Bot
 
-![image-20200102214900940](https://blog.k8s.li/img/20200102214900940.png)
+![](https://p.k8s.li/20200102214900940.png)
 
 > Done! Congratulations on your new bot. You will find it at t.me/linuxlogin_bot. You can now add a description, about section and profile picture for your bot, see /help for a list of commands. By the way, when you've finished creating your cool bot, ping our Bot Support if you want a better username for it. Just make sure the bot is fully operational before you do this.
 >
@@ -92,13 +92,13 @@ telegram 中每个用户、频道、群组都会有一个 chat ID ，而 telegra
 
 通过 `@getidsbot` 这个机器人来获取自己的 ID，ID 一般都是 6 开头的。
 
-![image-20200102220002156](https://blog.k8s.li/img/20200102220002156.png)
+![](https://p.k8s.li/20200102220002156.png)
 
 #### 7. 和 bot 对话
 
 这一步非常重要，当 bot 新建完成之后就点击你的 bot 链接，然后在点击下面的 start 按钮。你不点击 start 开始和 bot 会话的话，bot 是无法想你发送信息的。我就在这个坑里爬了很久😂
 
-![image-20200102215325530](https://blog.k8s.li/img/20200102215325530.png)
+![](https://p.k8s.li/20200102215325530.png)
 
 #### 7.构造 GET 请求
 
@@ -140,7 +140,7 @@ https://api.telegram.org/bot1067796083:AAFjONLJ9-F2Y6IRSmQoBVAAgRhd589MXpk/sendM
 
 ```
 
-![image-20200102220642854](https://blog.k8s.li/img/20200102220642854.png)
+![](https://p.k8s.li/20200102220642854.png)
 
 #### 8.用户登录后执行脚本
 
@@ -176,7 +176,7 @@ USER WHAT
 ubuntu -bash
 ```
 
-![image-20200102222349027](https://blog.k8s.li/img/20200102222349027.png)
+![](https://p.k8s.li/20200102222349027.png)
 
 ## 解锁其他功能？
 

@@ -36,7 +36,7 @@ comment: true
 
 主要是记录一些工作中会遇到的问题，收集一些与工作相关的博客文章，抽出时间拿来精读这些内容。
 
-![image-20200114214102261](https://blog.k8s.li/img/20200114214102261.png)
+![](https://p.k8s.li/20200114214102261.png)
 
 ## 设备间分享文件
 
@@ -50,21 +50,21 @@ comment: true
 
 这也是我第二使用最频繁得工具，绑定telegram 官方认证的 Gmail 机器人 `@GmailBot`就可以收到 Gmail 的邮件内容，而且还可以回复邮件。收到消息也比较准时，iOS 在锁屏没开梯子的情况下还能正常收到 telegram 通知推送的 Gmail 信息。不过我 Gmail 收到的邮件也绝大读书都是双因素验证个邮件，就是将 Google voice 的短信转发到 Google 账户的 Gmail下，就可以通过 email 来接受短信啦
 
-![image-20200114214229958](https://blog.k8s.li/img/20200114214229958.png)
+![](https://p.k8s.li/20200114214229958.png)
 
 ## RSS
 
 使用 rssbot 开源机器人订阅了一些喜欢的个人独立博客，自己目前拥有一个 490 多人的 RSS 订阅频道[RSS_kubernetes](https://t.me/rss_kubernetes) 。不过里面都是一些和 kubernetes 、docker 容器技术相关的个人博客。自己私人的 RSS 私有频道也绝大多数是和运维相关的。
 
-![image-20200114215007524](https://blog.k8s.li/img/20200114215007524.png)
+![](https://p.k8s.li/20200114215007524.png)
 
 ## 图库
 
 每天都会刷一会 `twitter` 和 `pixiv` ，关注了一些喜欢的画师，看到一些心动的 **老婆** (死宅真恶心：- ）小声)，就复制发送到 telegram 私有频道中。目前为止，自己的私有频道已经收集了 350 多张图啦。
 
-![image-20200114220229261](https://blog.k8s.li/img/20200114220229261.png)
+![](https://p.k8s.li/20200114220229261.png)
 
-![image-20200114212308552](https://blog.k8s.li/img/20200114212308552.png)
+![](https://p.k8s.li/20200114212308552.png)
 
 其实除了 telegram 之外，我 OneDrive 网盘里还存了一千多张😂，咱只喜欢纸片人：）
 
@@ -82,7 +82,7 @@ comment: true
 
 之前使用 iTunes 将音乐拷贝到手机上觉着太麻烦了，就是用了 telegram 来当音乐播放器 ，效果还是不错滴。不过后来电脑上装了  iTunes  就一直使用  iTunes 来同步 PC 和手机之间的音乐了。有时还是会使用 telegram 来听歌，最多的就是一些喜欢的不得了的歌，单曲循环一直听着。
 
-![image-20200114211528029](https://blog.k8s.li/img/20200114211528029.png)
+![](https://p.k8s.li/20200114211528029.png)
 
 ## 监控服务器
 
@@ -90,25 +90,25 @@ comment: true
 
 在此先说明一下，使用 telegram 的主要原因是 telegram bot 向自己发送信息，iOS 客户端在锁屏不挂梯子的情况下照样正常能收到消息通知，这还好归因于 iOS 有统一的消息推送机制，而不像 Android 阵营，国内的毒瘤 app 们我行我素，我就是不走 Google Cloud Messaging 简称 GCM，我就是自己搞一套，于是 Android 阵营里，有 xiaomi PUSH 、vivo PUSH 、huawei PUSH 等等，非常恶心人。而如果使用 GCM 的推送的话，必须要挂梯子，全天挂着梯子还是很费电的。
 
-![image-20200114214340893](https://blog.k8s.li/img/20200114214340893.png)
+![](https://p.k8s.li/20200114214340893.png)
 
 ## 短信转发
 
 自己有一部 Android 备用机，只有来接收短信和电话。电话通过无条件转移到主力机上。短信就通过 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 转发到 telegram 上，这样出门的时候就可以把 Android 备用机放在家里啦😂。之前我使用 [tasker]() 转发短信，但 tasker 太不稳定了，有时候短信触发器无法触发执行任务倒是很头疼。所以就一直使用了 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 来转发短信。默认是通过网络将短信转发到 telegram ，如果网络无法连接到 telegram 的话就使用短信转发到另一个手机号上。
 
-![image-20200114214410801](https://blog.k8s.li/img/20200114214410801.png)
+![](https://p.k8s.li/20200114214410801.png)
 
 ## 机器人
 
 ## GitHub
 
-![image-20200114214446510](https://blog.k8s.li/img/20200114214446510.png)
+![](https://p.k8s.li/20200114214446510.png)
 
 ## 书籍记录
 
 主要是存放一些要看的书籍，大部分都是在阅读别人博客的时候，看到别人的读书年度书单，在里面找到自己喜欢的，然后把图书的信息发送到频道里。
 
-![image-20200114214519474](https://blog.k8s.li/img/20200114214519474.png)
+![](https://p.k8s.li/20200114214519474.png)
 
 ## 视频下载器
 

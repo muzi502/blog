@@ -391,7 +391,7 @@ rootfs on / type rootfs (rw)
 
 根据 docker 的官方文档 [Manage data in Docker](https://docs.docker.com/storage/) ，docker 提供了 3 种方法将数据从 Docker 宿主机挂载（mount）到容器内，如下：
 
-![docker-data](https://blog.k8s.li/img/types-of-mounts.png)
+![](https://p.k8s.li/types-of-mounts.png)
 
 `图片从 Docker 官方文档偷来的😂`
 

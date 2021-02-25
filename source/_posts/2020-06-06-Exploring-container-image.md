@@ -350,7 +350,7 @@ Got permission denied while trying to connect to the Docker daemon socket at uni
 
 不过 buildah 构建出来的镜像有一堆堆的兼容性问题，所以我们还是使用 docker 来构建镜像吧。当我们使用 docker build 命令构建一个镜像的时候第一行日志就是 `Sending build context to Docker daemon xx MB`。这一步是 docker cli 这个命令行客户端将我们当前目录（即构建上下文） `build context` 打包发送 `Docker daemon` 守护进程 （即 dockerd）的过程。
 
-![img](https://blog.k8s.li/img/docker-architecture.png)
+![](https://p.k8s.li/docker-architecture.png)
 
 docker build 构建镜像的流程大概就是：
 
@@ -760,7 +760,7 @@ overlay2
 
 理解 docker pull 一个镜像的流程最好的办法是查看 OCI registry 规范中的这段文档 [pulling-an-image](https://github.com/opencontainers/distribution-spec/blob/master/spec.md#pulling-an-image) ，在这里我结合大佬的博客简单梳理一下 pull 一个镜像的大致流程。下面这张图是从 [浅谈docker中镜像和容器在本地的存储)](https://github.com/helios741/myblog/blob/new/learn_go/src/2019/20191206_docker_disk_storage/README.md) 借来的😂
 
-![image](https://user-images.githubusercontent.com/12036324/70367494-646d2380-18db-11ea-992a-d2bca4cbfeb0.png)
+![](https://user-images.githubusercontent.com/12036324/70367494-646d2380-18db-11ea-992a-d2bca4cbfeb0.png)
 
 docker pull 就和我们使用 git clone 一样效果，将远程的镜像仓库拉取到本地来给容器运行时使用，结合上图大致的流程如下：
 
@@ -1103,7 +1103,7 @@ v2: digest: sha256:c805f078bb47c575e9602b09af7568eb27fd1c92073199acba68c187bc5bc
 
 树形的结构看着不太直观，木子就画了一张层级结构的图：
 
-![img](https://blog.k8s.li/img/registry-storage.jpeg)
+![](https://p.k8s.li/registry-storage.jpeg)
 
 ### blobs 目录
 
@@ -1401,7 +1401,7 @@ sha256:b9caca385021f231e15aee34929eac332c49402372a79808d07ee66866792239
 > - config.json: 该文件包含了容器运行的配置信息，该文件必须存在 bundle 的根目录，且名字必须为 config.json
 > - 容器的根目录，可以由 config.json 中的 root.path 指定
 
-![img](https://blog.k8s.li/img/20200609_oci-04.jpg)
+![](https://p.k8s.li/20200609_oci-04.jpg)
 
 ### docker run
 
@@ -1455,7 +1455,7 @@ overlay on / type overlay (rw,relatime,lowerdir=/opt/docker/overlay2/l/4EPD2X5VF
 
 从 docker 官方文档 [Use the OverlayFS storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/) 里偷来的一张图片
 
-![overlayfs lowerdir, upperdir, merged](https://blog.k8s.li/img/overlay_constructs.jpg)
+![](https://p.k8s.li/overlay_constructs.jpg)
 
 关于上图中这些 Dir 的作用，下面是一段从 [StackOverflow](https://stackoverflow.com/questions/56550890/docker-image-merged-diff-work-lowerdir-components-of-graphdriver) 上搬运过来的解释。
 

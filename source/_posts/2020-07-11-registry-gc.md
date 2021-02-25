@@ -145,7 +145,7 @@ Storing signatures
 
 ### registry 存储目录长什么样🤔
 
-![img](https://blog.k8s.li/img/registry-storage.jpeg)
+![](https://p.k8s.li/registry-storage.jpeg)
 
 registry 容器内的`/var/lib/registry/docker/registry/v2` 存储目录，结合上面这张图，通过 tree 目录我们可以清晰地看到：registry 存储目录下只有两种文件名的文件，一个是 `data` 文件，一个是 `link` 文件。其中 link 文件是普通的文本文件，存放在 `repositories` 目录下，其内容是指向 data 文件的 sha256 digest 值。link 文件是不是有点像 C 语言中的指针😂（大雾。
 
@@ -585,7 +585,7 @@ done
 	})
 ```
 
-![](https://blog.k8s.li/img/registry-gc.png)
+![](https://p.k8s.li/registry-gc.png)
 
 ### GC 都干了啥？
 
@@ -687,15 +687,15 @@ INFO[0000] Deleting blob: /docker/registry/v2/blobs/sha256/21/21c83c5242199776c2
 
 #### delete 镜像之前的 registry 存储目录结构
 
-![REGISTRY](https://blog.k8s.li/img/registry-gc-1.jpeg)
+![](https://p.k8s.li/registry-gc-1.jpeg)
 
 #### delete 镜像之后的 registry 存储目录结构
 
-![](https://blog.k8s.li/img/registry-gc-2.jpeg)
+![](https://p.k8s.li/registry-gc-2.jpeg)
 
 #### GC 之后的 registry 存储目录结构
 
-![](https://blog.k8s.li/img/registry-gc-3.jpeg)
+![](https://p.k8s.li/registry-gc-3.jpeg)
 
 ### shell 大法好！
 

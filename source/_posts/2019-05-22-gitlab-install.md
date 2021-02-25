@@ -176,7 +176,7 @@ apt install gitlab-runner -y
 - 在 Runner 设置时指定以下 URL
 - 在安装过程中使用以下注册令牌：
 
-![image-20200310202057916](https://blog.k8s.li/img/20200310202057916.png)
+![](https://p.k8s.li/20200310202057916.png)
 
 安装好 gitlab-runner 之后如果直接向 gitlab 注册则会失败，提示 `ERROR: Registering runner... failed   runner=qRGh2M86 status=500 Internal Server Error`
 

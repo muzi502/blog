@@ -24,11 +24,11 @@ comment: true
 
 注册绑定信用卡赠送 10 $，这些足够发送 1000 条短信了，足够咱使用了😂
 
-![1569744256905](https://blog.k8s.li/img/1569744256905.png)
+![](https://p.k8s.li/1569744256905.png)
 
-![image-20191029173931185](https://blog.k8s.li/img/20191029173931185.png)
+![](https://p.k8s.li/20191029173931185.png)
 
-![image-20191029174001829](https://blog.k8s.li/img/20191029174001829.png)
+![](https://p.k8s.li/20191029174001829.png)
 
 ### 验证手机号
 
@@ -40,7 +40,7 @@ comment: true
 
 验证完手机号后，进入控制台 [console](https://www.twilio.com/console) ，
 
-![1569744103630](https://blog.k8s.li/img/1569744103630.png)
+![](https://p.k8s.li/1569744103630.png)
 
 官方已经给出了各个语言的示例代码  [Sending Messages](https://www.twilio.com/docs/sms/send-messages)
 

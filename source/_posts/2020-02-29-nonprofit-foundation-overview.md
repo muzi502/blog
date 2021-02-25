@@ -15,7 +15,7 @@ comment: true
 
 在去年的时候就计划着写一些关于美国非营利性组织的一些文章，比如关于 Linux  基金会、自由软件基金会、电子前哨基金会，拖延症犯了一直未能更新。最近因为疫情影响吧，也让我看到了这个社会公民自发自救的能力在官僚体制下被严格限制，几乎看不到独立的非盈利组织来进行自救。面对天灾人祸，让我想起了 BBC 的一遍报道 [汶川地震十年系列—公民社会从爆发到沉寂的艰难之路](https://www.bbc.com/zhongwen/simp/chinese-news-43972586) 。所以最近就开始打算写一些关于非营利性组织的事儿，今天就先开个头写个简单的介绍一下我所熟知的非营利性组织，绝大多数都是和开源软件、自由软件、互联网等相关的。也算是个普及，让大家知道自己所使用的开源软件/自由软件属于哪一些非盈利组织在维护和支持。
 
-![image-20200224135131632](https://blog.k8s.li/img/20200224135131632.png)
+![](https://p.k8s.li/20200224135131632.png)
 
 ## 非营利组织与基金会
 
@@ -37,7 +37,7 @@ comment: true
 
 有人说一图胜千言，以下这张图来自 Siobhán 的研究：《Nonprofit Foundations And Their Role In Community-Firm Software Collaboration》论文。
 
-![img](https://blog.k8s.li/img/nonprofit_foundation.png)
+![](https://p.k8s.li/nonprofit_foundation.png)
 
 ### 税收条款
 

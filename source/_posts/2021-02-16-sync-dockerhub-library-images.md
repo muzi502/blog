@@ -239,7 +239,7 @@ runner@fv-az60-303:~$ cat .docker/config.json
 githubactions:3d6472b9-3d49-4d17-9fc9-90d24258043b
 ```
 
-![image-20210216173039196](https://blog.k8s.li/img/image-20210216173039196.png)
+![](https://p.k8s.li/image-20210216173039196.png)
 
 于是想着可以验证一下这个账户是否有限制：
 
@@ -296,7 +296,7 @@ get_manifests
 
 经过一番长时间的刺测试，在获取了 20058   个镜像的 manifest 文件之后依旧没有被限制，于是大胆猜测，runner 里内置的 docker hub 账户 pull library 镜像是没有限制的。估计是 GitHub 和 docker inc 达成了  py 交易，用这个账户去 pull 公共镜像没有限制。
 
-![image-20210216173003436](https://blog.k8s.li/img/image-20210216173003436.png)
+![](https://p.k8s.li/image-20210216173003436.png)
 
 ```shell
 runner@fv-az212-267:~/work/runner-test/runner-test$ ls manifests/ | wc
@@ -375,7 +375,7 @@ IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
 - REGISTRY_USER 本地镜像仓库的用户名
 - REGISTRY_PASSWORD 设置为本地镜像仓库的密码
 
-![image-20210216163441719](https://blog.k8s.li/img/image-20210216163441719.png)
+![](https://p.k8s.li/image-20210216163441719.png)
 
 ## 参考
 

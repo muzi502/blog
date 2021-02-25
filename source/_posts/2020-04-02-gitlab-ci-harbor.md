@@ -16,7 +16,7 @@ comment: true
 
 **CI 持续集成**
 
-![Continuous integration puts the integration phase earlier in the development cycle](https://blog.k8s.li/img/409-images-for-snap-blog-postedit_image1.png)
+![](https://p.k8s.li/409-images-for-snap-blog-postedit_image1.png)
 
 图片剽窃自  [The Product Managers’ Guide to Continuous Delivery and DevOps](https://www.mindtheproduct.com/what-the-hell-are-ci-cd-and-devops-a-cheatsheet-for-the-rest-of-us/)
 
@@ -24,7 +24,7 @@ comment: true
 
 **CD 持续交付**
 
-![Continuous Delivery is a software development discipline ](https://blog.k8s.li/img/409-images-for-snap-blog-postedit_image4-manual.png)
+![](https://p.k8s.li/409-images-for-snap-blog-postedit_image4-manual.png)
 
 图片剽窃自 [The Product Managers’ Guide to Continuous Delivery and DevOps](https://www.mindtheproduct.com/what-the-hell-are-ci-cd-and-devops-a-cheatsheet-for-the-rest-of-us/)
 
@@ -34,7 +34,7 @@ comment: true
 
 **持续部署**
 
-![Continuous Delivery is a software development discipline ](https://blog.k8s.li/img/409-images-for-snap-blog-postedit_image4-manual-1585574252795.png)
+![](https://p.k8s.li/409-images-for-snap-blog-postedit_image4-manual-1585574252795.png)
 
 图片剽窃自  [The Product Managers’ Guide to Continuous Delivery and DevOps](https://www.mindtheproduct.com/what-the-hell-are-ci-cd-and-devops-a-cheatsheet-for-the-rest-of-us/)
 
@@ -514,7 +514,7 @@ registry            /entrypoint.sh /etc/regist ...   Up (healthy)   5000/tcp
 registryctl         /harbor/start.sh                 Up (healthy)
 ```
 
-![image-20200326163733610](https://blog.k8s.li/img/20200326163733610.png)
+![](https://p.k8s.li/20200326163733610.png)
 
 ### 设置 insecure registry
 
@@ -557,13 +557,13 @@ f1b5933fe4b5: Mounted from ops/ci-test
 
 - 在 harbor 项目的页面查看是否推送成功
 
-![image-20200326170403918](https://blog.k8s.li/img/20200326170403918.png)
+![](https://p.k8s.li/20200326170403918.png)
 
 ## 测试 CI/CD 项目
 
 - 在 Gitlab 中使用 Spring 模板新建一个项目，并添加 `.gitlab-ci.yaml` 配置文件。
 
-![image-20200326170523433](https://blog.k8s.li/img/20200326170523433.png)
+![](https://p.k8s.li/20200326170523433.png)
 
 ```yaml
 stages:
@@ -753,19 +753,19 @@ CI_REGISTRY_IMAGE: # 构建镜像的名称
 SSH_PASSWORD: # 部署测试服务器 ssh 密码
 ```
 
-![image-20200327102511419](https://blog.k8s.li/img/20200327102511419.png)
+![](https://p.k8s.li/20200327102511419.png)
 
 - 设置好相关变量之后在，在项目页面的 `CI/CD` —–> `流水线` 页面点击 `运行流水线`手动触发流水线任务进行测试。
 
-![image-20200325163138089](https://blog.k8s.li/img/20200325163138089.png)
+![](https://p.k8s.li/20200325163138089.png)
 
 - 如果流水线任务构建成功的话，会显示 `已通过` 的表示
 
-![image-20200325163254316](https://blog.k8s.li/img/20200325163254316.png)
+![](https://p.k8s.li/20200325163254316.png)
 
 - 登录到 Harbor http://10.10.107.217 查看镜像是否构建成功
 
-![image-20200325163400519](https://blog.k8s.li/img/20200325163400519.png)
+![](https://p.k8s.li/20200325163400519.png)
 
 ## 参考/推荐
 

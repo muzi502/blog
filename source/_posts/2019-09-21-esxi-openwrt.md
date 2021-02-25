@@ -46,13 +46,13 @@ Windows 下可以使用 [StarWind V2V Converter](https://www.starwindsoftware.co
 Local File --> Source image --> Local File --> VMDK --> ESXi server image
 ```
 
-![1568876856613](https://blog.k8s.li/img/1568876856613.png)
+![](https://p.k8s.li/1568876856613.png)
 
-![1568876894451](https://blog.k8s.li/img/1568876894451.png)
+![](https://p.k8s.li/1568876894451.png)
 
-![1568876920080](https://blog.k8s.li/img/1568876920080.png)
+![](https://p.k8s.li/1568876920080.png)
 
-![1568876940778](https://blog.k8s.li/img/1568876940778.png)
+![](https://p.k8s.li/1568876940778.png)
 
 转换完成后会有两个文件 `openwrt-18.06.4-x86-legacy-combined-ext4.vmdk` 和 `openwrt-18.06.4-x86-legacy-combined-ext4-flat.vmdk` ，这两个文件一并上传到 ESXi 服务器的数据存储里就行，上传完两个文件和，ESXi 会自动合并这两个文件为 `VMDK/openwrt-18.06.4-x86-legacy-combined-ext4.vmdk`。其实看这两个文件的大小我们就会明白，`openwrt-18.06.4-x86-legacy-combined-ext4.vmdk` 是个 vmdk 文件描述符文件，里面记录着 vmdk 的元数据信息。
 
@@ -89,11 +89,11 @@ ddb.virtualHWVersion = "4"
 
 `创建/注册虚拟机` --> `创建新虚拟机` --> `设置选择名称和客户机操作系统` –-> `选择存储` --> `自定义设置`
 
-![1568860424585](https://blog.k8s.li/img/1568860424585.png)
+![](https://p.k8s.li/1568860424585.png)
 
 **自定义设置** 这一块一定要注意
 
-![1568860493961](https://blog.k8s.li/img/1568860493961.png)
+![](https://p.k8s.li/1568860493961.png)
 
 选择添加硬盘为我们刚才新上传的哪个 VMDK 磁盘即可，然后网络适配器添加一个足够使用，如果你的 ESXi 主机有多块网卡的话可以考虑选择添加两个适配器，在此只把 OpenWRT 虚拟机当作一个旁路网关，一个网口足够了。把网络适配器 `连接` 那里**关掉**、把网络适配器 `连接` 那里**关掉**、把网络适配器 `连接` 那里**关掉**。不然你启动的时候这台 OpenWRT 软路由会在 LAN 口开启 DHCP 服务，如果你的网络环境是办公网络的话，这台开启 DHCP 的软路由可能会把整个办公网络弄瘫痪的。开启虚拟机后把 LAN 口的 DHCP 禁用掉，同时配置一个静态 IP 就可以。一个局域网里开两台 DHCP 服务器，当然会出问题的，惨痛的教训啊。
 
@@ -101,7 +101,7 @@ ddb.virtualHWVersion = "4"
 
 接着修改一下网卡配置信息，在 lan 那个网口下配置一个静态 IP 和网关，然后
 
-![1568877917688](https://blog.k8s.li/img/1568877917688.png)
+![](https://p.k8s.li/1568877917688.png)
 
 然后使用命令 `service dnsmasq disable` 、`service odhcp disable`  禁用掉 dhcp 服务即可。然后再编辑虚拟机的设置，把网卡连接上，再重启一下虚拟机即可。通过浏览器访问我们刚才配置的那个静态 IP。
 
@@ -114,7 +114,7 @@ uci del dhcp.cfg01411c.filterwin2k
 uci del dhcp.cfg01411c.nonegcache
 ```
 
-![1568878441039](https://blog.k8s.li/img/1568878441039.png)
+![](https://p.k8s.li/1568878441039.png)
 
 ## 初始化安装系统
 

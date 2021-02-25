@@ -18,11 +18,11 @@ comment: true
 
 博客使用的是  [NexT.Mist](https://github.com/zgq354/typecho-theme-next) 的主题 ，不得不说 [NexT.Mist](https://github.com/zgq354/typecho-theme-next)  主题是我用过的 typecho 里面最好的主题，没有之一。我拿来后经过大刀阔斧地删除了很多无用的内容，并把归档设置为首页。能精简的就精简掉，没有花里胡哨的花架子。但也有一些缺点，比如：对中文排版不够好，我希望二级标题三级标题还有引用等能呈现的突兀一些，尤其是在移动端的时候，三级标题以及四级标题几乎和正文一样了；代码高亮字体太小，不美观。
 
-![首页很精简](https://blog.k8s.li/img/20191121112230084.png)
+![](https://p.k8s.li/20191121112230084.png)
 
-![中文排版多级标题很差](https://blog.k8s.li/img/20191121112335945.png)
+![](https://p.k8s.li/20191121112335945.png)
 
-![代码高亮字体太小](https://blog.k8s.li/img/20191121112940929.png)
+![](https://p.k8s.li/20191121112940929.png)
 
 ## hugo
 
@@ -112,7 +112,7 @@ baidusitemap:
 
 原项目里使用的 `baidusitemap.xml` ，对于咱这种对 baidu 恨之入骨的人来说当人是无法忍受的了，所以就关键字搜索 baidu ，干掉了所有与百度相关的代码。
 
-![image-20191121132219406](https://blog.k8s.li/img/20191121132219406.png)
+![](https://p.k8s.li/20191121132219406.png)
 
 ## 精简后
 
@@ -134,9 +134,9 @@ baidusitemap:
 
 ## 效果图
 
-![image-20191121112120336](https://blog.k8s.li/img/20191121112120336.png)
+![](https://p.k8s.li/20191121112120336.png)
 
-![目录和多级标题很nice](https://blog.k8s.li/img/20191121112401015.png)
+![](https://p.k8s.li/20191121112401015.png)
 
   [NexT.Gemini](https://theme-next.org/)  主题的引用部分背景色好评，用来提醒读者我是~~引用~~剽窃别人的还是不错滴😂，我倒是喜欢用 `剽窃`二字替代`引用`，用来自嘲自己知识水平不足只能靠剽窃😀。
 

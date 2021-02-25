@@ -20,51 +20,51 @@ comment: true
 
 摄像头根据传输介质大概分为模拟传输、网络传输。模拟传输就是采用的模拟信号，把监控视频流采集到专门的录像机上，一般录像机的价格要比一个摄像头的价格贵很多。另外还要给监控录像机供电也是一笔开销，遂不考虑使用模拟摄像头。
 
-![小米摄像头](https://blog.k8s.li/img/1561802376885.jpg)
+![](https://p.k8s.li/1561802376885.jpg)
 
 网络摄像头分为 WiFi 无线网络摄像头和网线摄像头。 WiFi 摄像头就是和小米那样的，另外房东家也是用的 WiFi 摄像头。网线摄像头分为独立供电、POE 供电两种。独立供电需要单独的 12V DC 给摄像头供电，而 POE 供电是将网线和电源绑在一起，通过 POE 交换机供电。这种 POE 供电的摄像头价格也比较贵，还需要单独购买 POE 交换机。遂也不决定购买 POE 供电的摄像头。
 
-![POE供电摄像头](https://blog.k8s.li/img/1561802376888.jpg)
+![](https://p.k8s.li/1561802376888.jpg)
 
-![POE供电图解](https://blog.k8s.li/img/1561802376886.jpg.jpg)
+![](https://p.k8s.li/1561802376886.jpg.jpg)
 
 找了半天最终还是找到了一个摄像头，价格也比较便宜😂。特意问了卖家能不能通过浏览器访问、能不能不需要专用的摄像机来访问摄像头。卖家说是可以的。
 
-![1570702505815](https://blog.k8s.li/img/1570702505815.png)
+![](https://p.k8s.li/1570702505815.png)
 
-![1570702514509](https://blog.k8s.li/img/1570702514509.png)
+![](https://p.k8s.li/1570702514509.png)
 
 ## 安装摄像头
 
 把路由器的电源适配器输出接口给剪了，又接了一个 DC 2.5mm 的插头，这样一个电源适配器同时供路由器和摄像头使用了😂。不用担心功率，一个摄像头和路由器总功耗还不到 8W。
 
-![推荐这个12V直流电源，某宝搜关键字😂](https://blog.k8s.li/img/1570704495847.png)
+![](https://p.k8s.li/1570704495847.png)
 
-![将摄像头底座固定在一个塑料板上，再用螺丝刀插入空调海绵胶里固定住😂](https://blog.k8s.li/img/1570702447664.png)
+![](https://p.k8s.li/1570702447664.png)
 
-![路由器放在了空调上面，互不干扰](https://blog.k8s.li/img/1570702472108.png)
+![](https://p.k8s.li/1570702472108.png)
 
 穹妹哦😂，骨科？
 
-![1570702482302](https://blog.k8s.li/img/1570702482302.png)
+![](https://p.k8s.li/1570702482302.png)
 
-![一个RJ45的网线接口和一个12V的DC供电接口](https://blog.k8s.li/img/1570702739896.png)
+![](https://p.k8s.li/1570702739896.png)
 
 ## 配置摄像头
 
 询问卖家怎么配置摄像头，卖家说搜索雄迈，然后下载相应的工具。[配套软件下载 ](https://www.xiongmaitech.com/service/down_detail1/83/176) 下载安装就行。
 
-![配套软件](https://blog.k8s.li/img/1570704765775.png)
+![](https://p.k8s.li/1570704765775.png)
 
-![在设备管理里添加摄像头](https://blog.k8s.li/img/1570704813188.png)
+![](https://p.k8s.li/1570704813188.png)
 
-![默认是没有密码的，设置密码了酒店及铅笔✏图标哪里设置密码](https://blog.k8s.li/img/1570704875787.png)
+![](https://p.k8s.li/1570704875787.png)
 
-![配置摄像头界面](https://blog.k8s.li/img/1570704956430.png)
+![](https://p.k8s.li/1570704956430.png)
 
-![网络设置-TCP/IP](https://blog.k8s.li/img/1570704990621.png)
+![](https://p.k8s.li/1570704990621.png)
 
-![RTSP 设置，这个后面要用到](https://blog.k8s.li/img/1570705020709.png)
+![](https://p.k8s.li/1570705020709.png)
 
 ## 路由器 FRP 穿透
 
@@ -112,9 +112,9 @@ remote_port = 554
 rtsp="rtsp://192.168.0.241:554/user=user&password=password&channel=Channel&stream=Stream.sdp?real_stream"
 ```
 
-![PotPlayer 里在打开那里选择打开连接](https://blog.k8s.li/img/1570705646007.png)
+![](https://p.k8s.li/1570705646007.png)
 
-![输入上述 URL ](https://blog.k8s.li/img/1570705720287.png)
+![](https://p.k8s.li/1570705720287.png)
 
 然后服务器端安装好 FFmpeg ，使用 FFmpeg读取 rtsp 视频流即可
 

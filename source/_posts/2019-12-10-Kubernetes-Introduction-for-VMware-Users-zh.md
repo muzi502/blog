@@ -44,7 +44,7 @@ October 25, 2017
 
 在此之前有一个重要提示：我不是为了介绍 Kubernetes 而使用这个比较，也不是为了证明 vSphere 和 Kubernetes 之间存在的任何异同之处。两者的核心都是分布式系统，它们肯定有着其他分布式系统的相似之处。最后，我想在这里实现的目标是向更广泛的 VMware 社区介绍像 Kubernetes 这样不可思议的技术。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-architecture-1024x512.png)
+![](https://p.k8s.li/kubernetes-architecture-1024x512.png)
 
 > Figure: The Kubernetes overall architecture compared to vSphere
 
@@ -90,7 +90,7 @@ Docker 解决了交互和打包的一个大问题，但现在怎么办？作为�
 
 那么什么是 Kubernetes 呢？简单地说：Kubernetes 之于容器就像 vSphere 之于 VM 为 VM 准备好数据中心。如果你曾经在 21 世纪初运行过 VMware 工作站，你知道他们并未认真考虑在数据中心内部运行。Kubernetes 带来了一种以生产可用的方式来运行和操作容器的方法。这就是为什么我们将开始将 vSphere 与 Kubernetes 进行横向比较，以便解释此分布式系统的细节，并让你快速了解 Kubernetes 的特性和技术。
 
-![Kubernetes](https://blog.k8s.li/img/p2p3-1024x375.png)
+![](https://p.k8s.li/p2p3-1024x375.png)
 
 > Figure: The VM evolution from Workstation to vSphere compared to the current evolution for containers to Kubernetes
 
@@ -104,7 +104,7 @@ Docker 解决了交互和打包的一个大问题，但现在怎么办？作为�
 
 与 vSphere 的 vCenter 和 ESXi 主机一样，Kuberentes 具有 master 节点和 node 节点的概念。在此处，K8s 中的 master 等效于 vCenter，因为它是分布式系统中的控制平面。也是你在集群中管理工作负载的 API 的入口。同样，K8s 中的节点充当像 ESXi 主机一样的计算资源。这里运行着实际工作负载（在 K8s 的实例中，我们称之为 Pod）。节点可以是虚拟机或物理服务器。当然，在 vSphere 中，ESXi 主机必须是物理机。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-system-1024x624.png)
+![](https://p.k8s.li/kubernetes-system-1024x624.png)
 
 You can see also that K8s has a key-value store called “etcd.” It is similar to vCenter Server DB in that you store the cluster configuration as the desired state you want to adhere to there.
 
@@ -118,7 +118,7 @@ You can see also that K8s has a key-value store called “etcd.” It is similar
 
 那么，在现实世界中是怎样的呢？你将主要使用 CLI 与此系统进行交互（GUI 也是一个可行的选项）。在下面的截图中，你可以看到我在 Windows 计算机上使用类似的命令（使用的是 cmder）连接到我的 Kubernetes 群集。我们在截图中看到，我有一个 master 节点和 4 个 node 节点。集群运行 K8s v1.6.5，节点操作系统为 Ubuntu 16.04。在撰写本文时，我们主要生活在 Linux 世界中，master 节点和 node 节点始终基于 Linux 发行版。
 
-![Kubernetes](https://blog.k8s.li/img/clidash-1024x563.png)
+![](https://p.k8s.li/clidash-1024x563.png)
 
 ## Workloads Form-factor
 
@@ -132,13 +132,13 @@ You can see also that K8s has a key-value store called “etcd.” It is similar
 
 在 vSphere 中，应用程序在操作系统内运行。而在 Kubernetes 中，应用程序在容器内运行。VM 可以运行单个操作系统，而 Pod 却可以运行多个容器。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-pods-1024x486.png)
+![](https://p.k8s.li/kubernetes-pods-1024x486.png)
 
 > This is how you can list the pods inside a K8s cluster using the kubectl tool from the CLI. You can check the health of the pods, the age, the IP addresses and the nodes they are currently running inside.
 
 这是使用 CLI 中的 kubectl 工具列出 K8s 群集中的 Pod 的方式。你可以检查 Pod 的运行状况、创建时间、IP 地址以及它们当前运行在哪个节点。
 
-![Kubernetes](https://blog.k8s.li/img/cli2-1024x450.png)
+![](https://p.k8s.li/cli2-1024x450.png)
 
 ## Management
 
@@ -148,7 +148,7 @@ You can see also that K8s has a key-value store called “etcd.” It is similar
 
 那么，我们如何管理主机、节点和 Pod 呢？在 vSphere 中，我们使用 Web 客户端来管理虚拟化基础架构中的大多数（如果不是全部）组件。这和在 Kubernetes 使用仪表盘一样。这是一个通过浏览器访问、基于 GUI 、类似于 web 客户端的门户网站。我们在前几节中还看到，你可以使用  kubectl 命令来管理 K8s 群集。你总是在大部分时间里花在哪里——CLI 或仪表盘，特别是因为后者每天都在变得更强大（请查看[此视频](https://www.youtube.com/watch?v3lhf7T9Bp2E)，了解更多详情）。我个人认为仪表盘非常方便，可以快速查看运行状况或显示各种 k8s 组件的详细信息，而不是输入很长的命令。这是个人喜好，你会自然地在两者之间找到平衡。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-management-1024x469.png)
+![](https://p.k8s.li/kubernetes-management-1024x469.png)
 
 ## Configurations
 
@@ -162,7 +162,7 @@ Kubernetes 中非常重要的概念之一是所描述的配置状态。通过 YA
 
 回到我们的 YAML 配置文件 — 你可以将它们想象成 一个描述 VM 或 的 .VMX 文件或者在 vSphere 中部署虚拟设备所需的 .OVF 描述符文件。这些文件定义要运行的工作负载/组件的配置。与 VMX/OVF 文件是 VM/设备独有的不同的是，YAML 配置文件用于定义任何 K8s 组件，如 ReplicaSets、Services、 Deployments 等，我们将在下一节中讨论。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-confiugrations-1024x511.png)
+![](https://p.k8s.li/kubernetes-confiugrations-1024x511.png)
 
 ## Virtual Clusters
 
@@ -172,7 +172,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 在 vSphere 中，我们将 ESXi 物理机逻辑分组以形成群集。我们可以将这些群集分割成其他虚拟化群集，称为"资源池"。这些资源池主要用于限制资源。在 Kubernetes 中，我们有一些非常相似的东西。我们称之为"命名空间"，它们还可用于确保资源配额，我们将在下一节中看到。但是，它们最常用作跨应用程序（或者使用共享 K8s 群集的用户）的多租户方法。这也是我们可以在这些命名空间使用 NSX-T 执行安全分段的方法之一，我们将在以后的帖子中看到。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-namespaces-1024x651.png)
+![](https://p.k8s.li/kubernetes-namespaces-1024x651.png)
 
 ## Resource Management
 
@@ -182,7 +182,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 正如我在上一节中提到的那样，Kubernetes 中通常用命名空间来进行划分。它的另一个用途是资源分配，称之为"资源配额"。正如我们在前面各节中所看到的，它的定义是通过 YAML 配置文件来声明期所望的状态。在 vSphere 中，我们同样从资源池设置中定义这一点，如下图所示。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-resource-quotas.png)
+![](https://p.k8s.li/kubernetes-resource-quotas.png)
 
 ## Workloads Identification
 
@@ -192,7 +192,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 标记工作负载相当容易且 vSphere 和 Kubernetes 几乎一样。在 vSphere 中，我们使用 tags 的概念来识别或分组相似的工作负载，而在 Kubernetes 中，我们使用术语"labels"来执行此操作。在 Kubernetes 的案例中，我们强制使用"选择器"之类来识别我们的容器并为其应用不同的配置。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-labels-1024x331.png)
+![](https://p.k8s.li/kubernetes-labels-1024x331.png)
 
 ## Redundancy
 
@@ -202,7 +202,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 精彩现在开始。如果你和我一样热衷于 vSphere FT，在 Kubernetes 中你会喜欢这个特性，尽管这两个技术有一些差异。在 vSphere 中，vSphere FT 是一个具有正在运行的 VM 影子实例 。我们记录正在运行的实例中的指令，并在卷影 VM 中重新执行它。如果正在运行的实例出现故障，则卷影 VM 会立即启动。然后，vSphere 会尝试寻找另一台 ESXi 主机，来导入另一个卷影 VM 实例以维护相同的冗余。在 Kubernetes 中也有类似的特性。副本集用来运行指定的数量 pod 的实例。如果一个 pod 出现故障，则其他 pod 实例可继续对外流量提服务。与此同时，K8s 将尝试将该 pod 调度到任何可用节点上，以维持配置文件所描述的状态。你可能已经注意到，主要区别是，在 K8s 中，pod 实例始终是存活状态并对外提供服务，它们并不是隐藏的工作负载。
 
-![Kubernetes](https://blog.k8s.li/img/kuberentes-replicasets-1024x546.png)
+![](https://p.k8s.li/kuberentes-replicasets-1024x546.png)
 
 ## Load Balancing
 
@@ -220,13 +220,13 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 正如我提到的， Services 具有许多其他配置，如"NodePort"，其中你基本上在节点级别上分配一个端口，然后向下到 Pod 执行端口地址转换。还有"LoadBalancer"，从第三方或云提供商启动 LB 实例。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-services-1024x389.png)
+![](https://p.k8s.li/kubernetes-services-1024x389.png)
 
 > There is another very important load-balancing mechanism in Kuberentes called “Ingress Controller.” You can think of this like an in-line application load-balancer. The core concept behind this is that an ingress-controller (in a form of pod) would be spun up with an externally visible IP address, and that IP could have something like a wild card DNS record. When traffic hits an ingress-controller using the external IP, it will inspect the headers and determine through a set of rules you pre-define to which pod that hostname should belong. Example: _sphinx-v1_.esxcloud.net will be directed to the service “sphinx-svc-1”, while the _sphinx-v2_.esxcloud.net will be directed to the service “sphinx-svc2” and so on and so forth.
 
 在 Kuberentes 中还有另一个非常重要的负载均衡机制，称之为" Ingress 控制器"。你可以把它当作一个在线应用负载均衡器。The core concept behind this is that an ingress-controller (in a form of pod) would be spun up with an externally visible IP address, and that IP could have something like a wild card DNS record. 当流量使用 external IP 进入 ingress 控制器时，它将检查请求头部并通过主机名来判断流量应属于哪个一组 pod 。示例：_sphinx-v1_.esxcloud.net 将定向到服务"sphinx-svc-1"，而 _sphinx-v2_.esxcloud.net 将重定向到服务"sphinx-svc2"等。
 
-![Kubernetes](https://blog.k8s.li/img/kubernetes-ingress-1024x532.png)
+![](https://p.k8s.li/kubernetes-ingress-1024x532.png)
 
 ## Storage & Networking
 
@@ -240,7 +240,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 Kubernetes 具有不同的网络"插件"，你可以使用这些插件来设置节点和 Pod 网络。常见的插件之一是"kubenet"，它目前用于像谷歌云提供商（GCP）和亚马逊网络服务这样的云服务商巨头。我将在这里简要地谈谈 GCP 的实现，然后向你展示一个可以在谷歌容器引擎（GKE）上亲自研究的实例。
 
-![Kubernetes](https://blog.k8s.li/img/gke-kubernetes-networking-1024x747.png)
+![](https://p.k8s.li/gke-kubernetes-networking-1024x747.png)
 
 > This might be a bit too much to take in from a first glance, but hopefully you will be able to make sense of all that by the end of this blog post. First, we see that we have two Kubernetes nodes here: node 1 and node (m). Each node has an eth0 interface like any Linux machine, and that interface has an IP address to the external world—in our case here on subnet 10.140.0.0/24. The upstream L3 device is acting as our default gateway to route our traffic. This could be a L3 switch in your data center or a VPC router in a public cloud like GCP as we will see later. So far so good?
 

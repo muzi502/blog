@@ -22,7 +22,7 @@ Kubernetes 从 1.4 版本开始后就引入了 kubeadm 用于简化集群搭建�
 
 ## kubernetes 架构
 
-![Components of Kubernetes](https://blog.k8s.li/img/components-of-kubernetes.png)
+![](https://p.k8s.li/components-of-kubernetes.png)
 
 架构图来自 kubernetes 官方文档 [Kubernetes 组件](https://kubernetes.io/zh/docs/concepts/overview/components/)
 
