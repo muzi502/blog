@@ -4,6 +4,8 @@
 # date: 2019-11-21
 
 set -eo pipefail
+INPUT=$1
+INPUT=${INPUT:=deploy}
 PICS_URL="https://p.k8s.li"
 DATA=$(TZ=UTC-8 date +"%Y-%m-%d-%H:%M")
 WORKDIR=$(cd $(dirname "${BASH_SOURCE}") && pwd -P)
@@ -14,7 +16,7 @@ PUBLIC_REPO_DIR=/var/www/muzi502.github.io
 make_public() {
     cd ${POST_DIR}
     rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
-    cd ${hexo_dir}
+    cd ${WORKDIR}
     rm -rf db.json public/*
     hexo clean && hexo g
     rm -rf  ${POST_DIR}
@@ -28,7 +30,7 @@ push_public() {
     cd ${PUBLIC_REPO_DIR}
     # find . -type f  -name "*.html" | xargs -L1 -P 16 sed -i "s|p.k8s.li|cdn.jsdelivr.net/gh/muzi502/pics|"
     git add .
-    git commit -am "chore(*): update post ${date}"
+    git commit -am "chore(*): update post ${DATA}"
     git push origin master -f
 }
 
