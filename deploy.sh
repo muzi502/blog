@@ -3,30 +3,50 @@
 # use: build and deploy pubic to github and vps
 # date: 2019-11-21
 
-set -eo
-date=$(TZ=UTC-8 date +"%Y-%m-%d-%H:%M")
-hexo_dir=/var/www/hexo
-post_dir=${hexo_dir}/source/_posts
-public_dir=${hexo_dir}/public
-github_dir=/var/www/muzi502.github.io
+set -eo pipefail
+PICS_URL="https://p.k8s.li"
+DATA=$(TZ=UTC-8 date +"%Y-%m-%d-%H:%M")
+WORKDIR=$(cd $(dirname "${BASH_SOURCE}") && pwd -P)
+POST_DIR=${WORKDIR}/source/_posts
+PUBLIC_DIR=${WORKDIR}/public
+PUBLIC_REPO_DIR=/var/www/muzi502.github.io
 
-cd ${post_dir}
-rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
+make_public() {
+    cd ${POST_DIR}
+    rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
+    cd ${hexo_dir}
+    rm -rf db.json public/*
+    hexo clean && hexo g
+    rm -rf  ${POST_DIR}
+    git checkout ${POST_DIR}
+    find ${PUBLIC_DIR} -name '*.html' -type f -print0 | xargs -0 sed -i '/^[[:space:]]*$/d'
+    sed -i '/muzi.disqus.com/d' ${PUBLIC_DIR}/index.html
+}
 
-cd ${hexo_dir}
-rm -rf db.json public/*
-hexo g
-rm -rf  ${post_dir}
-git checkout ${post_dir}
-find ${public_dir} -name '*.html' -type f -print0 | xargs -0 sed -i '/^[[:space:]]*$/d'
-sed -i '/muzi.disqus.com/d' ${public_dir}/index.html
+push_public() {
+    cp -rf ${PUBLIC_DIR}/* ${PUBLIC_REPO_DIR}
+    cd ${PUBLIC_REPO_DIR}
+    # find . -type f  -name "*.html" | xargs -L1 -P 16 sed -i "s|p.k8s.li|cdn.jsdelivr.net/gh/muzi502/pics|"
+    git add .
+    git commit -am "chore(*): update post ${date}"
+    git push origin master -f
+}
 
+fix_pics_url() {
+    find ${POST_DIR} -type f -name "*.md" | xargs -L1 -P 16 sed -i -e "s#./img/#${PICS_URL}/#g;s#img/#${PICS_URL}/#g"
+}
 
-cp -rf ${public_dir}/* ${github_dir}/
-cd /var/www/muzi502.github.io
-
-find . -type f  -name "*.html" | xargs -L1 -P 16 sed -i "s|blog.k8s.li/img/|cdn.jsdelivr.net/gh/muzi502/muzi502.github.io/img/|"
-
-git add .
-git commit -am "update ${date}"
-git push origin master
+push_post() {
+    fix_pics_url
+    git commit -am "chore(*): update post pics url"
+    git push origin master -f
+}
+case $INPUT in
+    deploy )
+        make_public
+        push_public
+    ;;
+    push )
+        push_post
+    ;;
+esac
