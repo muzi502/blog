@@ -56,7 +56,7 @@ comment: true
 <i class="volume_expand"></i>
 </div>
 <div class="volume_info">
-<img src="./PSYCHO-PASS心理测量者_轻小说在线阅读_亲小说网_files/1716.jpg" onerror="this.src=&#39;http:\/\/static.qinxiaoshuo.com:4000/bookimg/1716.jpg&#39;;this.onerror=null">
+<img src="./PSYCHO-PASS心理测量者_轻小说在线阅读_亲小说网_files/1716.jpg" onerror="this.src=&#39;http:\/\/static.qinxiaoshuo.com:4000/bookhttps://p.k8s.li/1716.jpg&#39;;this.onerror=null">
 <span>第二卷 下</span>
 </div>
 <div class="chapters">
