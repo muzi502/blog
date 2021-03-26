@@ -29,7 +29,7 @@ comment: true
 - [Gitlab API](https://docs.gitlab.com/ee/api/README.html)：Gitlab API 的官方文档，了解它在使用下下面这些工具时候会得心应手。
 - [python-gitlab](https://python-gitlab.readthedocs.io/en/stable/api-objects.html) API client：使用 Python 实现的 Gitlab API client，用它来完成一些特定需求工具的开发，比如根据 tag 或者 branch获取 repo 中指定的文件或目录；
 - [python-gitlab](https://python-gitlab.readthedocs.io/) CLI：基于 [python-gitlab](https://python-gitlab.readthedocs.io/en/stable/api-objects.html) API client 封装成的命令行工具，因为是 CLI 工具所以可以很方便地集成在一些流水线的脚本中；
-- [go-gitlab](https://github.com/xanzy/go-gitlab) API client：使用 Golang 实现的 Gitlab API client。由于发布流水线中的一个阶段就是根据一个 list 来收集其他 repo 中的特定文件和目录，该工具是使用 golang 写的，为了减少代码修改量就使用了 go-gitlab 而不是 python-gitlab。
+- [go-gitlab](https://github.com/xanzy/go-gitlab) API client：使用 Golang 实现的 Gitlab API client。由于发布流水线中的一个阶段就是根据一个 list 来收集其他 repo 中的特定文件和目录，使用的工具是 golang 写的，为了减少代码修改量就使用了 go-gitlab 而不是 python-gitlab。
 
 ## [Gitlab workflow](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/)
 
@@ -450,6 +450,8 @@ done
 ## 其他
 
 - repo 迁移
+
+由于内部的 Gitlab 不支持导入 git url 的方式，所以只能手动地将 GitHub 上的 repo clone 到本地再 push 到 Gitlab 上。使用 git clone 的方式本地只会有一个 master 分支，要把 GitHub 上 repo 的所有分支都 track 一遍，然后再 push 到 Gitlab 上。
 
 ```bash
 # 使用 git clone 下来的 repo 默认为 master 分支
