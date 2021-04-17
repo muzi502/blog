@@ -42,7 +42,7 @@ rss: https://blog.k8s.li/atom.xml
 | [纯白](https://jpacg.me/)                                |                                    |                                                              |
 | [TOTORO625](https://totoro.ink/)                         | Ingress、Linux                     | 日常搬砖、画图、数钢筋（大雾                                 |
 | [idealclover](https://idealclover.top)                   | 技术、测评、随想、生活             | 是只可爱的男孩子😝                                            |
-| [阁子](https://newdee.cf/)                               | Linux 、hexo、                     | 诗意少年😂                                                    |
+| [阁子](http://dfine.tech)                                | Linux 、hexo、                     | 诗意少年😂                                                    |
 | [探索子](https://beyondstars.xyz/)                       | Linux、math、devops                | 数学大佬（逃                                                 |
 | [云游君的小站](https://www.yunyoujun.cn/about/site.html) | 前端、博客                         | 希望能成为一个有趣的人(o゜▽゜)o☆x                            |
 | [BobMaster's Blog](https://blog.hibobmaster.com/)        | 博客                               | 一个准通信工程专业学生（＞人＜；）                           |
