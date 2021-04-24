@@ -1,11 +1,10 @@
 ---
 title: 小伙伴们
 date: 2019-09-26
-update: 2020-01-01
+update: 2021-04-24
 link: link
 tag:
   - 友链
-  - blog
 copyright: true
 comment: true
 ---
@@ -48,6 +47,7 @@ rss: https://blog.k8s.li/atom.xml
 | [BobMaster's Blog](https://blog.hibobmaster.com/)        | 博客                               | 一个准通信工程专业学生（＞人＜；）                           |
 | [Ryan4Yin's Space](https://ryan4yin.space/)              | DevOps                             | 赞美快乐~                                                    |
 | [rxliuli](https://blog.rxliuli.com/)                     | 前端、算法                         |                                                              |
+| [Cyris](https://cyris.moe)                               | 美工 & 前端                        | 花如解笑还多事，石不能言最可人(o゜▽゜)o☆x                    |
 
 ### 单~~恋~~链😂/有趣的人
 
