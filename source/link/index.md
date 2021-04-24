@@ -38,7 +38,7 @@ rss: https://blog.k8s.li/atom.xml
 | [F4n9X's Blog](https://fanqxu.github.io/)                | InfoSec、PenTesting、CTF、Hacking  | 社工大佬                                                     |
 | [ChrAlpha](https://ichr.me)                              | hexo、Cloudflare、加密、博客、写作 | Keep foolish and<br> write some stupid codes                 |
 | [Nova Kwok's Awesome Blog](https://nova.moe/)            | Linux、Python、network、摄影       | LUNA 创始人                                                  |
-| [纯白](https://jpacg.me/)                                |                                    |                                                              |
+| [纯白](https://jpacg.me/)                                | NAS                                |                                                              |
 | [TOTORO625](https://totoro.ink/)                         | Ingress、Linux                     | 日常搬砖、画图、数钢筋（大雾                                 |
 | [idealclover](https://idealclover.top)                   | 技术、测评、随想、生活             | 是只可爱的男孩子😝                                            |
 | [阁子](http://dfine.tech)                                | Linux 、hexo、                     | 诗意少年😂                                                    |
@@ -48,6 +48,9 @@ rss: https://blog.k8s.li/atom.xml
 | [Ryan4Yin's Space](https://ryan4yin.space/)              | DevOps                             | 赞美快乐~                                                    |
 | [rxliuli](https://blog.rxliuli.com/)                     | 前端、算法                         |                                                              |
 | [Cyris](https://cyris.moe)                               | 美工 & 前端                        | 花如解笑还多事，石不能言最可人(o゜▽゜)o☆x                    |
+| [雾雨霜星](http://www.shuangxing.top)                    | Java、前端                         | 雾间觉雨，霜空望星                                           |
+
+
 
 ### 单~~恋~~链😂/有趣的人
 
