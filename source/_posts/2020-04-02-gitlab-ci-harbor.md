@@ -1,5 +1,5 @@
 ---
-title: 基于 Gitlab-ci + Harobr 的 CI 流水线
+title: 基于 Gitlab-ci + Harbor 的 CI 流水线
 date: 2020-04-12
 updated: 2020-04-12
 slug:
