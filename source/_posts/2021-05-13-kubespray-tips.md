@@ -205,14 +205,12 @@ quay.io/l23network/k8s-netchecker-server:v1.0
 for image in $(cat temp/images.list); do skopeo copy docker://${image} docker://hub.k8s.li/${image#*/}; done
 ```
 
-> 当时写这个脚本的时候一堆蛇皮 sed 替换操作写得想 🤮，比如有些变量会有 ansible 的 if else 判断，这就意味着也要用 shell 去实现它的判断逻辑。
+> 当时写这个脚本的时候一堆蛇皮 sed 替换操作写得想 🤮，比如有些变量会有 ansible 的 if else 判断，这就意味着也要用 shell 去实现它的判断逻辑。比如使用 shell 处理的时候需要将这下面坨转换成 shell 的 if else，而且还不能换行：
 
 ```yaml
 coredns_image_repo: "{{ kube_image_repo }}{{'/coredns/coredns' if (coredns_image_is_namespaced | bool) else '/coredns' }}"
 coredns_image_tag: "{{ coredns_version if (coredns_image_is_namespaced | bool) else (coredns_version | regex_replace('^v', '')) }}"
 ```
-
-比如使用 shell 处理的时候需要将 `{{'/coredns/coredns' if (coredns_image_is_namespaced | bool) else '/coredns' }}"` 这一坨转换成 shell 的 if else，而且还不能换行。
 
 ```bash
 # special handling for https://github.com/kubernetes-sigs/kubespray/pull/7570
