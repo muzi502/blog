@@ -207,7 +207,7 @@ for image in $(cat temp/images.list); do skopeo copy docker://${image} docker://
 
 > 当时写这个脚本的时候一堆蛇皮 sed 替换操作写得想 🤮，比如有些变量会有 ansible 的 if else 判断，这就意味着也要用 shell 去实现它的判断逻辑。
 
-```YML
+```yaml
 coredns_image_repo: "{{ kube_image_repo }}{{'/coredns/coredns' if (coredns_image_is_namespaced | bool) else '/coredns' }}"
 coredns_image_tag: "{{ coredns_version if (coredns_image_is_namespaced | bool) else (coredns_version | regex_replace('^v', '')) }}"
 ```
@@ -394,8 +394,6 @@ RUN python3 -m pip install -r requirements.txt
 ```
 
 构建 kubespray 镜像：FROM 的 base 镜像就使用我们刚刚构建好的镜像，对于 kubespray 来讲，相关依赖已经在 base 镜像中安装好了，这里构建的时候只需要把 repo 复制到 /kubespray 目录下即可，如下：
-
-- `Dockerfile`
 
 ```Dockerfile
 FROM kubespray:v2.16.0-base-kube-v1.20.6
@@ -642,4 +640,3 @@ nerdctl_enabled: false
 ```
 
 在部署的时候如果想启动某些插件可以在自己本地对应的 inventory 目录下的 `group_vars/k8s_cluster/addons.yml` 文件中选择开启相应的插件，比如 `inventory/sample/group_vars/k8s_cluster/addons.yml`。
-
