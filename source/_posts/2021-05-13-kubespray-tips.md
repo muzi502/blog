@@ -638,3 +638,223 @@ nerdctl_enabled: false
 ```
 
 在部署的时候如果想启动某些插件可以在自己本地对应的 inventory 目录下的 `group_vars/k8s_cluster/addons.yml` 文件中选择开启相应的插件，比如 `inventory/sample/group_vars/k8s_cluster/addons.yml`。
+
+## 分层部署
+
+这个是我们对 kubespray 二开的一个优化项。kubespray 在部署集群的时候运行的 playbook 是 `cluster.yml`，在集群部署的过程中可能会因为你一些不稳定因素导致集群部署失败，失败后再次尝试部署的话，kubespray 会从头开始再跑一遍已经成功运行的 task，这样的效率会比较低。因此需要使用某种方法记录一下已经成功执行的 task 或 roles，失败后重新部署的时候就跳过这些已经成功运行的 task，然后从上次失败的地方开始运行。
+
+大体的思路是根据 `cluster.yml` 中的 roles 拆分为不同的层即 layer，如 bootstrap-os、download、kubernetes、network、apps ，在部署的过程中每运行完一个 layer 就将它记录在一个文件中，部署的时候会根据这个文件来判断是否需要部署，如果文件中记录存在的话就说明已经成功部署完成了，就跳过它，继续执行未执行的 layer。
+
+至于拆分的方式大概有两种，一种是根据 tag 、一种是将 `cluster.yml` 文件拆分成若干个 playbook 文件。通过 tag 的方式可能会比较复杂一些，在这里还是选择拆分的方式。拆分的粒度有大有小，以下是我认为比较合理的拆封方式：
+
+```bash
+playbooks
+├── 00-default-ssh-config.yml # 默认需要运行的 playbook，用于配置堡垒机和配置 ssh 认证
+├── 01-cluster-bootstrap-os.yml # 初始化集群节点 OS，安装容器运行时，下载部署依赖的文件
+├── 02-cluster-etcd.yml # 部署 etcd 集群
+├── 03-cluster-kubernetes.yml # 部署 kubernetes 集群
+├── 04-cluster-network.yml # 部署网络插件
+├── 05-cluster-apps.yml # 部署一些 addons 组件，如 coredns 等
+├── 06-cluster-self-host.yml # 平台 self-host 自托管的部分
+└── 11-reset-reset.yml # 移除集群
+```
+
+- 00-default-ssh-config.yml
+
+该 playbook 用于配置堡垒机和 ssh 认证，kubespray 需要使用  public key 的方式 ssh 连接到部署节点，如果部署节点没有配置 ssh public key 的方式，可以指定 `ssh_cert_path` 这个变量的路径，将公钥添加到主机的 authorized_key 中。
+
+```yaml
+---
+- hosts: bastion[0]
+  gather_facts: False
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: bastion-ssh-config, tags: ["localhost", "bastion"] }
+
+- hosts: k8s_cluster:etcd
+  gather_facts: False
+  tasks:
+    - name: Setting up ssh public key authentication
+      authorized_key: "user={{ ansible_user }} key={{ lookup('file', '{{ ssh_cert_path }}') }}"
+  tags: ssh-config
+  when: ssh_cert_path is defined
+```
+
+- 01-cluster-bootstrap-os.yml
+
+这个 playbook 用于初始化部署节点 OS、安装一些依赖的 rpm/deb 包、安装容器运行时、下载二进制文件等
+
+```yaml
+---
+- name: Gather facts
+  import_playbook: ../facts.yml
+
+- hosts: k8s_cluster:etcd
+  strategy: linear
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  gather_facts: false
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: bootstrap-os, tags: bootstrap-os}
+
+- hosts: k8s_cluster:etcd
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes/preinstall, tags: preinstall }
+    - { role: "container-engine", tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: download, tags: download, when: "not skip_downloads" }
+```
+
+- 02-cluster-etcd.yml
+
+这个主要是部署 etcd 集群和分发 etcd 集群的证书到集群节点。
+
+```yaml
+---
+- name: Gather facts
+  import_playbook: ../facts.yml
+
+- hosts: etcd
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - role: etcd
+      tags: etcd
+      vars:
+        etcd_cluster_setup: true
+        etcd_events_cluster_setup: "{{ etcd_events_cluster_enabled }}"
+      when: not etcd_kubeadm_enabled| default(false)
+
+- hosts: k8s_cluster
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - role: etcd
+      tags: etcd
+      vars:
+        etcd_cluster_setup: false
+        etcd_events_cluster_setup: false
+      when: not etcd_kubeadm_enabled| default(false)
+```
+
+- 03-cluster-kubernetes.yml
+
+这个主要是部署 kubernetes 集群，虽然这里的 roles 很多，但并没有做过多的拆分，个人还是觉着这部分可以作为一个整体。
+
+```yaml
+---
+- name: Gather facts
+  import_playbook: ../facts.yml
+
+- hosts: k8s_cluster
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes/node, tags: node }
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes/control-plane, tags: master }
+    - { role: kubernetes/client, tags: client }
+    - { role: kubernetes-apps/cluster_roles, tags: cluster-roles }
+
+- hosts: k8s_cluster
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes/kubeadm, tags: kubeadm}
+    - { role: kubernetes/node-label, tags: node-label }
+```
+
+- 04-cluster-network.yml
+
+这个主要是部署网络插件
+
+```yaml
+---
+- name: Gather facts
+  import_playbook: ../facts.yml
+
+- hosts: k8s_cluster
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: network_plugin, tags: network }
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes-apps/network_plugin, tags: network }
+    - { role: kubernetes-apps/policy_controller, tags: policy-controller }
+```
+
+- 05-cluster-apps.yml
+
+这个主要是部署一些 addons 插件，必须 coredns, ingress-controller，以及一些外置的 provisioner 等。
+
+```yaml
+---
+- name: Gather facts
+  import_playbook: ../facts.yml
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes-apps/external_cloud_controller, tags: external-cloud-controller }
+    - { role: kubernetes-apps/ingress_controller, tags: ingress-controller }
+    - { role: kubernetes-apps/external_provisioner, tags: external-provisioner }
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: kubernetes-apps, tags: apps }
+```
+
+拆分的时候可以根据自己的实际情况去除一些不必要的 roles，比如 `calico_rr` , `win_nodes` ，我们的产品本身就不支持 calico 路由反射器、也不支持 windows 节点，因此直接将这两部分给去除了，这样也能避免去执行这些 task 的判断，能节省一定的时间。
+
+```yaml
+- hosts: calico_rr
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: network_plugin/calico/rr, tags: ['network', 'calico_rr'] }
+
+- hosts: kube_control_plane[0]
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: win_nodes/kubernetes_patch, tags: ["master", "win_nodes"] }
+```
+
