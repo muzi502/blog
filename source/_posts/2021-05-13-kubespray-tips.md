@@ -677,8 +677,8 @@ playbooks
   tasks:
     - name: Setting up ssh public key authentication
       authorized_key: "user={{ ansible_user }} key={{ lookup('file', '{{ ssh_cert_path }}') }}"
+      when: ssh_cert_path is defined
   tags: ssh-config
-  when: ssh_cert_path is defined
 ```
 
 - 01-cluster-bootstrap-os.yml
