@@ -96,7 +96,7 @@ debian:
   - debian-builder
 
 debian-buster:
-  - docker-ce=5:19.03.15~3-0~debian-stretch
+  - docker-ce=5:19.03.15~3-0~debian-buster
 
 ubuntu:
   - ubuntu-dev-tools
