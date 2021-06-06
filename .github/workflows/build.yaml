@@ -1,0 +1,51 @@
+name: Build hexo website
+on: push
+jobs:
+  hexo-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone blog source repository
+        uses: actions/checkout@v2
+        with:
+          path: hexo
+
+      - name: Checkout blog web site repo
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN_GITHUB }}
+          fetch-depth: 0
+          repository: ${{ github.repository_owner }}/blog.k8s.li
+          path: site
+
+      - name: Config git user and user.email
+        run: |
+          cd ${GITHUB_WORKSPACE}/site && git config user.name github-actions
+          cd ${GITHUB_WORKSPACE}/site && git config user.email github-actions@github.com
+
+      - name: Init hexo env
+        run: |
+          sudo apt install rename -y -qq
+          sudo yarn global add hexo-cli
+          cd ${GITHUB_WORKSPACE}/hexo && yarn install
+
+      - name: Hexo build
+        run: |
+          cd ${GITHUB_WORKSPACE}/hexo/source/_posts && rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
+          cd ${GITHUB_WORKSPACE}/hexo && hexo clean && hexo g
+          cd ${GITHUB_WORKSPACE}/hexo && git checkout .
+          find ${GITHUB_WORKSPACE}/hexo/public -name '*.html' -type f -print0 | xargs -0 sed -i '/^[[:space:]]*$/d'
+          sed -i '/muzi.disqus.com/d' ${GITHUB_WORKSPACE}/hexo/public/index.html
+
+      - name: Update repo
+        run: |
+          cp -rf ${GITHUB_WORKSPACE}/hexo/public/* ${GITHUB_WORKSPACE}/site
+          cd ${GITHUB_WORKSPACE}/site && git add . && git commit -am "Auto build by GitHub Actions $(date)"
+          cd ${GITHUB_WORKSPACE}/site && git push origin -f
+
+  update-site:
+    needs: hexo-build
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: Update website
+        run: |
+          cd /var/www/blog.k8s.li && sudo git fetch --all && sudo git reset --hard origin/master
