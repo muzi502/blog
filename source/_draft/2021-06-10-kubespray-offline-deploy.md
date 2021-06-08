@@ -12,9 +12,9 @@ comment: true
 
 ---
 
-## 私有化交付
+## 离线部署
 
-总体来讲 kubernetes 集群部署大致需要依赖如下三种在线的资源
+总体来讲使用 kubespray 来部署 kubernetes 集群大致需要依赖如下三种在线的资源
 
 - 系统 OS 的 rpm/deb 包：如 docker-ce、containerd、ipvsadm 等；
 - 二进制文件：如 kubelet、kubectl、kubeadm、helm、GPU 驱动等；
