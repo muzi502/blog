@@ -1,7 +1,7 @@
 ---
 title: 云原生 PaaS 产品发布&部署方案
 date: 2021-06-01
-updated: 2021-06-01
+updated: 2021-06-10
 slug:
 categories: 技术
 tag:
@@ -78,7 +78,7 @@ Kubernetes 集群部署采用的是 Kubernetes 社区的 [Kubespray](https://git
 
 我们对 Kubespray 进行了二次开发，加入了离线部署需要适配的内容，比如配置系统 OS 的 yum/apt 的源为 offline-resources 服务所提供的源；将镜像仓库的域名 CA 证书在节点进行信任；将集群部署拆分成若干个子步骤；一些平台自身 self-host 特性等。
 
-同时我们又对 Kubespray 进行容器化封装，在部署的时候会使用脚本调用 nerdctl CLI 工具来运行 Kubespray 容器，只需要传入集群节点 inventory 文件和一个集群配置文件就能一键完成 Kubernetes 集群部署。集群部署完成之后会将集群的一些信息如镜像仓库的域名、CA 证书、负载均衡 VIP 等信息保存为一个 system-ino 的 configmap 为后续的平台部署使用。
+同时我们又对 Kubespray 进行容器化封装，在部署的时候会使用脚本调用 nerdctl CLI 工具来运行 Kubespray 容器，只需要传入集群节点 inventory 文件和一个集群配置文件就能一键完成 Kubernetes 集群部署。集群部署完成之后会将集群的一些信息如镜像仓库的域名、CA 证书、负载均衡 VIP 等信息保存为一个 system-info 的 configmap 为后续的平台部署使用。
 
 ### 平台组件部署
 
@@ -383,3 +383,5 @@ for chart in $(git diff --name-only --diff-filter=AM --ignore-space-at-eol --ign
 ```
 
 对于一些 OEM 项目，我们会基于产品版本的分支创建一个与该 OEM 产品相对应的发布分支，如 `release-2.10/muzi502`，即代表 muzi502 这个客户使用的产品版本是基于 2.10 版本的。在这个分支上我们基于上述步骤进行 OEM 补丁包的发布。
+
+
