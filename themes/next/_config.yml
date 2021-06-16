@@ -122,7 +122,7 @@ scheme: Gemini
 menu:
   Home: / || desktop
   Books: /booklist.html || book
-  Kindle: https://kindle.502.li || book
+  Kindle: https://kindle.k8s.li || book
   Friend: /link/   || link
   About: /about.html || user-circle-o
 
@@ -182,7 +182,7 @@ social:
   E-Mail: mailto:blog@502.li || envelope
   Twitter: https://twitter.com/muzi_ii || twitter
   Telegram: https://t.me/muzi_ii || telegram
-  Kindle: https://kindle.502.li || book
+  Kindle: https://kindle.k8s.li || book
   Channel: https://tg.k8s.li || telegram
   RSS: /atom.xml || rss
 
@@ -199,7 +199,7 @@ links_settings:
   layout: inline
 
 links:
-#  kindle: https://kindle.502.li
+#  kindle: https://kindle.k8s.li
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).

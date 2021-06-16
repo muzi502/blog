@@ -55,7 +55,7 @@ acme.sh脚本从 letsencrypt 可以生成免费的证书
 server {
         listen 80;
         listen [::]:80;
-        server_name k8s.502.li;
+        server_name k8s.k8s.li;
         set $base /var/www/k8s;
         root $base/;
 }

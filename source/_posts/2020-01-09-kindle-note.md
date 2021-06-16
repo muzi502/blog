@@ -10,11 +10,11 @@ copyright: true
 comment: true
 ---
 
-今儿水一篇博客😋，另外分享一下自己的 kindle 标注 [kindle.502.li](https://kindle.502.li/)
+今儿水一篇博客😋，另外分享一下自己的 kindle 标注 [kindle.k8s.li](https://kindle.k8s.li/)
 
 ## muzi’s kindle note
 
-最近决定把 kindle 上的标注捣鼓出来分享在博客上，整理了一下折腾的过程。笔记放在了 GitHub page 上并添加了自己的二级域名 [kindle.502.li](https://kindle.502.li) ，一般来讲每天都会更新，因为每天晚上都会捧着 kindle 看书😂，kindle 已经陪着我度过了无数个不眠之夜，从我 kindle 标注的时间来看，经常会有凌晨两单点的标注，那天想必也失眠了吧。
+最近决定把 kindle 上的标注捣鼓出来分享在博客上，整理了一下折腾的过程。笔记放在了 GitHub page 上并添加了自己的二级域名 [kindle.k8s.li](https://kindle.k8s.li) ，一般来讲每天都会更新，因为每天晚上都会捧着 kindle 看书😂，kindle 已经陪着我度过了无数个不眠之夜，从我 kindle 标注的时间来看，经常会有凌晨两单点的标注，那天想必也失眠了吧。
 
 ## kindle 标注
 

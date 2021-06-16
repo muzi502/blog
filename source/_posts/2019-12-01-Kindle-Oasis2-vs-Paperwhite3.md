@@ -12,9 +12,9 @@ copyright: true
 comment: true
 ---
 
-## kindle.502.li
+## kindle.k8s.li
 
-- 2020-03-01 更新：[kindle.502.li](https://kindle.502.li)
+- 2020-03-01 更新：[kindle.k8s.li](https://kindle.k8s.li)
 
 ![](https://p.k8s.li/20200229223949589.png)
 

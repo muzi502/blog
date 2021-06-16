@@ -95,7 +95,7 @@ webp server 顾名思义就是 webp 服务器啦，用于将网站里的图片�
 server {
         listen 80;
         listen [::]:80;
-        server_name  blog.502.li;
+        server_name  blog.k8s.li;
         set $base /var/www/hexo/public;
         root $base/;
         location / {
@@ -418,7 +418,7 @@ src				dist		num
 
 ## 实际效果
 
-为了做个对比，咱使用  `hexo.502.li` 这个域名为对照组，即输出源文件，使用 `blog.502.li` 这个域名为实验组加上 webp server 来测试，各位读者也可以分别访问这两个域名来实际体验之间的差别，肉眼可见😂。
+为了做个对比，咱使用  `hexo.k8s.li` 这个域名为对照组，即输出源文件，使用 `blog.k8s.li` 这个域名为实验组加上 webp server 来测试，各位读者也可以分别访问这两个域名来实际体验之间的差别，肉眼可见😂。
 
 ### no webps
 
@@ -436,8 +436,8 @@ src				dist		num
 
 - `https://blog.k8s.li/2020-Lunar-New-Year.html`
 - `https://blog.k8s.li/wd-hc310-dc-hdd.html`
-- `https://hexo.502.li/2020-Lunar-New-Year.html`
-- `https://hexo.502.li/wd-hc310-dc-hdd.html`
+- `https://hexo.k8s.li/2020-Lunar-New-Year.html`
+- `https://hexo.k8s.li/wd-hc310-dc-hdd.html`
 
 ## 推荐阅读
 

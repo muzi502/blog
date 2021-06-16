@@ -1605,7 +1605,7 @@ stress: info: [18174] successful run completed in 3s
 
 #### nginx
 
-nginx，除了建站當 Web 服務器，是咱在 openwrt 上裝的，目的是為了擺脫 ip 的辦定限制。因為有些設備通過域名來訪問，更換網絡環境，比如搬家之後只需要維修改一下域名解析即可。比如咱使用 X.lo.502.li 作為三級子域名分配給本地內網機器用。
+nginx，除了建站當 Web 服務器，是咱在 openwrt 上裝的，目的是為了擺脫 ip 的辦定限制。因為有些設備通過域名來訪問，更換網絡環境，比如搬家之後只需要維修改一下域名解析即可。比如咱使用 X.lo.k8s.li 作為三級子域名分配給本地內網機器用。
 
 #### ffmpeg
 
@@ -1764,7 +1764,7 @@ lsmod | grep bbr
 ```shell
 #!/bin/bash
 # for: bulk merge bilibili UWP download file *.flv
-# by: blog.502.li
+# by: blog.k8s.li
 # date: 2019-01-12
 # 将该脚放到 UWP 客户端下载缓存主目录下执行，安装 ffmpeg、jq
 

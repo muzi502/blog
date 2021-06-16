@@ -296,7 +296,7 @@ file '/path/3.flv'
 ```bash
 #!/bin/bash
 # for: bulk merge bilibili UWP download file *.flv
-# by: muzi502 blog.502.li
+# by: muzi502 blog.k8s.li
 # date: 2019-01-12
 # 执行环境需要安装 ffmpeg、jq
 
