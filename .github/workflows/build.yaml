@@ -31,6 +31,7 @@ jobs:
       - name: Hexo build
         run: |
           cd ${GITHUB_WORKSPACE}/hexo/source/_posts && rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
+          sed -i "s#<br>##g" ${GITHUB_WORKSPACE}/hexo/source/booklist.md
           cd ${GITHUB_WORKSPACE}/hexo && hexo clean && hexo g
           cd ${GITHUB_WORKSPACE}/hexo && git checkout .
           find ${GITHUB_WORKSPACE}/hexo/public -name '*.html' -type f -print0 | xargs -0 sed -i '/^[[:space:]]*$/d'
