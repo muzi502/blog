@@ -1,6 +1,6 @@
 ---
 title: 云原生 PaaS 产品发布&部署方案
-date: 2021-06-01
+date: 2021-06-10
 updated: 2021-06-10
 slug:
 categories: 技术
@@ -383,5 +383,4 @@ for chart in $(git diff --name-only --diff-filter=AM --ignore-space-at-eol --ign
 ```
 
 对于一些 OEM 项目，我们会基于产品版本的分支创建一个与该 OEM 产品相对应的发布分支，如 `release-2.10/muzi502`，即代表 muzi502 这个客户使用的产品版本是基于 2.10 版本的。在这个分支上我们基于上述步骤进行 OEM 补丁包的发布。
-
 
