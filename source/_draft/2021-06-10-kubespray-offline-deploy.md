@@ -11,6 +11,8 @@ copyright: true
 comment: true
 ---
 
+## 私有化部署
+
 总体来讲使用 kubespray 来部署 kubernetes 集群大致需要依赖如下三种在线的资源
 
 - 系统 OS 的 rpm/deb 包：如 docker-ce、containerd、ipvsadm 等；
@@ -19,29 +21,25 @@ comment: true
 
 在安装包发布的时候，我们需要将这三种资源打包成离线安装包，然后在在集群部署的时候部署一个 nginx 服务用于提供一些 rpm/deb 包和一些二进制文件的下载，以及部署一个 registry 镜像仓库服务用于提供组件镜像的下载。
 
-## 发布
-
-### 生成文件/镜像列表
-
 ### 构建离线资源
 
 - 系统 OS 的 rpm/deb 包
 - 二进制文件
 - 组件容器镜像
 
-### 打包安装包
+## 打包发布
 
-## 打包
 
-### Jenkins 打包
 
 ### GitHub Actions 打包
 
+## 私有化部署
 
+这两个服务比较特殊，因此我们需要一台机器专门用于部署他们，部署的方式相对来讲也比较简单，使用 docker/nerdctl compose 将他们运行起来。
 
-## 部署
+### offline-resource 服务
 
-这两个服务比较特殊，因此我们需要一台机器专门用于部署他们，部署的方式相对来讲也比较简单，使用 docker/nerdctl compose 将他们运行起来。考虑到
+### kubernetes 集群
 
 ## 参考
 
