@@ -34,7 +34,6 @@ jobs:
           sed -i "s#<br>##g" ${GITHUB_WORKSPACE}/hexo/source/booklist.md
           cd ${GITHUB_WORKSPACE}/hexo && hexo clean && hexo g
           cd ${GITHUB_WORKSPACE}/hexo && git checkout .
-          find ${GITHUB_WORKSPACE}/hexo/public -name '*.html' -type f -print0 | xargs -0 sed -i '/^[[:space:]]*$/d'
           sed -i '/muzi.disqus.com/d' ${GITHUB_WORKSPACE}/hexo/public/index.html
 
       - name: Update repo

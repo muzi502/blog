@@ -1,5 +1,5 @@
 ---
-title: 搬砖常用的 Shell 片段记录
+title: 搬砖常用的 shell 片段记录
 date: 2021-07-20
 updated: 2021-07-20
 slug:
@@ -16,13 +16,14 @@ comment: true
 
 ## Bash
 
-- {} 展开
+### {} 展开
 
 ```bash
 $ echo {hack,build}
+hack build
 ```
 
-- 变量替换
+### 变量替换
 
 > http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other
 >
@@ -41,13 +42,13 @@ $ image="library/nginx:1.19"
 
 $ echo ${image} | awk -F ':' '{print $2}' 方式
 
-# 可以直接使用 bash 内置的变量替换功能，截取特性字符串
+# 可以直接使用 bash 内置的变量替换功能，截取特定字符串
 $ image_name=${image%%:*}
 $ image_tag=${image##*:}
 $ image_repo=${image%%/*}
 ```
 
-- 变量配置方式
+### 变量配置方式
 
 | 变量配置方式     | str 没有配置       | str 为空字符串     | str 已配置非为空字符串 |
 | ---------------- | ------------------ | ------------------ | ---------------------- |
@@ -60,7 +61,7 @@ $ image_repo=${image%%/*}
 | var=${str?expr}  | expr 输出至 stderr | var=               | var=$str               |
 | var=${str:?expr} | expr 输出至 stderr | expr 输出至 stderr | var=$str               |
 
-- 判断字符串中是否包含子串
+### 判断字符串中是否包含子串
 
 ```bash
 # 通过 ** 匹配
@@ -76,22 +77,111 @@ fi
 
 ## install
 
-- 安装 docker-ce
+### 安装 docker-ce
 
 ```bash
 $ curl -fsSL https://get.docker.com -o get-docker.sh
 $ bash get-docker.sh --mirror Aliyun
 ```
 
+另外可通过传入 DRY_RUN 的参数来输出际会执行的内容，这个输出的内容可以用来配置 docker-ce 的源，而不安装 docker。
+
+```bash
+$ DRY_RUN=1 sh ./get-docker.sh --mirror Aliyun > install.sh
+
+# Executing docker install script, commit: 7cae5f8b0decc17d6571f9f52eb840fbc13b2737
+apt-get update -qq >/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq apt-transport-https ca-certificates curl >/dev/null
+curl -fsSL "https://mirrors.aliyun.com/docker-ce/linux/debian/gpg" | apt-key add -qq - >/dev/null
+echo "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
+apt-get update -qq >/dev/null
+apt-get install -y -qq --no-install-recommends docker-ce >/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-ce-rootless-extras >/dev/null
+```
+
+### 安装 helm
+
+```bash
+$ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+```
+
+### 安装 docker-compose
+
+```bash
+$ curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+$ chmod +x /usr/local/bin/docker-compose
+```
+
 ## sed
 
-- 匹配行的下一行插入
+### 匹配行的下一行插入
 
 ```bash
 $ sed -i "/kube-node/a ${ip}" test
 ```
 
-- 奇偶行合并
+### 输出两个匹配行之间的内容
+
+在不使用 yq 或者 jq 的情况下，需要输出 `downloads` 列表中的所有内容，即 `download:` 和 `download_defaults: `之间的内容
+
+- [download.yml](https://github.com/kubernetes-sigs/kubespray/blob/master/roles/download/defaults/main.yml)
+
+```yaml
+dashboard_image_repo: "{{ docker_image_repo }}/kubernetesui/dashboard-{{ image_arch }}"
+dashboard_image_tag: "v2.2.0"
+dashboard_metrics_scraper_repo: "{{ docker_image_repo }}/kubernetesui/metrics-scraper"
+dashboard_metrics_scraper_tag: "v1.0.6"
+
+downloads:
+  dashboard:
+    enabled: "{{ dashboard_enabled }}"
+    container: true
+    repo: "{{ dashboard_image_repo }}"
+    tag: "{{ dashboard_image_tag }}"
+    sha256: "{{ dashboard_digest_checksum|default(None) }}"
+    groups:
+    - kube_control_plane
+
+  dashboard_metrics_scrapper:
+    enabled: "{{ dashboard_enabled }}"
+    container: true
+    repo: "{{ dashboard_metrics_scraper_repo }}"
+    tag: "{{ dashboard_metrics_scraper_tag }}"
+    sha256: "{{ dashboard_digest_checksum|default(None) }}"
+    groups:
+    - kube_control_plane
+
+download_defaults:
+  container: false
+  file: false
+  repo: None
+  tag: None
+  enabled: false
+  dest: None
+  version: None
+  url: None
+```
+
+可使用 sed 的方式进行匹配输出 `sed -n '/$VAR1/,/$VAR2/p'`
+
+```bash
+$ sed -n '/^downloads:/,/download_defaults:/p'
+```
+
+### 奇偶行合并
+
+接着上一个问题，通过 `sed -n "s/repo: //p;s/tag: //p"` 匹配出镜像的 repo 和 tag，但一个完整的镜像的格式是 `repo:tag`，因此需要将 repo 和 tag 行进行合并。
+
+```yaml
+    repo: "{{ dashboard_image_repo }}"
+    tag: "{{ dashboard_image_tag }}"
+
+    repo: "{{ dashboard_metrics_scraper_repo }}"
+    tag: "{{ dashboard_metrics_scraper_tag }}"
+```
+
+可使用 `sed 'N;s#\n# #g'` 进行奇偶行合并
 
 ```bash
 sed -n '/^downloads:/,/download_defaults:/p' ${REPO_ROOT_DIR}/${DOWNLOAD_YML} \
@@ -99,9 +189,15 @@ sed -n '/^downloads:/,/download_defaults:/p' ${REPO_ROOT_DIR}/${DOWNLOAD_YML} \
 | sed 'N;s#\n# #g' | tr ' ' ':' | sed 's/^/echo /g' >> ${TEMP_DIR}/generate.sh
 ```
 
+### 去除换行符
+
+```yaml
+$ sed -i ':a;N;$!ba;s/\n/ /g'
+```
+
 ##  grep/egrep
 
-- 统计匹配行行数
+### 统计匹配行行数
 
 ```bash
 $ lsof -i | grep sshd | wc -l
@@ -110,10 +206,39 @@ $ lsof -i | grep sshd | wc -l
 $ lsof -i | grep -c sshd
 ```
 
-- 匹配 IPv4 地址
+### 匹配 IPv4 地址
 
 ```bash
 $ egrep --only-matching -E '([[:digit:]]{1,3}\.){3}[[:digit:]]{1,3}'
+```
+
+## docker
+
+### 将镜像构建到本地目录
+
+和 `FROM scratch`搭配起来使用，就可以将构建产物 build 到本地
+
+```bash
+$ DOCKER_BUILDKIT=1 docker build -o type=local,dest=$PWD -f Dockerfile .
+```
+
+比如使用 Dockerfile 构建 skopeo 静态链接文件
+
+- Dockerfile
+
+```dockerfile
+FROM nixos/nix:2.3.11 as builder
+WORKDIR /build
+COPY . .
+RUN nix build -f nix
+FROM scratch
+COPY --from=builder /build/result/bin/skopeo /skopeo
+```
+
+- build
+
+```bash
+DOCKER_BUILDKIT=1 docker build -o type=local,dest=$PWD .
 ```
 
 ## kubectl
@@ -177,7 +302,7 @@ kubectl top pods --all-namespaces | sort --reverse --key 4 --numeric
 
 ## yq/jq
 
-- yq 根据某个 key 获取某个 value
+### yq 根据某个 key 获取某个 value
 
 ```bash
 $ cat cat > images_origin.yaml << EOF
@@ -208,7 +333,7 @@ EOF
 $ yq eval '.[]|select(.dest=="library/chartmuseum") | .src' images_origin.yaml
 ```
 
-- jq 遍历 json 数组/列表元素
+### jq 遍历 json 数组/列表元素
 
 ```bash
 for pmd_name in $(kubectl ${KUBECONFIG_ARG} get cpm --no-headers | cut -d ' ' -f1); do
@@ -229,18 +354,9 @@ for pmd_name in $(kubectl ${KUBECONFIG_ARG} get cpm --no-headers | cut -d ' ' -f
 done
 ```
 
-## network
-
-- 获取本机内网 IP
-
-```bash
-$ ip r get 1 | awk 'NR==1 {print $NF}'
-$ ip r get 1 | sed "s/uid.*//g" | awk 'NR==1 {print $NF}'
-```
-
 ## other
 
-- 判断两个版本号大小
+### 判断两个版本号大小
 
 ```bash
 if printf "%s\\n%s\\n" v1.21 ${kube_version%.*} | sort --check=quiet --version-sort; then
@@ -248,16 +364,23 @@ if printf "%s\\n%s\\n" v1.21 ${kube_version%.*} | sort --check=quiet --version-s
 fi
 ```
 
-- 查看 x509 证书
+### 查看 x509 证书
 
 ```bash
 $ openssl x509 -noout -text -in ca.cert
 ```
 
-- 获取文件大小
+### 获取文件大小
 
 ```bash
 $ stat -c '%s' file
+```
+
+### 获取本机 IP
+
+```bash
+$ ip r get 1 | awk 'NR==1 {print $NF}'
+$ ip r get 1 | sed "s/uid.*//g" | awk 'NR==1 {print $NF}'
 ```
 
 ## function
@@ -407,8 +530,11 @@ $ cp domain.crt /usr/local/share/ca-certificates/domain.crt
 $ update-ca-certificates
 ```
 
+## 未完待续
+
 ## 参考
 
 - [pure-bash-bible](https://github.com/dylanaraps/pure-bash-bible)
-
 - [鸟哥 Linux 私房菜](http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other)
+- [jq 常用操作](https://mozillazg.com/2018/01/jq-use-examples-cookbook.html)
+- [YAML处理工具yq之读写篇](https://lyyao09.github.io/2019/08/02/tools/The-usage-of-yq-read-write/)
