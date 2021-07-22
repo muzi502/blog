@@ -70,7 +70,7 @@ if [[ "${var}" == *"${sub_string}"* ]]; then
 fi
 
 # 通过 bash 内置的 =~ 判断
-if [[ "${sub_string}" == "${var}" ]]; then
+if [[ "${sub_string}" =~ "${var}" ]]; then
     printf '%s\n' "sub_string is in var."
 fi
 ```
@@ -461,6 +461,12 @@ running_time
 ```
 
 ## OS
+
+- dpkg 获取系统已经安装的包
+
+```bash
+$ dpkg-query -W -f='${binary:Package}=${Version}\n'
+```
 
 - 获取 CPU 架构
 
