@@ -418,6 +418,39 @@ match_ip() {
 }
 ```
 
+### ssh 登录配置
+
+```bash
+Host *
+	  StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+    ForwardAgent yes
+    ServerAliveInterval 10
+    ServerAliveCountMax 10000
+    TCPKeepAlive no
+    ControlMaster auto
+    ControlPath ~/.ssh/session/%h-%p-%r
+    ControlPersist 12h
+
+Host nas
+    Hostname 172.20.0.10
+    Port 22
+    User root
+    IdentityFile ~/.ssh/local-node.pem
+
+Host 172.20.0.*
+    Port 22
+    User root
+    IdentityFile ~/.ssh/local-node.pem
+
+Host *github.com
+    Hostname github.com
+    User git
+    IdentityFile ~/.ssh/github_muzi.pem
+```
+
+- `StrictHostKeyChecking no`：略过 HostKey 检查，避免出现 [How can I avoid SSH's host verification for known hosts?](https://superuser.com/questions/125324/how-can-i-avoid-sshs-host-verification-for-known-hosts)
+
 ### ssh 密码登录
 
 日常工作中常常需要 ssh 登录到机房的一些虚拟机上，又因为不同的机器密码不同，遂使用该脚本 ssh 登录到节点上。
