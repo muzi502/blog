@@ -569,6 +569,37 @@ $ cp domain.crt /usr/local/share/ca-certificates/domain.crt
 $ update-ca-certificates
 ```
 
+### Git 操作
+
+#### 修改历史 commit 信息
+
+```bash
+#!/bin/sh
+
+git filter-branch --env-filter '
+OLD_EMAIL="github-actions@github.com"
+CORRECT_NAME="github-actions"
+CORRECT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+```
+
+#### 获取当前 repo 的最新 git tag
+
+```bash
+$ git describe --tags --always
+```
+
 ## 未完待续
 
 ## 参考
