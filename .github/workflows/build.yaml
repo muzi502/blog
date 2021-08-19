@@ -20,7 +20,7 @@ jobs:
       - name: Config git user and user.email
         run: |
           cd ${GITHUB_WORKSPACE}/site && git config user.name github-actions
-          cd ${GITHUB_WORKSPACE}/site && git config user.email github-actions@github.com
+          cd ${GITHUB_WORKSPACE}/site && git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Init hexo env
         run: |
