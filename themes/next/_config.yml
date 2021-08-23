@@ -179,7 +179,7 @@ site_state: true
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   GitHub: https://github.com/muzi502 || github
-  E-Mail: mailto:blog@502.li || envelope
+  E-Mail: mailto:muzi502.li@gmail.com || envelope
   Twitter: https://twitter.com/muzi_ii || twitter
   Telegram: https://t.me/muzi_ii || telegram
   Kindle: https://kindle.k8s.li || book

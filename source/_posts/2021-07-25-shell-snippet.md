@@ -304,23 +304,7 @@ kubectl top pods --all-namespaces | sort --reverse --key 4 --numeric
 
 ### yq 根据某个 key 获取某个 value
 
-```bash
-$ cat cat > images_origin.yaml << EOF
----
-# kubeadm core images
-- src: k8s.gcr.io/kube-apiserver
-  dest: library/kube-apiserver
-- src: k8s.gcr.io/kube-controller-manager
-  dest: library/kube-controller-manager
-- src: k8s.gcr.io/kube-proxy
-  dest: library/kube-proxy
-- src: k8s.gcr.io/kube-scheduler
-  dest: library/kube-scheduler
-- src: k8s.gcr.io/coredns
-  dest: library/coredns
-- src: k8s.gcr.io/pause
-  dest: library/pause
-
+```yaml
 # docker registry for offline resources
 - src: docker.io/library/registry
   dest: library/registry
@@ -328,9 +312,34 @@ $ cat cat > images_origin.yaml << EOF
 # helm chartmuseum for offline resources
 - src: ghcr.io/helm/chartmuseum
   dest: library/chartmuseum
-EOF
+```
 
+```bash
 $ yq eval '.[]|select(.dest=="library/chartmuseum") | .src' images_origin.yaml
+```
+
+
+
+### 替换数组中的元素
+
+```yaml
+version: '3.1'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.20-alpine
+    volumes:
+      - ./resources/nginx:/usr/share/nginx
+    ports:
+      - 443:443
+      - 5000:5000
+      - 8080:8080
+```
+
+```bash
+  nginx_http_port="${NGINX_HTTP_PORT}:8080" yq eval --inplace '.services.nginx.ports[0] = strenv(nginx_http_port)' ${COMPOSE_YAML_FILE}
+  registry_https_port="${REGISTRY_HTTPS_PORT}:443" yq eval --inplace '.services.nginx.ports[1] = strenv(registry_https_port)' ${COMPOSE_YAML_FILE}
+  registry_push_port="${REGISTRY_PUSH_PORT}:5000" yq eval --inplace '.services.nginx.ports[2] = strenv(registry_push_port)' ${COMPOSE_YAML_FILE}
 ```
 
 ### jq 遍历 json 数组/列表元素
@@ -598,6 +607,32 @@ fi
 
 ```bash
 $ git describe --tags --always
+```
+
+#### 删除 remote repo 中的 tag
+
+```bash
+$ git push --delete origin tag_name
+# 删除所有
+$ git tag -l | xargs -L1 -I {} git push --delete origin {}
+```
+
+## govc
+
+- 批量还原快照
+
+```bash
+#!/usr/bin/env bash
+
+: ${SP_NAME:="init"}
+: ${NODES:="kube-control-01 kube-control-02 kube-control-03 kube-node-01"}
+
+for node in ${NODES}; do
+  if govc snapshot.revert -vm ${node} ${SP_NAME}; then
+    echo "${node} snapshot revert successfully"
+  fi
+  govc vm.info ${node} | grep -q poweredOn || govc vm.power -on ${node}
+done
 ```
 
 ## 未完待续

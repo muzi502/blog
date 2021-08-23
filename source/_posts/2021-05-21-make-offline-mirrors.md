@@ -201,10 +201,9 @@ RUN yum install -q -y $BUILD_TOOLS \
     && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
     && yum makecache && yum update -y -q
 
-# 需要安装 yq 和 jq 这两个工具来处理 packages.yaml 配置文件
+# 需要安装 yq 个工具来处理 packages.yaml 配置文件
 RUN curl -sL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.3/yq_linux_amd64 \
     && chmod a+x /usr/local/bin/yq \
-    && curl -sL -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 \
     && chmod a+x /usr/local/bin/jq
 
 # 解析 packages.yml 配置文件，生成所需要的 packages.list 文件
@@ -212,7 +211,7 @@ WORKDIR /centos/$OS_VERSION/os/$ARCH
 COPY packages.yaml packages.yaml
 
 # 使用 yq 先将 YAML 文件转换成 json 格式的内容，再使用 jq 过滤出所需要的包，输出为一个列表
-RUN yq eval packages.yaml -j | jq -r '.common[],.yum[],.centos[]' | sort -u > packages.list \
+RUN yq eval '.common[],.yum[],.centos[]' packages.yaml | sort -u > packages.list \
     && rpm -qa >> packages.list
 
 # 下载 packages.list 中的软件包，并生成 repo 索引文件
@@ -326,13 +325,11 @@ RUN apt update -y -q \
 WORKDIR /debian/${OS_VERSION}
 
 RUN curl -sL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.3/yq_linux_amd64 \
-    && chmod a+x /usr/local/bin/yq \
-    && curl -sL -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 \
-    && chmod a+x /usr/local/bin/jq
+    && chmod a+x /usr/local/bin/yq
 
 COPY packages.yaml packages.yaml
 
-RUN yq eval packages.yaml -j | jq -r '.common[],.apt[],.debian[]' | sort -u > packages.list \
+RUN yq eval '.common[],.apt[],.debian[]' packages.yaml | sort -u > packages.list \
     && dpkg --get-selections | grep -v deinstall | cut -f1 >> packages.list
 
 RUN chown -R _apt /debian/$OS_VERSION \
