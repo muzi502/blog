@@ -1,5 +1,5 @@
 ---
-title: 无网环境中如何愉快地部署 K8s 集群
+title: 无网环境中如何愉快地部署 kubernetes 集群
 date: 2021-08-24
 updated: 2021-08-24
 slug:
@@ -7,6 +7,7 @@ categories:
   - 技术
 tag:
   - k8s
+  - kubernetes
 copyright: true
 comment: true
 ---
@@ -191,8 +192,6 @@ kubectl_download_url: "{{ download_url }}/storage.googleapis.com/kubernetes-rele
 kubeadm_download_url: "{{ download_url }}/storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubeadm"
 ```
 
-在构建安装包的时候，将 download_url 变量设置为 `https://` ，在部署的时候将 `download_url` 设置为内网 文件服务器服务器的 URL，比如 `https://172.20.0.25:8080/files`。这样就可以实现文件离线资源构建和部署使用的统一，解决了维护成本。
-
 ### images
 
 一些如 kube-proxy、kube-apiserver、coredns、calico 组件镜像：
@@ -217,13 +216,11 @@ k8s.gcr.io/dns/k8s-dns-node-cache:1.17.1
 
 在私有云环境中，一般都会有镜像仓库比如 harbor 或者 docker registry 用于存放业务组件镜像或者一些其他平台依赖的镜像。在部署kubernetes 集群的时候我们可以将部署依赖的镜像导入到已经存在的镜像仓库中，或者在一个节点上部署一个镜像仓库。再加上 dockerhub 自动去年开始就加入了 pull 镜像次数的限制，如果直接使用 dockerhub 上面的镜像来部署集群，很有可能会导致拉镜像失败的问题。因此在离线部署的场景下我们需要将部署所依赖的镜像制作成离线的方式。可以像  [sealos](https://github.com/fanux/sealos) 那样使用 docker save 和 docker load 的方式，也可以像 kubekey 那样提供一个镜像列表，将镜像导入到已经存在的镜像仓库当中。
 
-## 打包/部署设计
-
-
+## 构建/部署设计
 
 上面简单梳理了一下部署 k8s 集群过程中所依赖的的在线资源，以及如何将它们制作成离线资源的一些分析。提及的部署工具各有各的优缺点，针对以下两种不同的场景可以选择不同的部署工具。
 
-如果仅仅是部署一个简单的 k8s 集群，对集群没有太多定制化的需求，那么使用 [sealos](https://github.com/fanux/sealos) 是最佳的选择，只不过它是收费的 😂。如果动手能力强的话，可以根据它的安装包的目录结构使用 GitHub action 来构建，实现起来也不是很难。
+如果仅仅是部署一个简单的 k8s 集群，对集群没有太多定制化的需求，那么使用 [sealos](https://github.com/fanux/sealos) 是最佳的选择，只不过它是收费的，[需要充值会员](https://www.sealyun.com/) 😂。如果动手能力强的话，可以根据它的安装包的目录结构使用 GitHub action 来构建安装包，实现起来也不是很难。
 
 ```bash
 $ tar -tf kube1.20.0.tar.gz
@@ -260,24 +257,28 @@ kube/images/README.md
 
 如果是对集群有特殊的要求，比如基于 Kubernetes 的 PaaS 产品，需要在部署节点安装平台本身需要的一些依赖，如存储客户端、GPU 驱动、以及适配国产化 OS 等，那么选择 [kubespray](https://github.com/kubernetes-sigs/kubespray) 比较合适，也是本文选用的方案。
 
-由于部署依赖的二进制文件和镜像大都存放在 GitHub 、dockerhub、gcr.io、quay.io 等国外的平台上，由于众所周知的网络原因，在国内下载和访问将有一定的限制。因此我们选择使用 GitHub Actions 来完成整个离线资源的构建。GitHub 托管的 runner 运行在国外的机房当中，可以很顺畅地获取构这些资源。
+由于部署依赖的二进制文件和组件镜像大都存放在 GitHub 、Docker Hub、gcr.io（Google Container Registry）、quay.io 等国外的平台上，但在国内访问这些网站是有一定的网络限制。GitHub 托管的 runner 运行在国外的机房当中，可以很顺畅地获取构这些资源。因此我们选择使用 GitHub Actions 来进行整个离线资源的构建。
 
-选择好的构建场所我们再将这些离线资源进行拆分，目的是为了实现各个离线资源之间的结偶，主要拆分成如下几个模块。
+选择好的构建场所后我们再将这些离线资源进行拆分，目的是为了实现各个离线资源之间的解耦，主要拆分成如下几个模块。
 
-| 模块             | 用途                          | 构建方式        | 运行/使用方式            |
-| ---------------- | ----------------------------- | --------------- | ------------------------ |
-| compose          | 部署 nginx 和 registry 服务   | skopeo copy     | nerdctl compose          |
-| Kubespray        | 用于部署/扩缩容 k8s 集群      | Dockerfile      | 容器或者 pod             |
-| os-tools         | 部署 compose 时的一些依赖工具 | Dockerfile 下载 | 二进制安装               |
-| os-packages      | 提供 rpm/deb 离线源           | Dockerfile      | nginx 提供 http 方式下载 |
-| kubespray-files  | 提供二进制文件依赖            | Dockerfile 下载 | nginx 提供 http 方式下载 |
-| kubespray-images | 提供组件镜像                  | skopeo sync     | registry 提供镜像下载    |
+| 模块             | Repo        | 用途                            | 运行/使用方式            |
+| ---------------- | ----------- | ------------------------------- | ------------------------ |
+| compose          | kubeplay    | 用于部署 nginx 和 registry 服务 | nerdctl compose          |
+| os-tools         | kubeplay    | 部署 compose 时的一些依赖工具   | 二进制安装               |
+| os-packages      | os-packages | 提供 rpm/deb 离线源             | nginx 提供 http 方式下载 |
+| Kubespray        | kubespray   | 用于部署/扩缩容 k8s 集群        | 容器或者 pod             |
+| kubespray-files  | kubespray   | 提供二进制文件依赖              | nginx 提供 http 方式下载 |
+| kubespray-images | kubespray   | 提供组件镜像                    | registry 提供镜像下载    |
+
+拆分完成之后，我们最终还是需要将它们组合成一个完成的离线安装包，为了减少维护成本，我们需要将每个模块的构建操作都放在 Dockerfile 中，即 All in Dockerfile 🤣。这样每个模块交付的都是一个镜像，使用 GitHub action 构建后将镜像 push 到 ghcr.io 上，最终通过一个 Dockerfile 将这些模块的镜像全部 COPY 到一个镜像当中。统一成 Dockerfile 构建的另一个好处就是支持多 CPU 体系架构，能够同时适配 amd64 和 arm64。这样也就不用再单独适配 arm64 架构了。
 
 ### compose
 
-compose 里面主要运两个服务 nginx 和 registry，这两个我们依旧是容器化以类似 docker-compose 的方式来部署，而所依赖的也只有两个镜像而已。对于镜像的构建我们使用 docker save 或者 skopeo copy 的方式来构建即可
+compose 里面主要运两个服务 nginx 和 registry。其中 nginx 服务提供 HTTP 下载的功能，部署时通过改方式下载一些 rpm/deb 以及一些二进制文件的依赖；registry 服务用户提供镜像下载的功能。这两个我们依旧是容器化以类似 docker-compose 的方式来部署，而所依赖的也只有两个镜像而已。对于镜像的构建我们使用 docker save 或者 skopeo copy 的方式来构建即可。
 
 ### os-packages
+
+关于构建离线源的详细过程可以参考我之前写的博客 《[使用 docker build 制作 yum/apt 离线源](https://blog.k8s.li/make-offline-mirrors.html)》
 
 - Dockerfile
 
@@ -309,6 +310,8 @@ COPY --from=os-centos7 /centos /centos
 ```
 
 - packages.yaml 配置文件
+
+这个是需要安装包的配置文件，可以根据平台或者客户的一些要求配置上不同的包。对于 toB 产品，建议是将一些常见的 debug 调试工具也放进入。这样在客户的环境中如果出现问题怕查的时候也不至于连个 tcpdump 都没有。尤其是在无网的环境中，如果没有这些些常用的调试工具，排查问题将会十分棘手。
 
 ```yaml
 ---
@@ -378,49 +381,503 @@ ubuntu:
 
 debian10:
   - containerd.io=1.4.6-1
+
+tools:
+  - bash-completion
+  - chrony
+  - cifs-utils
+  - curl
+  - dstat
+  - e2fsprogs
+  - ebtables
+  - expect
+  - gdb
+  - glusterfs-client
+  - htop
+  - iftop
+  - iotop
+  - ipset
+  - ipvsadm
+  - jq
+  - lsof
+  - lvm2
+  - ncdu
+  - net-tools
+  - nethogs
+  - nload
+  - ntpdate
+  - openssl
+  - pciutils
+  - psmisc
+  - rsync
+  - smartmontools
+  - socat
+  - sshpass
+  - strace
+  - sysstat
+  - tcpdump
+  - telnet
+  - tmux
 ```
 
 ### kubespray
 
+下面是关于 kubespray 的构建方式，它是我们部署集群，增加节点，删除节点，移除集群的主要工具。
+
 - kubespray BASE 镜像
 
-```
+```dockerfile
+FROM python:3 as builder
+ARG KUBE_VERSION=v1.21.3
+COPY requirements.txt requirements.txt
+COPY tests/requirements.txt tests/requirements.txt
+RUN echo 'shellcheck-py==0.7.2.1' >> requirements.txt \
+    && grep -E '^yamllint|^ansible-lint' tests/requirements.txt >> requirements.txt \
+    && pip3 install --user -r requirements.txt
 
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
+    && wget -O /root/.local/bin/kubectl -q https://dl.k8s.io/${KUBE_VERSION}/bin/linux/${ARCH}/kubectl \
+	&& chmod a+x /root/.local/bin/kubectl
+
+FROM python:3-slim
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y -qq \
+    && apt-get install -y -qq --no-install-recommends \
+        ca-certificates libssl-dev openssh-client sshpass curl gnupg2 rsync \
+        jq moreutils vim iputils-ping wget tcpdump xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /root/.local /usr/local
+WORKDIR /kubespray
 ```
 
 - kubespray 镜像
 
-```
-
+```dockerfile
+ARG BASE_IMAGE=ghcr.io/k8sli/kubespray-base
+ARG BASE_IMAGE_VERSION=latest
+FROM $BASE_IMAGE:$BASE_IMAGE_VERSION
+COPY . .
 ```
 
 - 集群部署入口 run.sh
 
 将集群部署、移除、扩缩容等操作封装成一个入口的脚本，提供外部工具调用
 
-```
+```bash
+#!/bin/bash
+TYPE=$1
+NODES=$2
 
+KUBE_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+: ${TYPE:=deploy-cluster}
+: ${ANSIBLE_FORKS:=10}
+: ${BECOME_USER:=root}
+: ${ANSIBLE_LOG_FORMAT:=yaml}
+: ${INVENTORY:=${KUBE_ROOT}/config/inventory}
+: ${ENV_FILE:=${KUBE_ROOT}/config/env.yml}
+: ${INSTALL_STEPS_FILE:=${KUBE_ROOT}/config/.install_steps}
+
+export ANSIBLE_STDOUT_CALLBACK=${ANSIBLE_LOG_FORMAT}
+export ANSIBLE_ARGS="-f ${ANSIBLE_FORKS} --become --become-user=${BECOME_USER} -i ${INVENTORY} -e @${ENV_FILE}"
+
+#
+# Set logging colors
+#
+
+NORMAL_COL=$(tput sgr0)
+RED_COL=$(tput setaf 1)
+WHITE_COL=$(tput setaf 7)
+GREEN_COL=$(tput setaf 76)
+YELLOW_COL=$(tput setaf 202)
+
+debuglog(){ printf "${WHITE_COL}%s${NORMAL_COL}\n" "$@"; }
+infolog(){ printf "${GREEN_COL}✔ %s${NORMAL_COL}\n" "$@"; }
+warnlog(){ printf "${YELLOW_COL}➜ %s${NORMAL_COL}\n" "$@"; }
+errorlog(){ printf "${RED_COL}✖ %s${NORMAL_COL}\n" "$@"; }
+
+set -eo pipefail
+
+if [[ ! -f ${INVENTORY} ]]; then
+  errorlog "${INVENTORY} file is missing, please check the inventory file is exists"
+  exit 1
+fi
+
+deploy_cluster(){
+:
+}
+
+main(){
+  case $TYPE in
+    deploy-cluster)
+      infolog "######  start deploy kubernetes cluster  ######"
+      deploy_cluster
+      infolog "######  kubernetes cluster successfully installed  ######"
+      ;;
+    remove-cluster)
+      infolog "######  start remove kubernetes cluster  ######"
+      if ansible-playbook ${ANSIBLE_ARGS} ${KUBE_ROOT}/reset.yml >/dev/stdout 2>/dev/stderr; then
+        rm -f ${INSTALL_STEP_FILE}
+        infolog "######  kubernetes cluster successfully removed ######"
+      fi
+      ;;
+    add-node)
+      check_nodename
+      infolog "######  start add worker to kubernetes cluster  ######"
+      ansible-playbook ${ANSIBLE_ARGS} --limit="${NODES}" ${KUBE_ROOT}/playbooks/10-scale-nodes.yml >/dev/stdout 2>/dev/stderr
+      ;;
+    remove-node)
+      check_nodename
+      infolog "######  start remove worker from kubernetes cluster  ######"
+      ansible-playbook ${ANSIBLE_ARGS} -e node="${NODES}" -e reset_nodes=true ${KUBE_ROOT}/remove-node.yml >/dev/stdout 2>/dev/stderr
+      ;;
+    *)
+      errorlog "unknow [TYPE] parameter: ${TYPE}"
+      ;;
+  esac
+}
+
+main "$@"
 ```
 
 - 分层部署
 
 为了能和 kubespray 上游的代码尽量保持同步和兼容，我们在这里引入分层部署的概念。即将集群部署分成若干个层次，每个层之间相互独立。然后在各个 playbook 里因此我们增加的修改。
 
+```bash
+playbooks
+├── 00-default-ssh-config.yml    # 配置 ssh 连接
+├── 01-cluster-bootstrap-os.yml  # 初始化集群节点
+├── 02-cluster-etcd.yml          # 部署 etcd 集群
+├── 03-cluster-kubernetes.yml    # 部署 k8s master 和 node
+├── 04-cluster-network.yml       # 部署 CNI 插件
+├── 05-cluster-apps.yml          # 部署一些 addon 组件如 coredns
+└── 10-scale-nodes.yml           # 增删节点
 ```
 
+```bash
+deploy_cluster(){
+  touch ${INSTALL_STEPS_FILE}
+  STEPS="00-default-ssh-config 01-cluster-bootstrap-os 02-cluster-etcd 03-cluster-kubernetes 04-cluster-network 05-cluster-apps"
+  for step in ${STEPS}; do
+    if ! grep -q "${step}" ${INSTALL_STEPS_FILE}; then
+      infolog "######  start deploy ${step}  ######"
+      if ansible-playbook ${ANSIBLE_ARGS} ${KUBE_ROOT}/playbooks/${step}.yml; then
+        echo ${step} >> ${INSTALL_STEPS_FILE}
+        infolog "######  ${step} successfully installed  ######"
+      else
+        errorlog "######  ${step} installation failed  ######"
+        exit 1
+      fi
+    else
+      warnlog "######  ${step} is already installed, so skipped...  ######"
+    fi
+  done
+}
 ```
 
 ### kubespray-files
 
-- 生成文件列表
+想要下载这些文件需要知道所依赖文件的下载地址，在 kubespray 中我们通过 greop_vars 的方式定义这些文件列表的 URL 如下：
+
+```yaml
+# Download URLs
+kubelet_download_url: "{{ download_url }}/storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubelet"
+kubectl_download_url: "{{ download_url }}/storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubectl"
+kubeadm_download_url: "{{ download_url }}/storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubeadm"
+etcd_download_url: "{{ download_url }}/github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
+cni_download_url: "{{ download_url }}/github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
+calicoctl_download_url: "{{ download_url }}/github.com/projectcalico/calicoctl/releases/download/{{ calico_ctl_version }}/calicoctl-linux-{{ image_arch }}"
+calico_crds_download_url: "{{ download_url }}/github.com/projectcalico/calico/archive/{{ calico_version }}.tar.gz"
+crictl_download_url: "{{ download_url }}/github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+helm_download_url: "{{ download_url }}/get.helm.sh/helm-{{ helm_version }}-linux-{{ image_arch }}.tar.gz"
+nerdctl_download_url: "{{ download_url }}/github.com/containerd/nerdctl/releases/download/v{{ nerdctl_version }}/nerdctl-{{ nerdctl_version }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+patched_kubeadm_download_url: "{{ download_url }}/github.com/k8sli/kubernetes/releases/download/{{ kubeadm_patch_version }}/kubeadm-linux-{{ image_arch }}"
+```
+
+在构建安装包的时候，将 download_url 变量设置为 `https://` ，在部署的时候将 `download_url` 设置为内网 文件服务器服务器的 URL，比如 `https://172.20.0.25:8080/files`。这样就可以实现文件离线资源构建和部署使用的统一，解决了维护成本。
+
+- 生成文件列表和镜像列表
+
+我们根据上面 group_vars 中定义的版本号和一些参数，使用脚本的方式自动生成一个文件列表，构建的时候根据这个文件列表来下载所需要的文件。为了同时支持 amd64 和 arm64 的 CPU 架构，需要为两种架构各自生成列表，在这里需要额外处理一下。
+
+在这里踩的一个坑就是不同的组件镜像的命名方法千差万别。大致可以分为如下四种：
+
+- 像 kube-apiserver 这些 k8s 组件的镜像，镜像名称和镜像 tag 是不需要加上 CPU 体系架构的；
+- cluster-proportional-autoscaler 的镜像则是在镜像的名称后面加上了 CPU 体系架构的名称如 cluster-proportional-autoscaler-amd64，cluster-proportional-autoscaler-arm64；
+- flannel 则是将 CPU 体系架构名称定义在镜像 tag 后面比如 `flannel:v0.14.0-amd64`
+- 还有 calico 更奇葩，amd64 架构的镜像不需要接体系架构的名称如 `calico/cni:v3.18.4`，而arm64 的则必须要在镜像 tag 后面带上 CPU 提下架构名称比如 `calico/cni:v3.18.4-arm64`
+
+```bash
+#!/bin/bash
+set -eo pipefail
+
+SCRIPT_PATH=$(cd $(dirname $0); pwd)
+REPO_PATH="${SCRIPT_PATH%/build}"
+
+: ${IMAGE_ARCH:="amd64"}
+: ${ANSIBLE_ARCHITECTURE:="x86_64"}
+: ${DOWNLOAD_YML:="config/group_vars/all/download.yml"}
+
+# ARCH used in convert {%- if image_arch != 'amd64' -%}-{{ image_arch }}{%- endif -%} to {{arch}}
+if [[ "${IMAGE_ARCH}" != "amd64" ]]; then ARCH="-${IMAGE_ARCH}"; fi
+
+cat > /tmp/generate.sh << EOF
+arch=${ARCH}
+download_url=https:/
+image_arch=${IMAGE_ARCH}
+ansible_system=linux
+ansible_architecture=${ANSIBLE_ARCHITECTURE}
+registry_project=library
+registry_domain=localhost
+EOF
+
+# generate all component version by $DOWNLOAD_YML
+grep '_version:' ${REPO_PATH}/${DOWNLOAD_YML} \
+| sed 's/: /=/g;s/{{/${/g;s/}}/}/g' | tr -d ' ' >> /tmp/generate.sh
+
+# generate download files url list
+grep '_download_url:' ${REPO_PATH}/${DOWNLOAD_YML} \
+| sed 's/: /=/g;s/ //g;s/{{/${/g;s/}}/}/g;s/|lower//g;s/^.*_url=/echo /g' >> /tmp/generate.sh
+
+# generate download images list
+grep -E '_image_tag:|_image_repo:|_image_name:' ${REPO_PATH}/${DOWNLOAD_YML} \
+| sed "s#{%- if image_arch != 'amd64' -%}-{{ image_arch }}{%- endif -%}#{{arch}}#g" \
+| sed 's/: /=/g;s/{{/${/g;s/}}/}/g' | tr -d ' ' >> /tmp/generate.sh
+
+grep '_image_name:' ${REPO_PATH}/${DOWNLOAD_YML} \
+| cut -d ':' -f1 | sed 's/^/echo $/g' >> /tmp/generate.sh
+```
+
+在这里需要强调一下，文件列表和镜像列表一定要使用自动化的方式来管理，切勿手动更新，这样能节省大量的维护成本。比如 [ks-installer](https://github.com/kubesphere/ks-installer/commits/master/scripts/images-list.txt) 当中的 images-list.txt 就因为更新组件版本号的时候忘记更新该镜像列表中的镜像，导致 images-list.txt 中记录的镜像版本号和实际所使用的版本号不一致的问题。而使用这个错误的镜像列表会导致部署的时候无法在私有的镜像仓库中拉取所需要的镜像。
+
+- 生成的文件列表
+
+```bash
+https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
+https://github.com/containerd/nerdctl/releases/download/v0.8.1/nerdctl-0.8.1-linux-amd64.tar.gz
+https://github.com/containernetworking/plugins/releases/download/v0.9.1/cni-plugins-linux-amd64-v0.9.1.tgz
+https://github.com/coreos/etcd/releases/download/v3.4.13/etcd-v3.4.13-linux-amd64.tar.gz
+https://github.com/k8sli/kubernetes/releases/download/v1.21.3-patch-1.0/kubeadm-linux-amd64
+https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz
+https://github.com/projectcalico/calico/archive/v3.18.4.tar.gz
+https://github.com/projectcalico/calicoctl/releases/download/v3.18.4/calicoctl-linux-amd64
+https://storage.googleapis.com/kubernetes-release/release/v1.21.3/bin/linux/amd64/kubeadm
+https://storage.googleapis.com/kubernetes-release/release/v1.21.3/bin/linux/amd64/kubectl
+https://storage.googleapis.com/kubernetes-release/release/v1.21.3/bin/linux/amd64/kubelet
+```
 
 ### kubespray-images
 
 - 生成镜像列表
 
+根据上文提到的方式使用脚本自动生成部署时所需要的镜像列表
+
+```bash
+library/calico-cni:v3.18.4
+library/calico-kube-controllers:v3.18.4
+library/calico-node:v3.18.4
+library/calico-pod2daemon-flexvol:v3.18.4
+library/cluster-proportional-autoscaler-amd64:1.8.3
+library/coredns:v1.8.0
+library/flannel:v0.14.0-amd64
+library/kube-apiserver:v1.21.3
+library/kube-controller-manager:v1.21.3
+library/kube-proxy:v1.21.3
+library/kube-scheduler:v1.21.3
+library/nginx:1.19
+library/pause:3.3
+```
+
+- Dockerfile
+
+在 Dockerfile 里完成镜像资源的构建，并使用 《[如何使用 registry 存储的特性](https://blog.k8s.li/skopeo-to-registry.html)》文中提到的，使用 registry 存储的特性，将 skopeo sync 下载的镜像转换成 registry 存储的结构。这样在部署的时候直接把这个 registry 存储目录挂载进 registry 容器的 `/var/lib/registry` 即可。特点是性能方面无论是构建和部署，都比常规使用 docker save 和 docker load 的方式要快至少 5 到 10 倍。
+
+```bash
+FROM alpine:3.12 as images
+ARG SKOPEO_VERSION=v1.4.0
+ARG YQ_VERSION=v4.11.2
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
+    && apk --no-cache add bash wget ca-certificates \
+    && wget -q -k https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_${ARCH} -O /usr/local/bin/yq \
+    && wget -q -k https://github.com/k8sli/skopeo/releases/download/${SKOPEO_VERSION}/skopeo-linux-${ARCH} -O /usr/local/bin/skopeo \
+    && chmod a+x /usr/local/bin/*
+
+WORKDIR /build
+COPY build/kubespray-images/*  /build/
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
+    && IMAGE_ARCH=${ARCH} bash build.sh 
+
+FROM scratch
+COPY --from=images /build/docker /docker
+```
+
+- build.sh
+
+构建镜像的操作
+
+```bash
+#!/bin/bash
+GREEN_COL="\\033[32;1m"
+RED_COL="\\033[1;31m"
+NORMAL_COL="\\033[0;39m"
+
+INPUT=$1
+SOURCE_REGISTRY=$2
+
+: ${INPUT:=build}
+: ${IMAGE_ARCH:="amd64"}
+: ${IMAGES_DIR:="images"}
+: ${IMAGES_LIST_DIR:="."}
+: ${SOURCE_REGISTRY:="upstream"}
+: ${SOURCE_IMAGES_YAML:="images_origin.yaml"}
+
+BLOBS_PATH="docker/registry/v2/blobs/sha256"
+REPO_PATH="docker/registry/v2/repositories"
+
+set -eo pipefail
+
+CURRENT_NUM=0
+IMAGES="$(sed -n '/#/d;s/:/:/p' ${IMAGES_LIST_DIR}/images_${IMAGE_ARCH}*.list | grep -E '^library' | sort -u)"
+TOTAL_NUMS=$(echo "${IMAGES}" | wc -l | tr -d ' ')
+
+skopeo_copy(){
+    if skopeo copy --insecure-policy --src-tls-verify=false --dest-tls-verify=false \
+    --override-arch ${IMAGE_ARCH} --override-os linux -q docker://$1 dir:$2; then
+        echo -e "$GREEN_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} sync $1 to $2 successful $NORMAL_COL"
+    else
+        echo -e "$RED_COL Progress: ${CURRENT_NUM}/${TOTAL_NUMS} sync $1 to $2 failed $NORMAL_COL"
+        exit 2
+    fi
+}
+
+main(){
+    rm -rf ${IMAGES_DIR}; mkdir -p ${IMAGES_DIR}
+    for image in ${IMAGES}; do
+        let CURRENT_NUM=${CURRENT_NUM}+1
+        local image_name=${image%%:*}
+        local image_tag=${image##*:}
+        local image_repo=${image%%/*}
+        mkdir -p ${IMAGES_DIR}/${image_repo}
+        if [[ "${SOURCE_REGISTRY}" == "upstream" ]]; then
+            local origin_image=$(yq eval '.[]|select(.dest=="'"${image_name}"'") | .src' ${SOURCE_IMAGES_YAML})
+            skopeo_copy ${origin_image}:${image_tag} ${IMAGES_DIR}/${image}
+        else
+            skopeo_copy ${SOURCE_REGISTRY}/${image} ${IMAGES_DIR}/${image}
+        fi
+
+        manifest="${IMAGES_DIR}/${image}/manifest.json"
+        manifest_sha256=$(sha256sum ${manifest} | awk '{print $1}')
+        mkdir -p ${BLOBS_PATH}/${manifest_sha256:0:2}/${manifest_sha256}
+        ln -f ${manifest} ${BLOBS_PATH}/${manifest_sha256:0:2}/${manifest_sha256}/data
+
+        # make image repositories dir
+        mkdir -p ${REPO_PATH}/${image_name}/{_uploads,_layers,_manifests}
+        mkdir -p ${REPO_PATH}/${image_name}/_manifests/revisions/sha256/${manifest_sha256}
+        mkdir -p ${REPO_PATH}/${image_name}/_manifests/tags/${image_tag}/{current,index/sha256}
+        mkdir -p ${REPO_PATH}/${image_name}/_manifests/tags/${image_tag}/index/sha256/${manifest_sha256}
+
+        # create image tag manifest link file
+        echo -n "sha256:${manifest_sha256}" > ${REPO_PATH}/${image_name}/_manifests/tags/${image_tag}/current/link
+        echo -n "sha256:${manifest_sha256}" > ${REPO_PATH}/${image_name}/_manifests/revisions/sha256/${manifest_sha256}/link
+        echo -n "sha256:${manifest_sha256}" > ${REPO_PATH}/${image_name}/_manifests/tags/${image_tag}/index/sha256/${manifest_sha256}/link
+
+        # link image layers file to registry blobs dir
+        for layer in $(sed '/v1Compatibility/d' ${manifest} | grep -Eo "\b[a-f0-9]{64}\b"); do
+            mkdir -p ${BLOBS_PATH}/${layer:0:2}/${layer}
+            mkdir -p ${REPO_PATH}/${image_name}/_layers/sha256/${layer}
+            echo -n "sha256:${layer}" > ${REPO_PATH}/${image_name}/_layers/sha256/${layer}/link
+            ln -f ${IMAGES_DIR}/${image}/${layer} ${BLOBS_PATH}/${layer:0:2}/${layer}/data
+        done
+    done
+}
+
+main "$@"
+```
+
+- Images_origin.yaml
+
+考虑到有将镜像导入到已经存在的镜像仓库中的场景，这里我们需要修改一下镜像仓库的 repo。因为 `library` 这个 repo 在 harbor 中是默认自带的，所以将镜像的 repo 全部统一为 `library` 比较通用一些。这里用一个 yaml 配置文件来记录原镜像地址和 library 镜像的地址的对应关系。比如上游的 `k8s.gcr.io/kube-apiserver` 映射为 `library/kube-apiserver`， `quay.io/calico/node` 映射为 `library/calico-node`。
+
+```yaml
+---
+# kubeadm core images
+- src: k8s.gcr.io/kube-apiserver
+  dest: library/kube-apiserver
+- src: k8s.gcr.io/kube-controller-manager
+  dest: library/kube-controller-manager
+- src: k8s.gcr.io/kube-proxy
+  dest: library/kube-proxy
+- src: k8s.gcr.io/kube-scheduler
+  dest: library/kube-scheduler
+- src: k8s.gcr.io/coredns/coredns
+  dest: library/coredns
+- src: k8s.gcr.io/pause
+  dest: library/pause
+
+# kubernetes addons
+- src: k8s.gcr.io/dns/k8s-dns-node-cache
+  dest: library/k8s-dns-node-cache
+- src: k8s.gcr.io/cpa/cluster-proportional-autoscaler-amd64
+  dest: library/cluster-proportional-autoscaler-amd64
+- src: k8s.gcr.io/cpa/cluster-proportional-autoscaler-arm64
+  dest: library/cluster-proportional-autoscaler-arm64
+
+# network plugin
+- src: quay.io/calico/cni
+  dest: library/calico-cni
+- src: quay.io/calico/node
+  dest: library/calico-node
+- src: quay.io/calico/kube-controllers
+  dest: library/calico-kube-controllers
+- src: quay.io/calico/pod2daemon-flexvol
+  dest: library/calico-pod2daemon-flexvol
+
+- src: quay.io/calico/typha
+  dest: library/calico-typha
+- src: quay.io/coreos/flannel
+  dest: library/flannel
+
+
+# nginx for daemonset and offline
+- src: docker.io/library/nginx
+  dest: library/nginx
+```
+
+### kubeplay
+
+
+
 ### build packages
 
+
+
 ## 安装方式
+
+### compose 节点
+
+- 解压安装包
+- 初始化节点，关闭防火墙和 SELinux
+- 配置 yum/apt 离线源
+- 安装一些工具如 yq、skopeo、kubectl 等
+- 安装 nerdctl-full
+- 使用 nerdctl load -i 的方式导入nginx、registry、kubespray 镜像
+- 使用 yq 渲染配置文件，生成 kubespray 需要的 env 文件和 inventory 文件
+- 生成镜像仓库域名证书并将自签证书添加到主机的 CA trust 信任当中
+- 在 `/etc/hosts` 中添加镜像仓库域名 hosts 映射
+- 使用 nerdctl compose 启动 nginx 和 registry 服务
+- 部署时钟同步服务 chrony
+- 检查各个服务的状态
+- 调用 kubespray 部署 k8s 集群
+
+### kubespray
+
+- 配置 ssh 登录
+- 配置节点 yum/apt 源为 nginx
+- 将自签的域名证书添加到主机的 CA trust 信任当中
+- 在 `/etc/hosts` 中添加镜像仓库域名 hosts 映射
+- 关闭防火墙
+- 安装时钟同步服务
 
 ### install.sh
 
