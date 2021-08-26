@@ -232,7 +232,29 @@ To github.com:k8sli/kubernetes.git
 
 ## 总结
 
-上面只展示了以一个 tag 为单位进行构建的流程，想要构建其他版本的 kubeadm ，可以按照同样的流程和方法来完成。其实写一个 shell 脚本来处理也是十分简单。
+上面只展示了以一个 tag 为单位进行构建的流程，想要构建其他版本的 kubeadm ，可以按照同样的流程和方法来完成。其实写一个 shell 脚本来处理也是十分简单，如下：
+
+```bash
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+# 定义 commit ID
+: ${COMMIT:="48e4b4c7c62a84ab4ec363588721011b73ee77e6"}
+
+# 定义需要重新编译的版本号
+: ${TAGS:="v1.22.1 v1.22.0 v1.21.4 v1.21.3 v1.20.10 v1.19.14 v1.18.10"}
+
+for tag in ${TAGS}; do
+    git reset --hard ${tag}
+    git cherry-pick ${COMMIT}
+    git tag ${tag}-patch-1.0
+    git push origin --tags
+done
+```
+
+![image-20210827021756974](https://p.k8s.li/2021-08-25-build-k8s-binary-by-github-actions-5.png)
 
 使用 GitHub Actions 的好处就是能够为我们解决代码管理和产物管理，构建好的二进制文件存放在 GitHub release 当中，下载和使用起来十分方便，不用在自己搞一台单独的机器或者存储服务器，节省很多人力维护成本。
 
