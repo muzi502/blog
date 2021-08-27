@@ -250,7 +250,7 @@ for tag in ${TAGS}; do
     git reset --hard ${tag}
     git cherry-pick ${COMMIT}
     git tag ${tag}-patch-1.0
-    git push origin --tags
+    git push origin ${tag}-patch-1.0
 done
 ```
 

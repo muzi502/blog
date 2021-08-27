@@ -23,9 +23,9 @@ comment: true
 
 ### 参数传递
 
-![image-20210814150359150](pics/2021-08-13-build-image-by-github-actions/image-20210814150359150.png)
+![image-20210814150359150](https://p.k8s.li/2021-08-13-build-image-by-github-actions/image-20210814150359150.png)
 
-![image-20210814150429680](pics/2021-08-13-build-image-by-github-actions/image-20210814150429680.png)
+![image-20210814150429680](https://p.k8s.li/2021-08-13-build-image-by-github-actions/image-20210814150429680.png)
 
 ### 产物传递
 
