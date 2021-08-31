@@ -16,7 +16,7 @@ comment: true
 
 在企业私有云环境当中，出于对数据安全的考虑以及满足 [网络安全等级保护](http://www.djbh.net/) 的要求，往往会对内部环境中的服务器做出严格的访问限制。一般来讲生产环境都会禁止访问外部网络，开发人员要访问生产环境也必须通过堡垒机或者其他方式进行安全审计登录。在这种无网（无法访问公网）的环境中，想要部署好一个 K8s 集群并不是一件轻松的事儿。市面上 K8s 部署工具也多不胜数，对于离线部署的支持情况也各不相同：
 
-|                           Item                            | Language | Start | Fork | 离线部署支持情况                                     |
+|                           Item                            | Language | Star  | Fork | 离线部署支持情况                                     |
 | :-------------------------------------------------------: | :------: | :---: | :--: | :--------------------------------------------------- |
 |        [kops](https://github.com/kubernetes/kops)         |  Golang  | 13.2k | 4.1k | 不支持                                               |
 | [kubespray](https://github.com/kubernetes-sigs/kubespray) | Ansible  | 11.1k | 4.7k | 支持，需自行构建安装包                               |
@@ -106,7 +106,7 @@ kube/lib64/libseccomp.so.2.3.1
 >
 > [Install Docker Engine from binaries](https://docs.docker.com/engine/install/binaries/)
 
-实际上任何部署工具都会对系统 rpm/deb 包都会有不同程度上的依赖，有一部分依赖可以像 [sealos](https://github.com/fanux/sealos)  这样通过某种方式去规避掉。但着并不是所有的依赖都能规避的，比如提供挂载 PV 需要依赖的存储客户端（nfs-common/nfs-utils，lvm2，gluster-client）这些包，基本上是没有任何规避的途径，必须通过包管理器来安装才行。
+实际上任何部署工具都会对系统 rpm/deb 包都会有不同程度上的依赖，有一部分依赖可以像 [sealos](https://github.com/fanux/sealos)  这样通过某种方式去规避掉。但并不是所有的依赖都能规避的，比如提供挂载 PV 需要依赖的存储客户端（nfs-common/nfs-utils，lvm2，gluster-client）这些包，基本上是没有任何规避的途径，必须通过包管理器来安装才行。
 
 当然如果这些前置的依赖项在部署工具之外手动解决或者让用户自行去解决，那么使用 [sealos](https://github.com/fanux/sealos)  这种轻量级的工具来部署 K8s 是比较合适的。但对于一些 PaaS toB 的产品而言，让用户自己去手动解决这些依赖恐怕不太好。站在客户的角度来考虑既然平台提供了这部分功能，就应该在部署的时候解决所有的依赖问题，而不是让我自己手动临时来解决。
 
@@ -151,7 +151,7 @@ kube/lib64/libseccomp.so.2.3.1
 > - 最后需要适配的 Linux 发行版和包管理器种类也有多种，而且有些包的包名或者版本号在不同的包管理之间也相差甚大，无法做到统一管理。
 > - 离线源同时适配适配 ARM64 和 AMD64 有一定的难度
 
-好在文中也给出了一个比较通用的解决方案，即通过 Dockerfile 来构建离线源，具体的实现细节可以翻看《[使用 docker build 制作 yum/apt 离线源](https://blog.k8s.li/make-offline-mirrors.html)》一文。使用这个方案可以解决 PaaS 或者 IaaS 层面的离线源制作的难题，同样也适用于我们部署 K8s 集群的场景，并且采用 Dockerfile 的方式来构建离线源可以完美地解决同时适配 arm64 和 amd64 的难题。
+好在文中也给出了一个比较通用的解决方案，即通过 Dockerfile 来构建离线源，具体的实现细节可以翻看《[使用 docker build 制作 yum/apt 离线源](https://blog.k8s.li/make-offline-mirrors.html)》一文。使用这个方案可以解决 PaaS 或者 IaaS 层面的离线源制作的难题，同样也适用于我们部署 K8s 集群的场景，而且采用 Dockerfile 的方式来构建离线源可以完美地解决同时适配 arm64 和 amd64 的难题。
 
 ### files
 
@@ -248,7 +248,7 @@ func installDockerOnNode(mgr *manager.Manager, _ *kubekeyapiv1alpha1.HostCfg) er
 }
 ```
 
-使用 docker 官方的安装脚本来安装 docker 是有一个明显的问题就是：比如没有版本控制，不能指定 docker 的版本，每次安装的 docker 版本都是最新的 stable 版本。没有版本控制就会导致不同时间部署的集群或者加入的节点，docker 版本可能就不一样，在这里可能会埋下一些坑，可能会带来一定的维护成本或者将来升级时遇到问题。
+使用 docker 官方的安装脚本来安装 docker 是有一个明显的问题就是：没有版本控制，不能指定 docker 的版本，每次安装的 docker 版本都是最新的 stable 版本。没有版本控制就会导致不同时间部署的集群或者加入的节点，docker 版本可能就不一样，在这里可能会埋下一些坑，可能会带来一定的维护成本或者将来升级时遇到问题。
 
 编译过 kubernetes 组件的可能都知道 k8s 源码当中存在一个 [build/dependencies.yaml](https://github.com/kubernetes/kubernetes/blob/master/build/dependencies.yaml) 的文件，里面记录的是 k8s 组件与其他组件 (如 docker, etcd, coredns, cni, pause) 所匹配的最佳版本。
 
