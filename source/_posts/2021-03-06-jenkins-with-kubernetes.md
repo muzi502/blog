@@ -23,7 +23,7 @@ comment: true
 
 ![k8s-jenkins](https://p.k8s.li/k8s-jenkins-slave.png)
 
-从图上可以看到 Jenkins Master 时以 docker-compose 的方式运行在一个节点上。Jenkins Slave 以 Pod 形式运行在 Kubernetes 集群的 Node 上，并且它不是一直处于运行状态，它会按照需求动态的创建并自动删除。这种方式的工作流程大致为：当 Jenkins Master 接受到 Build 请求时，会根据配置的 Label 动态创建一个运行在 Pod 中的 Jenkins Slave 并注册到 Master 上，当运行完 Job 后，这个 Slave 会被注销并且这个 Pod 也会自动删除，恢复到最初状态。
+从图上可以看到 Jenkins Master 是以 docker-compose 的方式运行在一个节点上。Jenkins Slave 以 Pod 形式运行在 Kubernetes 集群的 Node 上，并且它不是一直处于运行状态，它会按照需求动态的创建并自动删除。这种方式的工作流程大致为：当 Jenkins Master 接受到 Build 请求时，会根据配置的 Label 动态创建一个运行在 Pod 中的 Jenkins Slave 并注册到 Master 上，当运行完 Job 后，这个 Slave 会被注销并且这个 Pod 也会自动删除，恢复到最初状态。
 
 那么我们使用这种方式带来了以下好处：
 

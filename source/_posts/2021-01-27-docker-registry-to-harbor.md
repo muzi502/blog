@@ -16,7 +16,7 @@ comment: true
 
 ### Docker Distribution
 
-[Docker Distribution](https://github.com/distribution/distribution) 是第一个是实现了打包、发布、存储和镜像分发的工具，起到 Docker registry 的作用。（目前 Distribution 已经捐赠给了 CNCF）。其中 Docker Distribution 中的 [spec 规范](https://github.com/distribution/distribution/tree/main/docs/spec) 后来也就成为了 OCI [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范。可以认为 Docker Distribution 实现了大部分 OCI 镜像分发的规范，二者在很大程度上也是兼容的。 OCI 的指导思想时先有工业界的实践，再将这些实践总结成技术规范，因此尽管 OCI 的 [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范还没有正式发布（目前版本是[v1.0.0-rc1](https://github.com/opencontainers/distribution-spec/releases/tag/v1.0.0-rc1)），但以 Docker Distribution 作为基础的镜像仓库已经成为普遍采用的方案，Docker registry HTTP API V2 也就成为了事实上的标准。
+[Docker Distribution](https://github.com/distribution/distribution) 是第一个是实现了打包、发布、存储和镜像分发的工具，起到 Docker registry 的作用。（目前 Distribution 已经捐赠给了 CNCF）。其中 Docker Distribution 中的 [spec 规范](https://github.com/distribution/distribution/tree/main/docs/spec) 后来也就成为了 OCI [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范。可以认为 Docker Distribution 实现了大部分 OCI 镜像分发的规范，二者在很大程度上也是兼容的。 OCI 的指导思想是先有工业界的实践，再将这些实践总结成技术规范，因此尽管 OCI 的 [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范还没有正式发布（目前版本是[v1.0.0-rc1](https://github.com/opencontainers/distribution-spec/releases/tag/v1.0.0-rc1)），但以 Docker Distribution 作为基础的镜像仓库已经成为普遍采用的方案，Docker registry HTTP API V2 也就成为了事实上的标准。
 
 ### Harbor
 
@@ -432,5 +432,5 @@ sync_image
 
 ## 参考
 
-- [《harbor权威指南]()
+- [《harbor权威指南》](http://www.broadview.com.cn/book/6297)
 - [Harbor 2.0 takes a giant leap in expanding supported artifacts with OCI support](https://goharbor.io/blog/harbor-2.0/)
