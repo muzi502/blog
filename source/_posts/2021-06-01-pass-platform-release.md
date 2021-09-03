@@ -202,7 +202,7 @@ platform-release
 
 ```yaml
 # GitHub 上repo 的名称，如：muzi502/xxx
-- repositoryFullName: muzi502/cyclone 
+- repositoryFullName: muzi502/cyclone
   # 组件的最新 tag
   currentTag: v0.5.3
   # 从指定 repo 拉取 helm chart 的目录

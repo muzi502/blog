@@ -171,7 +171,7 @@ rss: https://blog.k8s.li/atom.xml
 
 ### 未分类
 
-- [水晶命匣](http://ghoulich.xninja.org/) 
+- [水晶命匣](http://ghoulich.xninja.org/)
 
 - [KaiRen's Blog](https://k2r2bai.com)
 

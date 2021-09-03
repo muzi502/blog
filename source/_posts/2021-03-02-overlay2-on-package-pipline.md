@@ -102,7 +102,7 @@ k8s.gcr.io/kube-proxy:v1.v1.18.3
 
 ```bash
 ╭─root@sg-02 /home/ubuntu
-╰─# skopeo copy docker://k8s.gcr.io/kube-apiserver:v1.18.3 docker://localhost/kube-apiserver:v1.18.3 --dest-tls-verify=false                                                     
+╰─# skopeo copy docker://k8s.gcr.io/kube-apiserver:v1.18.3 docker://localhost/kube-apiserver:v1.18.3 --dest-tls-verify=false
 Getting image source signatures
 Copying blob 83b4483280e5 done
 Copying blob 2bfb66b13a96 done
@@ -187,7 +187,7 @@ done
 - 最后还需要使用 registry GC 来删除掉 blobs 目录下没有被引用的文件。
 
 ```bash
-docker exec -it registry registry garbage-collect /etc/docker/registry/config.yml 
+docker exec -it registry registry garbage-collect /etc/docker/registry/config.yml
 ```
 
 - 再使用 docker cp 的方式将镜像从容器里复制出来并打包成一个 tar 包
@@ -244,7 +244,7 @@ cat images.list | xargs -L1 -I {} skopeo copy --insecure-policy --src-tls-verify
 - 同步完成镜像后，进行 registry gc ，删除无用的 blob 数据
 
 ```bash
-docker exec -it registry registry garbage-collect /etc/docker/registry/config.yml 
+docker exec -it registry registry garbage-collect /etc/docker/registry/config.yml
 ```
 
 - 最后打包 merged 目录，就是本次最终的结果

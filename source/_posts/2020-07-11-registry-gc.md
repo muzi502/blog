@@ -623,7 +623,7 @@ INFO[0000] Deleting blob: /docker/registry/v2/blobs/sha256/21/21c83c5242199776c2
 
 ```shell
 ╭─root@sg-02 /var/lib/registry/docker/registry/v2
-╰─# tree                                                                                     
+╰─# tree
 .
 ├── blobs
 │   └── sha256

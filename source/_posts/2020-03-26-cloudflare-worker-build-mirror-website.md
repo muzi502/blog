@@ -145,7 +145,7 @@ let modified = text.replace(/telegram.org/g, "telegram.k8srss.workers.dev")
 
     <script src="//telegram.k8srss.workers.dev/js/widget-frame.js?29"></script>
     <script src="//telegram.k8srss.workers.dev/js/telegram-web.js?8"></script>
-  
+
 <!-- page generated in 121.26ms -->
 ```
 

@@ -1,13 +1,16 @@
 ---
-title: 使用 docker build 制作 yum/apt 离线源
+title: 使用 GitHub Actions 自动化构建 yum/apt 离线源
 date: 2021-05-23
-updated: 2021-05-23
+updated: 2021-09-03
 slug:
 categories: 技术
 tag:
   - docker
   - centos
   - ubuntu
+  - docker
+  - rpm
+  - deb
 copyright: true
 comment: true
 ---
@@ -23,6 +26,7 @@ comment: true
 - 首先由于各个包之间的依赖关系比较复杂，并不能将它们直接下载下来；
 - 其次即便下载下来之后也无法直接通过 yum/apt 的方式安装指定的软件包，虽然也可以使用 scp 的方式将这些包复制到部署节点，通过 rpm 或 dpkg 的方式来安装上，但这样并不是很优雅，而且通用性能也不是很好；
 - 最后需要适配的 Linux 发行版和包管理器种类也有多种，而且有些包的包名或者版本号在不同的包管理之间也相差甚大，无法做到统一管理。
+- 要同时适配 arm64 和 amd64 的源及其困难
 
 综上，将平台部署依赖的在线 yum/apt 之类的软件包资源制作成离线安装包是一件很棘手的事情。个人就这个问题折腾了一段时间，终于找到了一个比较合适的解决方案：即通过一个 YAML 配置文件来管理包，然后使用 Dockerfile 来构建成离线的 tar 包或者容器镜像。如果有类似需求的小伙伴，可以参考一下本方案。
 
@@ -203,8 +207,7 @@ RUN yum install -q -y $BUILD_TOOLS \
 
 # 需要安装 yq 个工具来处理 packages.yaml 配置文件
 RUN curl -sL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.3/yq_linux_amd64 \
-    && chmod a+x /usr/local/bin/yq \
-    && chmod a+x /usr/local/bin/jq
+    && chmod a+x /usr/local/bin/yq
 
 # 解析 packages.yml 配置文件，生成所需要的 packages.list 文件
 WORKDIR /centos/$OS_VERSION/os/$ARCH
@@ -537,6 +540,251 @@ deb [trusted=yes] http://172.20.0.10:8080/ubuntu bionic/
 deb [trusted=yes] http://172.20.0.10:8080/debian focal/
 ```
 
+## GitHub Action 自动构建
+
+准备好上面这些 Dockerfile 之后，接下来就要考虑构建的问题了。对于一个 PaaS 或者 IaaS 产品需要适配主流的 Linux 发行版，有时还需要适配 arm64 架构的机器。如果本地手动 docker build 来构建的话，效率很低。因此我们需要使用 GitHub actions 自动构建这些 rpm/deb 包的离线源，具体实现代码可参考 [k8sli/os-packages](https://github.com/k8sli/os-packages)
+
+### 代码结构
+
+在 build 目录里存放各种发行版的 Dockerfile。由于不同的发行版以及每个发行版的版本构建方法千差万别，因此每个发行版 OS 在一个单独的 Dockerfile 里构建。
+
+```bash
+os-packages/
+├── LICENSE
+├── Makefile
+├── README.md
+├── build
+│   ├── Dockerfile.os.centos7
+│   ├── Dockerfile.os.centos8
+│   ├── Dockerfile.os.debian10
+│   ├── Dockerfile.os.debian9
+│   ├── Dockerfile.os.fedora33
+│   ├── Dockerfile.os.fedora34
+│   ├── Dockerfile.os.ubuntu1804
+│   └── Dockerfile.os.ubuntu2004
+├── packages.yaml
+└── repos
+    ├── CentOS-All-in-One.repo
+    ├── Debian-buster-All-in-One.list
+    ├── Fedora-All-in-One.repo
+    └── Ubuntu-focal-All-in-One.list
+```
+
+### Workflow
+
+- 触发方式
+
+```yaml
+---
+name: Build os-packages image
+on:
+  push:
+    tag:
+      - 'v*'
+    branch: [main, release-*, master]
+  workflow_dispatch:
+```
+
+- 全局变量
+
+```yaml
+env:
+  # 镜像仓库域名
+  IMAGE_REGISTRY: "ghcr.io"
+  # 镜像仓库用户名
+  REGISTRY_USER: "${{ github.repository_owner }}"
+  # 镜像仓库登录凭据
+  REGISTRY_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  # 镜像仓库推送 repo
+  IMAGE_REPO: "ghcr.io/${{ github.repository_owner }}"
+```
+
+- 构建矩阵，这些 job 会各自运行一个 runner 来进行并行构建
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ubuntu-bionic
+            image_name: os-packages-ubuntu1804
+            dockerfile: build/Dockerfile.os.ubuntu1804
+          - name: ubuntu-focal
+            image_name: os-packages-ubuntu2004
+            dockerfile: build/Dockerfile.os.ubuntu2004
+          - name: centos-7
+            image_name: os-packages-centos7
+            dockerfile: build/Dockerfile.os.centos7
+          - name: centos-8
+            image_name: os-packages-centos8
+            dockerfile: build/Dockerfile.os.centos8
+          - name: debian-buster
+            image_name: os-packages-debian10
+            dockerfile: build/Dockerfile.os.debian10
+          - name: debian-stretch
+            image_name: os-packages-debian9
+            dockerfile: build/Dockerfile.os.debian9
+```
+
+- checkout 代码，配置 buildx 构建环境
+
+```yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # fetch all git repo tag for define image tag
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_TOKEN }}
+```
+
+- 通过 `git describe --tags` 方式生成一个唯一的镜像 tag
+
+```yaml
+      - name: Prepare for build images
+        shell: bash
+        run: |
+          git describe --tags --always | sed 's/^/IMAGE_TAG=/' >> $GITHUB_ENV
+```
+
+- 构建镜像并 push 到镜像仓库，后面打包一个 All-in-one 的包时候会用到
+
+```yaml
+      - name: Build and push os-package images
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.IMAGE_REPO }}/${{ matrix.image_name }}:${{ env.IMAGE_TAG }}
+```
+
+- 生成新的 Dockerfile，导出镜像到本地目录
+
+```yaml
+      - name: Gen new Dockerfile
+        shell: bash
+        run: |
+          echo -e "FROM scratch\nCOPY --from=${{ env.IMAGE_REPO }}/${{ matrix.image_name }}:${{ env.IMAGE_TAG }} / /" > Dockerfile
+
+      - name: Build kubeplay image to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
+          outputs: type=local,dest=./
+```
+
+- 将最终构建产物打包上传到 GitHub release
+
+```yaml
+      - name: Prepare for upload package
+        shell: bash
+        run: |
+          mv linux_amd64/resources resources
+          tar -I pigz -cf resources-${{ matrix.image_name }}-${IMAGE_TAG}-amd64.tar.gz resources --remove-files
+          mv linux_arm64/resources resources
+          tar -I pigz -cf resources-${{ matrix.image_name }}-${IMAGE_TAG}-arm64.tar.gz resources --remove-files
+          sha256sum resources-${{ matrix.image_name }}-${IMAGE_TAG}-{amd64,arm64}.tar.gz > resources-${{ matrix.image_name }}-${IMAGE_TAG}.sha256sum.txt
+
+      - name: Release and upload packages
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            resources-${{ matrix.image_name }}-${{ env.IMAGE_TAG }}.sha256sum.txt
+            resources-${{ matrix.image_name }}-${{ env.IMAGE_TAG }}-amd64.tar.gz
+            resources-${{ matrix.image_name }}-${{ env.IMAGE_TAG }}-arm64.tar.gz
+```
+
+- All-in-one 合并所有构建的镜像
+
+```yaml
+  upload:
+    needs: [build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # fetch all git repo tag for define image tag
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_TOKEN }}
+
+      - name: Prepare for build images
+        shell: bash
+        run: |
+          git describe --tags --always | sed 's/^/IMAGE_TAG=/' >> $GITHUB_ENV
+          source $GITHUB_ENV
+          echo "FROM scratch" > Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-ubuntu1804:${IMAGE_TAG} / /" >> Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-ubuntu2004:${IMAGE_TAG} / /" >> Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-centos7:${IMAGE_TAG} / /" >> Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-centos8:${IMAGE_TAG} / /" >> Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-debian9:${IMAGE_TAG} / /" >> Dockerfile
+          echo "COPY --from=${{ env.IMAGE_REPO }}/os-packages-debian10:${IMAGE_TAG} / /" >> Dockerfile
+
+      - name: Build os-packages images to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
+          outputs: type=local,dest=./
+
+      - name: Prepare for upload package
+        shell: bash
+        run: |
+          mv linux_amd64/resources resources
+          tar -I pigz -cf resources-os-packages-all-${IMAGE_TAG}-amd64.tar.gz resources --remove-files
+          mv linux_arm64/resources resources
+          tar -I pigz -cf resources-os-packages-all-${IMAGE_TAG}-arm64.tar.gz resources --remove-files
+          sha256sum resources-os-packages-all-${IMAGE_TAG}-{amd64,arm64}.tar.gz > resources-os-packages-all-${IMAGE_TAG}.sha256sum.txt
+
+      - name: Release and upload packages
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            resources-os-packages-all-${{ env.IMAGE_TAG }}.sha256sum.txt
+            resources-os-packages-all-${{ env.IMAGE_TAG }}-amd64.tar.gz
+            resources-os-packages-all-${{ env.IMAGE_TAG }}-arm64.tar.gz
+```
+
 ## 优化
 
 ### Dockerfile
@@ -551,6 +799,8 @@ ls Dockerfile.* | xargs -L1 grep -Ev 'FROM scratch|COPY --from=' > Dockerfile
 echo "FROM scratch" >> Dockerfile
 ls Dockerfile.* | xargs -L1 grep 'COPY --from=' >> Dockerfile
 ```
+
+其实如果使用 GitHub actions 来构建的话，就不需要进行合并了，使用 actions 矩阵构建的特性可并行构建。
 
 ### Package version
 
@@ -568,6 +818,13 @@ sed -i "s|__ID__|$(sed -n 's|^ID=||p' /etc/os-release)|;s|__VERSION_CODENAME__|$
 ```
 
 虽然这样做很不美观，但这种方式确实可行 😂，最终能够的到正确的版本号。总之我们尽量地少维护一些包的版本，比如使用这种方式就可以将某个版本的 docker-ce 包放在配置文件的 apt 中，而不是 debian/ubuntu 中，通过一些环境变量或者 shell 脚本自动添加上这些特殊项，这样能减少一些维护成本。
+
+## 踩坑
+
+- Fedora 指定包的版本时，也需要加上 Fedora 的版本
+- CentOS 7 和 CentOS 8 有些包的包名不同，需要单独处理一下
+- CentOS 7 和 CentOS 8 构建方式不同，最后生成 repodata 的时候 CentOS 8 需要单独处理一下
+- Fedora 33 和 Fedora34 使用 GitHub action 构建的时候 arm64 架构的会一直卡住，是由于 buildx 的 bug 所致，因此只给出了 Dockerfile，并未放在 GitHub actions 构建流水线中。
 
 ## 参考
 

@@ -812,7 +812,7 @@ GET /v2/<name>/manifests/<reference>
 -   如果没有，那么会给 registry 服务器发请求拿到  image config 文件
 -   根据 image config 文件中的 `diff_ids`在本地找对应的 layer 是否存在
 -   如果 layer 不存在，则根据 `manifest` 里面 layer 的 `sha256` 和 `media type` 去服务器拿相应的 layer（相当去拿压缩格式的包）
--   dockerd 守护进程并行下载各 layer ，HTTP 请求为`GET /v2/<name>/blobs/<digest>`。 
+-   dockerd 守护进程并行下载各 layer ，HTTP 请求为`GET /v2/<name>/blobs/<digest>`。
 -   拿到后进行解压，并检查解压(gzip -d)后 tar 包的 sha256 是否和 image config 中的 `diff_id` 相同，不相同就翻车了
 -   等所有的 layer 都下载完成后，整个 image 的 layer 就下载完成，接着开始进行解压(tar -xf) layer 的 tar 包。
 -   dockerd 起一个单独的进程 `docker-untar` 来 gzip 解压缩已经下载完成的 layer 文件；对于有些比较大的镜像（比如几十 GB 的镜像），往往镜像的 layer 已经下载完成了，但还没有解压完😂。
@@ -838,13 +838,13 @@ push 推送一个镜像到远程的 registry 流程恰好和 pull 拉取镜像�
 
 -   客户端通过URL 使用 POST 方法来实时上传 layer 数据，上传镜像 layer 分为 `Monolithic Upload` （整体上传）和`Chunked Upload`（分块上传）两种方式。
 
-    -   Monolithic Upload 
+    -   Monolithic Upload
 
     ```http
     PUT /v2/<name>/blobs/uploads/<session_id>?digest=<digest>
     Content-Length: <size of layer>
     Content-Type: application/octet-stream
-    
+
     <Layer Binary Data>
     ```
 
@@ -855,7 +855,7 @@ push 推送一个镜像到远程的 registry 流程恰好和 pull 拉取镜像�
     Content-Length: <size of chunk>
     Content-Range: <start of range>-<end of range>
     Content-Type: application/octet-stream
-    
+
     <Layer Chunk Binary Data>
     ```
 

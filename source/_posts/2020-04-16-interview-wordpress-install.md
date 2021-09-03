@@ -393,7 +393,7 @@ services:
   "IMG_PATH": "/var/www/html",
   "EXHAUST_PATH": "",
   "ALLOWED_TYPES": ["jpg","png","jpeg","bmp","gif"]
-}             
+}
 ```
 
 接下来我们使用 `docker-compose restart` 命令重启一下容器，之后再 WordPress 端上传一张图片测试一下。上传完成之后，拿到图片的 url ，然后使用 wget 命令测试一下，显示 `Length: 102288 (100K)  [image/webp]` 就说明我们的 webp server 已经成功运行啦😂。完整的 repo 在我的 GitHub 上 [Wwordpress](https://github.com/muzi502/Wwordpress) ，欢迎来食用呀😋

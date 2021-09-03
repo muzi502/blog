@@ -216,7 +216,7 @@ spec:
     hostPath:
       path: /var/run/docker.sock
 """,
-) 
+)
 ```
 
 - 构建 `debian:buster-docker` 镜像，使用它来在 pod 的容器内构建 docker 镜像，使用的 `Dockerfile` 如下：

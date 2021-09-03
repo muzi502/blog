@@ -171,7 +171,7 @@ make -j4 & make install
 ```ngin
 server {
     listen 80;
-  
+
     location ~/group[0-9]/ {
     autoindex on;
     root /home/dfs/data;

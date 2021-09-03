@@ -346,7 +346,7 @@ $ gitlab project-merge-request merge --project-id ${PROJECT_ID} --iid @mr_iid
 $ gitlab -o json project-merge-request get --project-id ${PROJECT_ID} --iid @mr_iid | jq -r ".state"
 ```
 
-- 集成在 Jenkinsfile  中完成创建 MR、合并 MR、检查 MR 
+- 集成在 Jenkinsfile  中完成创建 MR、合并 MR、检查 MR
 
 调用用它的时候只需要传入 SOURCE_BRANCH, TARGET_BRANCH, MR_TITLE 这三个参数即可。
 
@@ -409,7 +409,7 @@ $ gitlab project-tag create --project-id ${ID} --tag-name v1.0.0-rc.2 --ref mast
 upstream 上的 repo tag 只能通过在 Gitlab 上删除，在本地 repo 下是无法删除的，因此可以使用如下命令删除  Gitlab repo tag，注意：受保护的 repo tag 如果没有权限的话是无法删除的。
 
 ```bash
-$ gitlab project-tag delete --project-id ${ID} --tag-name v1.0.0-rc.2 
+$ gitlab project-tag delete --project-id ${ID} --tag-name v1.0.0-rc.2
 ```
 
 - 创建受保护的 repo tag
