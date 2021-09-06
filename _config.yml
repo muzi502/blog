@@ -3,17 +3,22 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 木子
+title: Reimu's blog
 subtitle:
 description:
 author: 木子
 language: zh-CN
 timezone: Asia/Shanghai
 keywords:
-  - 运维
-  - kubernetes
-  - docker
-  - linux
+  - CI/CD
+  - Docker
+  - Linux
+  - Registry
+  - Kubernetes
+  - PaaS toB
+  - 运维开发
+  - 容器镜像
+  - 发布流水线
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'

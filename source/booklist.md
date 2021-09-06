@@ -1,13 +1,15 @@
 ---
 title: 阅读记录
 date: 2019-01-01
-updated: 2021-08-31
+updated: 2021-09-07
 slug: booklist
 tag:
   - 阅读
 copyright: true
 comment: true
 ---
+
+本页面将不再更新，已经转移至 [Notion｜阅读记录](https://reading.k8s.li) 维护
 
 ## 读书笔记
 

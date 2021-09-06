@@ -121,9 +121,9 @@ scheme: Gemini
 # External url should start with http:// or https://
 menu:
   Home: / || desktop
-  Books: /booklist.html || book
+  Books: https://reading.k8s.li || book
   Kindle: https://kindle.k8s.li || book
-  Friend: /link/   || link
+  Friends: /friends.html || link
   About: /about.html || user-circle-o
 
 # Enable / Disable menu icons / item badges.
@@ -182,7 +182,6 @@ social:
   E-Mail: mailto:muzi502.li@gmail.com || envelope
   Twitter: https://twitter.com/muzi_ii || twitter
   Telegram: https://t.me/muzi_ii || telegram
-  Kindle: https://kindle.k8s.li || book
   Channel: https://tg.k8s.li || telegram
   RSS: /atom.xml || rss
 
