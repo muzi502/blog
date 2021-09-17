@@ -1,7 +1,7 @@
 ---
 title: 搬砖常用的 shell 片段记录
 date: 2021-07-20
-updated: 2021-07-20
+updated: 2021-09-22
 slug:
 categories: 技术
 tag:
@@ -113,7 +113,7 @@ $ curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-com
 $ chmod +x /usr/local/bin/docker-compose
 ```
 
-## sed
+## sed/grep/awk
 
 ### 匹配行的下一行插入
 
@@ -195,8 +195,6 @@ sed -n '/^downloads:/,/download_defaults:/p' ${REPO_ROOT_DIR}/${DOWNLOAD_YML} \
 $ sed -i ':a;N;$!ba;s/\n/ /g'
 ```
 
-##  grep/egrep
-
 ### 统计匹配行行数
 
 ```bash
@@ -210,6 +208,26 @@ $ lsof -i | grep -c sshd
 
 ```bash
 $ egrep --only-matching -E '([[:digit:]]{1,3}\.){3}[[:digit:]]{1,3}'
+```
+
+### 统计 nginx 日志同 IP 访问次数并排序
+
+```bash
+$ cat access.log | awk '{d[$1]++} END {for (i in d) print d[i],i}' | sort -nr | head
+
+# d 是一个字典，以$1 第一列作为key，value每次累加
+# END 指处理完所有行，再执行后面的逻辑
+# for(i in d)遍历d并打印key和value
+```
+
+### 统计 TCP 连接情况
+
+```bash
+$ ss -nat | awk 'NR>1 {d[$1]++} END {for (i in d) print d[i],i}'
+
+# NR>1 去除第一行
+# {d[$1]++} 对第一列元素进行累加计数
+# {for (i in d) print d[i],i} 打印出数组的元素和出现的次数
 ```
 
 ## docker

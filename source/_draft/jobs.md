@@ -9,6 +9,8 @@ copyright: true
 comment: true
 ---
 
+**已经拿到 offer 找到工作了 2021-09-27**
+
 最近开始准备找工作和面试，奈何一直想去的那家公司没有 HC，再加上 10 月国庆回来之后房租就要到期，要在国庆放假前决定去哪个城市。所以最近有点焦虑担心国庆前拿到自己心仪的 offer 有一定的风险，因此就发篇求职贴，如贵司还需要我这样的运维开发或 SRE 不妨看下如何 😂。
 
 ![](https://p.k8s.li/2021-09-08-jobs-01.png)
@@ -33,7 +35,7 @@ comment: true
 
 主要是负责开发平台底层 K8s 集群部署工具以及平台组件部署工具。有点类似于 Kubesphere 中负责集群部署的 [kubekey](https://github.com/kubesphere/kubekey) 和负责平台组件部署的 [ks-installer](https://github.com/kubesphere/ks-installer) 。不同于 ks-installer 为每个平台组件单独写一些 ansible 的 playbook 来完成平台组件部署，我们的平台组件部署工具是使用 helm chart 统一部署的。这样维护起来也更加方便，因为所有的平台组件部署都是 helm chart，这样版本发布、自动化打包以及后续的部署，这一整套都能统一在一起，维护的成本也比低。这部分内容可参考我写的博客：
 
--  [云原生 PaaS 产品发布&部署方案](https://blog.k8s.li/pass-platform-release.html)
+- [云原生 PaaS 产品发布&部署方案](https://blog.k8s.li/pass-platform-release.html)
 - [万字长文详解 PaaS toB 场景下 K8s 离线部署方案](https://blog.k8s.li/pass-tob-k8s-offline-deploy.html)
 - [使用 GitHub Actions 编译 kubernetes 组件](https://blog.k8s.li/build-k8s-binary-by-github-actions.html)
 - [使用 kubeplay 来离线部署 kubernetes 集群](https://blog.k8s.li/deploy-k8s-by-kubeplay.html)
@@ -65,7 +67,6 @@ comment: true
 ----
 
 
-
 ## 技术能力
 
 - 大学时就喜欢玩 Linux ，接触一些开源社区向大佬们学习。常见的 Linux 发行版如 CentOS、Ubuntu、Debian 基本的运维管理掌握的还算可以，日常的开发测试都在这些发行版上搞，也在这些发行版上是适配过 K8s 部署。一些常见的自动化运维工具如 Ansible、Terraform 等自己都是日常使用，掌握的还行。
@@ -84,82 +85,13 @@ comment: true
 
 ## 个人作品
 
--  [k8sli/kubeplay](https://github.com/k8sli/kubeplay)：无网环境中 K8s 离线部署的工具
+- [k8sli/kubeplay](https://github.com/k8sli/kubeplay)：无网环境中 K8s 离线部署的工具
 - [registry-mirrors](https://github.com/muzi502/registry-mirrors)：使用 GitHub actions 自动同步镜像的工具
 - [k8sli/os-packages](https://github.com/k8sli/os-packages)：yum/dnf/apt 离线源自动化构建工具 
 - [tg.k8s.li](https://tg.k8s.li/)：Kubernetes 相关 RSS 频道，订阅人数 1300+，欢迎小伙伴们加入：）
 - [kindle](https://github.com/muzi502/kindle) ：将 Kindle 上 `.txt` 格式的标注文本转换成 `.html` 的 Python 脚本
 
 ## 其他
-
-### 匹配职位
-
-偏向于 K8s 方向上的运维开发或SRE，以下是我个人认为一些与自己的能力和兴趣比较匹配的 JD
-
-- 百度的 [ACG通用技术服务部_DOP 运维交付研发工程师](https://talent.baidu.com/external/baidu/index.html#/jobDetail/2/182608)
-
-> - 职责要求:
->
-> -计算机或者相关专业，本科及以上学历，2-3年以上相关行业工作经验，交付运维相关经验
->
-> -熟悉kubernetes、docker的常用操作，对docker的网络、存储、安全有深入的理解
->
-> -熟悉kubernetes、docker的网络解决方案，熟悉flannel、calico等开源网络组件优先
->
-> -熟悉kubernetes、docker的存储解决方案，数据持久化，高可用，安全等
->
-> -熟悉kubernetes的原理和使用
->
-> -熟悉至少一门脚本语言（shell/python均可），具备底层脚本开发能力
->
-> -熟悉当前热门的容器生态核心开源项目，如Docker、Kubernetes、Etcd等，能对它们-进行二次开发
->
-> -熟悉Docker/Kubernetes等周边Service生态项目，如监控、日志、网络等方案，精通或者有实施经验者加分
->
-> -DevOps背景，开源项目贡献维护经历加分
-
-- 青云的 [容器解决方案工程师](https://kubesphere.com.cn/forum/d/1666-kubesphere-qingcloud/9)
-
-> - 职位描述
->
-> 开发和整合青云容器产品线以及相关合作伙伴应用或者产品，形成具有复制性的可落地的解决方案
->
-> - 职位要求
->
-> 熟悉 Linux、docker、Kubernetes
-> 有 Kubernetes、helm 使用经验
-> 了解 Kubernetes 网络及存储
-> 熟练使用 shell、ansible，具备脚本开发能力，并至少熟悉其它一种编程语言（python/go）
-> 学习能力强，具备独立解决问题的能力
-> 优秀的团队合作和沟通能力
->
-> - 加分项：
->
-> 有网站开发经验，熟悉至少一种开发框架，如Spring MVC、Django 等
-> 良好的英文书写和沟通能力
-> 有开源社区经验或贡献
-> 有云原生相关开源项目的运维和开发经验
-> 熟悉 DevOps 流程，关注开源 CI/CD 技术工具
-> CKA 证书
-
-- PingCAP 的 [自动化运维研发工程师](https://careers.pingcap.com/apply/pingcap/39950/#/job/8319a481-94cf-44f0-97b4-2d42d7b22bbe) 以及 [SRE](https://careers.pingcap.com/apply/pingcap/39950/#/job/5b9e8422-fc61-42cb-b291-1576da224c88)
-
-> **工作职责:**
->
-> 1. 基于 CI/CD 构建自动化测试和发版系统，提高研发和发版效率；
-> 2. 管理和维护 TiDB Cloud 基础设施，参与线上值班，确保复杂系统能够稳定地运行；
-> 3. 进行稳定性测试和故障恢复测试，从而提高整体的故障恢复能力。
->
-> **任职资格:**
->
-> 1. 具有丰富的大型分布式系统运维经验，包括对分布式系统的分析、监控及故障排查；
-> 2. 熟悉公有云（AWS，GCP，Azure），了解公有云最佳实践；
-> 3. 熟悉 Prometheus，Grafana 等监控工具；
-> 4. 熟悉 Terraform，AWS-CDK，Pulumi 等 Infra as Code 工具；
-> 5. 熟悉常用 CI/CD 工具；
-> 6. 熟悉 kubernetes 的原理和运维；
-> 7. 较强的学习能力；
-> 8. 结果导向，良好的沟通能力。
 
 ### 工作城市
 
