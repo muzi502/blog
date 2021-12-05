@@ -386,11 +386,11 @@ def render_books_html():
  }
 ```
 
-{{% raw %}}
+{% raw %}
 
 <blockquote class="twitter-tweet"><p lang="zh" dir="ltr">支持了自定义 json 的源数据，生成了某个 tg 现充群的群聊的 poster <a href="https://t.co/nhSe3qlVe0">https://t.co/nhSe3qlVe0</a> <a href="https://t.co/bkijsFDtzC">pic.twitter.com/bkijsFDtzC</a></p>&mdash; yihong0618 (@yihong0618) <a href="https://twitter.com/yihong0618/status/1466275108952051716?ref_src=twsrc%5Etfw">December 2, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-{{% endraw %}}
+{% endraw %}
 
 - 生成 `date.json` 数据文件
 
