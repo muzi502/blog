@@ -13,8 +13,6 @@ comment: true
 
 谈到容器镜像就不得不提一下 OCI 规范
 
-
-
 ## 镜像的组成
 
 - image layer
@@ -22,8 +20,6 @@ comment: true
 - image manifest
 
 ## 镜像存储的方式
-
-
 
 - runtime
 - registry
@@ -53,6 +49,3 @@ comment: true
 ### OCI-image
 
 ### skopeo
-
-
-
