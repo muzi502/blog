@@ -103,7 +103,6 @@ comment: true
 - **Email** 📧 [muzi502.li@gmail.com](mailto:muzi502.li@@gmail.com)
 - **Twitter** 🕊 [muzi_ii](https://twitter.com/muzi_ii)
 - **GitHub** 🕸 [muzi502](https://github.com/muzi502)
-- **Telegram** ☎️ [muzi_ii](https://telegram.me/muzi_ii)
+- **Telegram** ☎️ [muzi502](https://telegram.me/muzi502)
 
 最好能先提供一下贵司官网或者其他招聘网站上的 JD 链接，我需要看一下自己是否能符合要求，如果合适的话就将简历发送到大佬您的邮箱（最好是公司的域名邮箱）。
-

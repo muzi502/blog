@@ -1,7 +1,7 @@
 ---
 title: Cluster API 调研
-date: 2021-12-18
-updated: 2021-12-18
+date: 2022-01-10
+updated: 2022-01-12
 slug:
 categories: 技术
 tag:
@@ -17,11 +17,7 @@ comment: true
 
 但是这种部署场景也有一些弊端，比如无法做到集群节点的动态扩缩容。
 
-
-
 ## cluster-api
-
-
 
 ### Provider
 
@@ -226,4 +222,3 @@ spec:
     type: RollingUpdate
   version: v1.21.2+vmware.1
 ```
-
