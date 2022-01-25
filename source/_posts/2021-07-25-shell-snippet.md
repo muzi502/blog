@@ -259,6 +259,18 @@ COPY --from=builder /build/result/bin/skopeo /skopeo
 DOCKER_BUILDKIT=1 docker build -o type=local,dest=$PWD .
 ```
 
+### 将当前目录下的所有内容构建成一个镜像
+
+```bash
+$ echo 'FROM scratch\nCOPY . .' | docker build -t files:tag -f - .
+```
+
+构建好之后就把它 push 到一个 registry 中，另一个人同样通过 docker build 将该文件下载到本地 😂
+
+```bash
+echo 'FROM files:tag' | DOCKER_BUILDKIT=1 docker build -o type=local,dest=$PWD -f - /dev/null
+```
+
 ## kubectl
 
 - 获取集群中所有 pod 运行需要的镜像
