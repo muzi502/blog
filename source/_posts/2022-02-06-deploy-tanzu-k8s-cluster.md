@@ -1,7 +1,7 @@
 ---
-title: VMware tanzu kubernetes 发行版部署尝鲜
-date: 2022-02-04
-updated: 2022-02-04
+title: VMware Tanzu kubernetes 发行版部署尝鲜
+date: 2022-02-06
+updated: 2022-02-06
 slug:
 categories: 技术
 tag:
@@ -13,15 +13,14 @@ copyright: true
 comment: true
 ---
 
-之前接触的 Kubernetes 集群部署工具大多数都是依赖于 ssh 连接到待部署的节点上进行部署操作，这样就要求部署前需要提前准备好集群节点，且要保证这些节点的网络互通以及时钟同步等问题。类似于 kubespray 或者 kubekey 这些部署工具是不会去管这些底层的 IaaS 资源的创建，是要自己提前准备好。但是对于一些企业私有云环境中，使用了如 [VMware vShpere](https://docs.vmware.com/cn/VMware-vSphere/index.html) 或 [OpenStack](https://www.openstack.org/) 这些虚拟化平台，是可以将 K8s 集群部署与 IaaS 资源创建这两步统一起来的，这样就可以避免手动创建和配置虚拟机这些繁琐的步骤。
+之前接触的 Kubernetes 集群部署工具大多数都是依赖于 ssh 连接到待部署的节点上进行部署操作，这样就要求部署前需要提前准备好集群节点，且要保证这些节点的网络互通以及时钟同步等问题。类似于 kubespray 或者 kubekey 这些部署工具是不会去管这些底层的 IaaS 资源的创建，是要自己提前准备好。但是在一些企业私有云环境中，使用了如 [VMware vShpere](https://docs.vmware.com/cn/VMware-vSphere/index.html) 或 [OpenStack](https://www.openstack.org/) 这些虚拟化平台，是可以将 K8s 集群部署与 IaaS 资源创建这两步统一起来的，这样就可以避免手动创建和配置虚拟机这些繁琐的步骤。
 
-目前将 IaaS 资源创建与 K8s 集群部署结合起来也有比较成熟的方案，比如基于 [cluster-api](https://github.com/kubernetes-sigs/cluster-api) 项目的 [tanzu](https://github.com/vmware-tanzu) 。本文就以 [VMware Tanzu 社区版](https://github.com/vmware-tanzu/community-edition) 为例从一台裸服务器开始，从安装 ESXi 到部署完成 Tanzu workload 集群，来体验一下这种部署方案与众不同之处。
+目前将 IaaS 资源创建与 K8s 集群部署结合起来也有比较成熟的方案，比如基于 [cluster-api](https://github.com/kubernetes-sigs/cluster-api) 项目的 [tanzu](https://github.com/vmware-tanzu) 。本文就以 [VMware Tanzu 社区版](https://github.com/vmware-tanzu/community-edition) 为例在一台物理服务器上，从安装 ESXi OS 到部署完成 Tanzu Workload 集群，来体验一下这种部署方案的与众不同之处。
 
 ## 部署流程
 
 - 下载依赖文件
 - 安装 govc 依赖
-
 - 安装 ESXi OS
 - 安装 vCenter
 - 配置 vCenter
@@ -30,19 +29,19 @@ comment: true
 - 部署 Tanzu Manager 集群
 - 部署 Tanzu Workload 集群
 
-### 劝退三连😂
+### 劝退三连 😂
 
 - 需要有一个 [VMware 的账户](https://customerconnect.vmware.com/login) 用于下载一些 ISO 镜像和虚拟机模版;
 
-- 需要有一台物理服务器，根据集群规模和节点配置的不同需要的资源也不同；推荐最低配置 8C 32G，至少 512GB 存储；
+- 需要有一台物理服务器，推荐最低配置 8C 32G，至少 256GB 存储；
 
 - 需要一台 DHCP 服务器，由于默认是使用 DHCP 获取 IP 来分配给虚拟机的，因此 ESXi 所在的 VM Network  网络中必须有一台 DHCP 服务器用于给虚拟机分配 IP；
 
 ### 下载依赖文件
 
-整个部署流程所需要的依赖如下，先将这些依赖下载到本地的机器上，方便后续使用。
+整个部署流程所需要的依文件赖如下，可以先将这些依赖下载到本地的机器上，方便后续使用。
 
-```
+```bash
 root@devbox:/root/tanzu # tree -sh
 .
 ├── [  12M]  govc_Linux_x86_64.tar.gz
@@ -85,7 +84,7 @@ $ apt install jq -y
 
 ### 安装 ESXi OS
 
-ESXi OS 的安装网上有很多教程，没有太多值得讲解的地方，因此就参照一下其他大佬写的博客或者官方的安装文档 [VMware ESXi 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/vsphere-esxi-701-installation-setup-guide.pdf) 来就行；需要注意一点，ESXi OS 安装时 VMFSL 分区将会占用大量的存储空间，这将会使得 ESXi OS 安装所在的磁盘最终创建出来的 datastore 比预期小很多，而且这个 VMFSL 分区在安装好之后就很难再做调整了。因此如果磁盘存储空间比较紧张，在安装 ESXi OS 之前可以考虑入如何去掉这个分区；或者和我的 HP Gen10 Plus 服务器一样将 ESXI OS 安装在了一个 16G 的 USB Dom 盘上，不过生产环境不建议采用这种方案。
+ESXi OS 的安装网上有很多教程，没有太多值得讲解的地方，因此就参照一下其他大佬写的博客或者官方的安装文档 [VMware ESXi 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/vsphere-esxi-701-installation-setup-guide.pdf) 来就行；需要注意一点，ESXi OS 安装时 VMFSL 分区将会占用大量的存储空间，这将会使得 ESXi OS 安装所在的磁盘最终创建出来的 datastore 比预期小很多，而且这个 VMFSL 分区在安装好之后就很难再做调整了。因此如果磁盘存储空间比较紧张，在安装 ESXi OS 之前可以考虑下如何去掉这个分区；或者和我一样将 ESXI OS 安装在了一个 16G 的 USB Dom 盘上，不过生产环境不建议采用这种方案 😂（其实个人觉着安装在 U 盘上问题不大，ESXi OS 启动之后是加载到内存中运行的，不会对 U 盘有大量的读写操作，只不过在机房中 U 盘被人不小心拔走就凉了。
 
 - 设置 govc 环境变量
 
@@ -123,12 +122,12 @@ Name:              localhost.local
 
 知道这个安装过程的原理之后我们也可以自己配置 vCenter 的参数信息，然后通过 govc 来部署 ova；这比使用 UI 的方式简单方便很多，最终只需要填写一个配置文件，一条命令就可以部署完成啦。
 
-- 首先是挂载 vCenter 的 ISO，找到 vcsa ova 文件
+- 首先是挂载 vCenter 的 ISO，找到 vcsa ova 文件，它是 vCenter 虚拟机的模版
 
 ```bash
-$ mount -o loop VMware-VCSA-all-7.0.3-18778458.iso /mnt/VMware-VCSA-all-7.0.3-18778458.iso
-$ ls /mnt/VMware-VCSA-all-7.0.3-18778458.iso/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
-/mnt/VMware-VCSA-all-7.0.3-18778458.iso/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
+$ mount -o loop VMware-VCSA-all-7.0.3-18778458.iso /mnt
+$ ls /mnt/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
+/mnt/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
 ```
 
 - 根据自己的环境信息修改下面安装脚本中的相关配置：
@@ -222,7 +221,7 @@ govc vm.power -on "${VM_NAME}"
 govc vm.ip -a "${VM_NAME}"
 ```
 
-- 通过脚本安装 vCenter，指定第一参数为 OVA 的绝对路径
+- 通过脚本安装 vCenter，指定第一参数为 OVA 的绝对路径。运行完后将会自动将 ova 导入到 vCenter，并启动虚拟机；
 
 ```bash
 # 执行该脚本，第一个参数传入 vCenter ISO 中 vcsa ova 文件的绝对路径
@@ -236,7 +235,7 @@ Powering on VirtualMachine:3... OK
 fe80::20c:29ff:fe03:2f80
 ```
 
-- 设置 vCenter 登录环境变量
+- 设置 vCenter 登录的环境变量，我们使用 govc 来配置 vCenter，通过浏览器 Web UI 的方式配置起来效率有点低，不如 govc 命令一把梭方便 😂
 
 ```bash
 export GOVC_URL="https://192.168.20.92"
@@ -246,7 +245,7 @@ export GOVC_INSECURE=true
 export GOVC_DATASTORE=datastore1
 ```
 
-- 虚拟机启动后将自动进行 vCenter 的安装配置，等待 vCenter 安装好之后，再修改一下 govc 的环境变量配置，使用 govc about 查看 vCenter 的信息；
+- 虚拟机启动后将自动进行 vCenter 的安装配置，等待一段时间 vCenter 安装好之后，使用 govc about 查看 vCenter 的信息，如果能正确或渠道说明 vCenter 就安装好了；
 
 ```bash
 $ govc about
@@ -264,14 +263,14 @@ UUID:         0b49e119-e38f-4fbc-84a8-d7a0e548027d
 
 ### 配置 vCenter
 
-这一步骤主要是配置 vCenter、创建 Datacenter、cluster、folder 等资源，并将 ESXi 主机添加到 cluster 当中；
+这一步骤主要是配置 vCenter：创建 Datacenter、cluster、folder 等资源，并将 ESXi 主机添加到 cluster 中；
 
 - 配置 vCenter
 
 ```bash
-# 创建 Datacenter
+# 创建 Datacenter 数据中心
 $ govc datacenter.create SH-IDC
-# 创建 Cluster
+# 创建 Cluster 集群
 $ govc cluster.create -dc=SH-IDC Tanzu-Cluster
 # 将 ESXi 主机添加到 Cluster 当中
 $ govc cluster.add -dc=SH-IDC -cluster=Tanzu-Cluster -hostname=192.168.18.47 --username=root -password='admin@2020' -noverify
@@ -285,7 +284,7 @@ $ govc vm.markastemplate photon-3-kube-v1.21.2
 
 ### 初始化 bootstrap 节点
 
-bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 Linux/macOS/Windows 的，但有一些比较严格的要求：
+bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 Linux/macOS/Windows 三种操作系统的，但有一些比较严格的要求：
 
 | Arch: x86; ARM is currently unsupported                      |
 | ------------------------------------------------------------ |
@@ -330,7 +329,7 @@ root@photon-machine [ ~ ]# curl -LO https://dl.k8s.io/release/v1.21.2/bin/linux/
 root@photon-machine [ ~ ]# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-- 启动 docker，bootstrap 节点会以 kind 的方式运行一个 K8s 集群，需要用到 docker。虽然可以使用外部的 k8s 集群，但不是很推荐。因为 cluster-api 需要依赖 k8s 的版本，不能太高也不能太低；
+- 启动 docker，bootstrap 节点会以 kind 的方式运行一个 K8s 集群，需要用到 docker。虽然可以使用外部的 k8s 集群，但不是很推荐，因为 cluster-api 依赖 k8s 的版本，不能太高也不能太低；
 
 ```bash
 root@photon-machine [ ~ ]# systemctl enable docker --now
@@ -387,9 +386,9 @@ Installation complete!
 
 ### 部署管理集群
 
-先是部署一个 tanzu 的管理集群，有两种方式，一种是通过 [官方文档](https://tanzucommunityedition.io/docs/latest/getting-started/) 提到的通过 Web UI 的方式。其实这个 UI 界面比较羸弱，它主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令来部署集群。并把集群部署的日志和进度展示出来；部署完成之后，这个 UI 又不能管理这些集群，又不支持部署 workload 集群（
+先是部署一个 tanzu 的管理集群，有两种方式，一种是通过 [官方文档](https://tanzucommunityedition.io/docs/latest/getting-started/) 提到的通过 Web UI 的方式。目前这个 UI 界面比较拉垮，它主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令来部署集群。并把集群部署的日志和进度展示出来；部署完成之后，这个 UI 又不能管理这些集群，又不支持部署 workload 集群（
 
-另一种就是通过 tanzu 命令指定配置文件来部署，这种方式不需要通过浏览器在 web 页面上傻乎乎地点来点去填一些参数，只需要提前填写好一个 yaml 格式的配置文件即可。下面我们采用 tanzu 命令来部署集群，管理集群的配置文件模版如下：
+另一种就是通过 tanzu 命令指定配置文件来部署，这种方式不需要通过浏览器在 web 页面上傻乎乎地点来点去填一些参数，只需要提前填写好一个 yaml 格式的配置文件即可。下面我们就采用 tanzu 命令来部署集群，管理集群的配置文件模版如下：
 
 - tanzu-mgt-cluster.yaml
 
@@ -700,7 +699,7 @@ var InitRegionSteps = []string{
 }
 ```
 
-- StepConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom`镜像，用于检查环境的兼容性；
+- ConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom`镜像，用于检查环境的兼容性；
 
 ```bash
 Downloading TKG compatibility file from 'projects.registry.vmware.com/tkg/framework-zshippable/tkg-compatibility'
@@ -708,10 +707,6 @@ Downloading the TKG Bill of Materials (BOM) file from 'projects.registry.vmware.
 Downloading the TKr Bill of Materials (BOM) file from 'projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1'
 ERROR 2022/02/06 02:24:46 svType != tvType; key=release, st=map[string]interface {}, tt=<nil>, sv=map[version:], tv=<nil>
 CEIP Opt-in status: false
-
-Validating the pre-requisites...
-
-vSphere 7.0 Environment Detected.
 ```
 
 - ValidateConfiguration 配置文件校验，根据填写的参数校验配置是否正确，以及检查 vCenter 当中有无匹配的虚拟机模版；
@@ -849,7 +844,7 @@ Waiting for resources type *v1alpha3.ClusterResourceSetList to be up and running
 Waiting for resource antrea-controller of type *v1.Deployment to be up and running
 ```
 
-- MoveClusterAPIObjects 将 bootstrap 集群上 cluster-api 相关的资源转移到管理集群上。这一步的目的是为了达到 self-hosted 自托管的功能；即管理集群自身的扩缩容也是通过 cluster-api 来完成，这样就不用再依赖先前的那个 bootstrap 集群了；
+- MoveClusterAPIObjects 将 bootstrap 集群上 cluster-api 相关的资源转移到管理集群上。这一步的目的是为了达到 self-hosted 自托管的功能：即管理集群自身的扩缩容也是通过 cluster-api 来完成，这样就不用再依赖先前的那个 bootstrap 集群了；
 
 ```bash
 Moving all Cluster API objects from bootstrap cluster to management cluster...
@@ -988,7 +983,7 @@ tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-
 
 ## 扩容集群
 
-集群部署好之后，如果想对集群节点进行扩缩容，我们可以像 deployment 的一样，只需要修改一下一些 CR 的信息即可。cluster-api 相关组件会 watch 到这些 CR 的变化，并根据它的 spec 进行一系列调谐操作。如果当前集群节点数量低于所定义的节点副本数量，则会自动调用对应的 Provider 创建虚拟机，并对虚拟机进行初始化操作，将它转换为 k8s 里的一个 node 资源；
+集群部署好之后，如果想对集群节点进行扩缩容，我们可以像 deployment 的一样，只需要修改一些 CR 的信息即可。cluster-api 相关组件会 watch 到这些 CR 的变化，并根据它的 spec 信息进行一系列调谐操作。如果当前集群节点数量低于所定义的节点副本数量，则会自动调用对应的 Provider 创建虚拟机，并对虚拟机进行初始化操作，将它转换为 k8s 里的一个 node 资源；
 
 ### 扩容 control-plan 节点
 
@@ -1022,7 +1017,7 @@ tanzu-workload-cluster-md-0-8555bbbfc-ftmlp   vsphere://42399640-8e94-85e5-c4bd-
 
 ## 后续
 
-本文只是介绍了 tanzu 集群部署的大体流程，里面包含了 cluster-api 相关的概念在本文并没有做深入的分析，因为实在是太复杂了 😂，到现在我还是没太理解其中的一些原理，因此后续我再单独写一篇博客来讲解一些 cluster-api 相关的内容；到那时候在结合本文来看就容易理解很多。
+本文只是介绍了 tanzu 集群部署的大体流程，里面包含了 cluster-api 相关的概念在本文并没有做深入的分析，因为实在是太复杂了 😂，到现在我还是没太理解其中的一些原理，因此后续我再单独写一篇博客来讲解一些 cluster-api 相关的内容，到那时候在结合本文来看就容易理解很多。
 
 ## 参考
 

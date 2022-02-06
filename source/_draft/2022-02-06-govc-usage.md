@@ -301,3 +301,233 @@ $ govc vm.power -on=true ${VM_NAME}
 ## 克隆虚拟机
 
 ## 虚拟机快照
+
+## govmomi
+
+有些情况下 govc 或者 esxcli 命令支持的并不是很全，比如配置 PCI 设备直通。在 ESXi 7.0 以上可以通过 esxcli 命令配置 PCI 设备直通，但是 ESXI 7.0 以下的版本如 6.7.0 是不支持的。如果要支持的话，就需要自己去实现了，下面是我参照 govmomi 库实现的配置 PCI 通的功能。
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/url"
+	"os"
+
+	"github.com/vmware/govmomi"
+	"github.com/vmware/govmomi/view"
+	"github.com/vmware/govmomi/vim25/methods"
+	"github.com/vmware/govmomi/vim25/mo"
+	"github.com/vmware/govmomi/vim25/types"
+	"k8s.io/klog/v2"
+)
+
+type EsxiClient struct {
+	client   *govmomi.Client
+	ctx      context.Context
+	Host     string
+	Username string
+	Password string
+}
+
+// NewClient creates a ESXi client which embedded a govmomi client
+// @param host: the ESXi host IP or FQDN
+// @param username: the ESXi username
+// @param password: the ESXi password
+func NewEsxiClient(host string, username string, password string) (*EsxiClient, error) {
+	sdkUrl := &url.URL{
+		Scheme: "https",
+		Host:   host,
+		Path:   "/sdk",
+	}
+	ctx := context.Background()
+	sdkUrl.User = url.UserPassword(username, password)
+	client, err := govmomi.NewClient(ctx, sdkUrl, true)
+	if err != nil {
+		return nil, err
+	}
+	return &EsxiClient{
+		Host:     host,
+		Username: username,
+		Password: password,
+		client:   client,
+		ctx:      ctx,
+	}, nil
+}
+
+// Close closes the connection to ESXi host
+func (ec *EsxiClient) Close() error {
+	return ec.client.Logout(ec.ctx)
+}
+
+// ListPciDevices returns a list of PCI devices which support passthru
+func (ec *EsxiClient) ListPciDevices() (*[]types.HostPciDevice, error) {
+	client := ec.client.Client
+	m := view.NewManager(client)
+	m.Client()
+	v, err := m.CreateContainerView(ec.ctx, client.ServiceContent.RootFolder, []string{"HostSystem"}, true)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := v.Destroy(ec.ctx); err != nil {
+			klog.Errorf("failed to destroy container view: %v", err)
+		}
+	}()
+
+	var hosts []mo.HostSystem
+	if err := v.Retrieve(ec.ctx, []string{"HostSystem"}, []string{"name", "hardware", "config"}, &hosts); err != nil {
+		return nil, err
+	}
+
+	host := hosts[0]
+	pciDevices := make([]types.HostPciDevice, 0)
+
+	for _, device := range host.Hardware.PciDevice {
+		if isPciPassthruCapable(host.Config.PciPassthruInfo, device.Id) {
+			pciDevices = append(pciDevices, device)
+		}
+	}
+	return &pciDevices, nil
+}
+
+// UpdatePciPassthru updates the pci passthru configuration,
+// @param pciID: the pci device id
+// @param enable: true to enable, false to disable
+func (ec *EsxiClient) UpdatePassthruConfig(id string, enabled bool) error {
+	client := ec.client.Client
+	m := view.NewManager(client)
+	m.Client()
+	v, err := m.CreateContainerView(ec.ctx, client.ServiceContent.RootFolder, []string{"HostSystem"}, true)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := v.Destroy(ec.ctx); err != nil {
+			klog.Errorf("failed to destroy container view: %v", err)
+		}
+	}()
+	var hosts []mo.HostSystem
+	err = v.Retrieve(ec.ctx, []string{"HostSystem"}, []string{"configManager.pciPassthruSystem", "hardware", "config"}, &hosts)
+	if err != nil {
+		klog.Error(err)
+	}
+	host0 := hosts[0]
+	applyNow := bool(false)
+	req := types.UpdatePassthruConfig{
+		This: *host0.ConfigManager.PciPassthruSystem,
+		Config: []types.BaseHostPciPassthruConfig{
+			&types.HostPciPassthruConfig{
+				Id:              id,
+				ApplyNow:        &applyNow,
+				PassthruEnabled: enabled,
+			},
+		},
+	}
+	resp, err := methods.UpdatePassthruConfig(ec.ctx, client.Client, &req)
+	if err != nil {
+		klog.Infof("UpdatePassthruConfig response: %v", resp)
+		klog.Errorf("failed to update pci passthru config: %v", err)
+	}
+	if !isPciPassthruEnabled(host0.Config.PciPassthruInfo, id) {
+		return errors.New("failed to enable pci passthru")
+	}
+	return nil
+}
+
+// IsPciPassthruEnabled returns true if the pci passthru is enableds
+// @param id: the pci device id
+func (ec *EsxiClient) IsPciPassthruActive(id string) (bool, error) {
+	c := ec.client.Client
+	m := view.NewManager(c)
+	m.Client()
+	v, err := m.CreateContainerView(ec.ctx, c.ServiceContent.RootFolder, []string{"HostSystem"}, true)
+	if err != nil {
+		return false, err
+	}
+	defer func() {
+		if err := v.Destroy(ec.ctx); err != nil {
+			klog.Errorf("failed to destroy container view: %v", err)
+		}
+	}()
+
+	var hss []mo.HostSystem
+	if err := v.Retrieve(ec.ctx, []string{"HostSystem"}, []string{"configManager.pciPassthruSystem", "hardware", "config"}, &hss); err != nil {
+		return false, err
+	}
+	host0 := hss[0]
+	if !isPciPassthruActive(host0.Config.PciPassthruInfo, id) {
+		return false, errors.New("pci passthru is not active")
+	}
+	return true, nil
+}
+
+// isPciPassthruCapable returns true if the pci device is capable of passthru
+// @param pciPassthruInfo: the pci passthru info
+// @param id: the pci device id
+func isPciPassthruCapable(pciPassthruInfo []types.BaseHostPciPassthruInfo, pciID string) bool {
+	for _, pci := range pciPassthruInfo {
+		if pci.GetHostPciPassthruInfo().Id == pciID {
+			return pci.GetHostPciPassthruInfo().PassthruCapable
+		}
+	}
+	return false
+}
+
+// isPciPassthruEnabled returns true if the pci device is enableds
+// @param pciPassthruInfo: the pci passthru info
+// @param id: the pci device id
+func isPciPassthruEnabled(pciPassthruInfo []types.BaseHostPciPassthruInfo, pciID string) bool {
+	for _, pci := range pciPassthruInfo {
+		if pci.GetHostPciPassthruInfo().Id == pciID {
+			return pci.GetHostPciPassthruInfo().PassthruEnabled
+		}
+	}
+	return false
+}
+
+// isPciPassthruActive returns true if the pci device is active
+// @param pciPassthruInfo: the pci passthru info
+// @param id: the pci device id
+func isPciPassthruActive(pciPassthruInfo []types.BaseHostPciPassthruInfo, pciID string) bool {
+	for _, pci := range pciPassthruInfo {
+		if pci.GetHostPciPassthruInfo().Id == pciID {
+			return pci.GetHostPciPassthruInfo().PassthruActive
+		}
+	}
+	return false
+}
+
+func main() {
+	host := os.Getenv("ESXI_HOST")
+	username := os.Getenv("ESXI_USERNAME")
+	password := os.Getenv("ESXI_PASSWORD")
+	ec, err := NewEsxiClient(host, username, password)
+	defer func() {
+		if err := ec.Close(); err != nil {
+			klog.Errorf("failed to logout: %v", err)
+		}
+	}()
+	if err != nil {
+		klog.Errorf("failed to create esxi client: %v", err)
+	}
+	pciDevices, err := ec.ListPciDevices()
+	if err != nil {
+		klog.Errorf("get esxi host pci list failed", err)
+	}
+	output, err := json.Marshal(pciDevices)
+	if err != nil {
+		klog.Errorf("marshal pci devices failed", err)
+	}
+	fmt.Println(string(output))
+
+	id := "0000:0b:00.0"
+	if err := ec.UpdatePassthruConfig(id, true); err != nil {
+		klog.Errorf("update pci passthru config failed: %v", err)
+	}
+}
+```
+
