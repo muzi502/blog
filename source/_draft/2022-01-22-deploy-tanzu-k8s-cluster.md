@@ -1,34 +1,251 @@
 ---
 title: VMware tanzu kubernetes 发行版部署尝鲜
-date: 2022-01-01
-updated:
+date: 2022-02-04
+updated: 2022-02-04
 slug:
-categories:
+categories: 技术
 tag:
+  - ESXi
+  - Tanzu
+  - Kubernetes
+  - Cluster-api
 copyright: true
 comment: true
 ---
 
-## 劝退三连 😂
+之前接触的 Kubernetes 集群部署工具大多数都是依赖于 ssh 连接到待部署的节点上进行部署操作，这样就要求部署前需要提前准备好集群节点，且要保证这些节点的网络互通以及时钟同步等问题。类似于 kubespray 或者 kubekey 这些部署工具时不会去管这些底层的 IaaS 资源的，是要自己提前准备好。但是对于一些企业私有云环境中，使用了如 VMware vShpere 或 OpenStack 这些虚拟化平台，是可以将 K8s 集群部署与 IaaS 资源创建这两步统一起来的。
 
-### bootstrap
+目前将 IaaS 资源创建与 K8s 集群部署结合起来也有比较成熟的方案，比如基于 cluster-api 项目的 [tanzu](https://github.com/vmware-tanzu) 。本文就以 [VMware Tanzu 社区版](https://github.com/vmware-tanzu/community-edition) 为例从一台裸服务器开始，从安装 ESXi 到部署完成 Tanzu workload 集群，来体验一下这种部署方案与众不同之处。
 
-bootstrap 节点，即 tanzu installer 运行节点
+## 部署流程
 
-| item                                                         |
-| :----------------------------------------------------------- |
-| Arch: x86; ARM is currently unsupported                      |
-| RAM: 6 GB                                                    |
-| CPU: 2                                                       |
-| [Docker](https://docs.docker.com/engine/install/) Add your non-root user account to the docker user group. Create the group if it does not already exist. This lets the Tanzu CLI access the Docker socket, which is owned by the root user. For more information, see steps 1 to 4 in the [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) procedure in the Docker documentation. |
-| [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) |
-| Latest version of Chrome, Firefox, Safari, Internet Explorer, or Edge |
-| System time is synchronized with a Network Time Protocol (NTP) server. |
-| Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). For more information, see [Check and set the cgroup](https://tanzucommunityedition.io/docs/latest/support-matrix/#check-and-set-the-cgroup). |
+- 下载依赖文件
+- 安装 govc 依赖
 
-### vCenter
+- 安装 ESXi OS
+- 安装 vCenter
+- 配置 vCenter
+- 创建 bootstrap 虚拟机
+- 初始化 bootstrap 节点
+- 部署 Tanzu Manager 集群
+- 部署 Tanzu Workload 集群
+
+### 劝退三连😂
+
+- 需要有一个 [VMware 的账户](https://customerconnect.vmware.com/login) 用于下载一些 ISO 镜像和虚拟机模版;
+
+- 需要有一台物理服务器，根据集群规模和节点配置的不同需要的资源也不同；推荐最低配置 8C 32G，至少 512GB 存储；
+
+- 需要一台 DHCP 服务器，由于默认是使用 DHCP 获取 IP 来分配给虚拟机的，因此 ESXi 所在的 VM Network  网络中必须有一台 DHCP 服务器用于给虚拟机分配 IP；
+
+### 下载依赖文件
+
+整个部署流程所需要的依赖如下，先将这些依赖下载到本地的机器上，方便后续使用。
+
+```
+root@devbox:/root/tanzu # tree -sh
+.
+├── [  12M]  govc_Linux_x86_64.tar.gz
+├── [ 895M]  photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova
+├── [ 225M]  photon-ova-4.0-c001795b80.ova
+├── [ 170M]  tce-linux-amd64-v0.9.1.tar.gz
+├── [ 9.0G]  VMware-VCSA-all-7.0.3-18778458.iso
+└── [ 390M]  VMware-VMvisor-Installer-7.0U2a-17867351.x86_64.iso
+```
+
+| 文件                                                         | 用途              | 下载方式       |
+| ------------------------------------------------------------ | ----------------- | -------------- |
+| [VMware-VMvisor-Installer-7.0U2a-17867351.x86_64.iso](https://customerconnect.vmware.com/downloads/details?downloadGroup=ESXI70U2A&productId=974&rPId=46384) | 安装 ESXi OS      | VMware 需账户  |
+| [VMware-VCSA-all-7.0.3-19234570.iso](https://customerconnect.vmware.com/downloads/details?downloadGroup=VC70U3C&productId=974&rPId=83853) | 安装 vCenter      | VMware 需账户  |
+| [photon-ova-4.0-c001795b80.ova](https://packages.vmware.com/photon/4.0/Rev2/ova/photon-ova-4.0-c001795b80.ova) | bootstrap 节点    | VMware         |
+| [photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090) | tanzu 集群节点    | VMware 需账户  |
+| [tce-linux-amd64-v0.9.1.tar.gz](https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-linux-amd64-v0.9.1.tar.gz) | tanzu 社区版      | GitHub release |
+| [govc_Linux_x86_64.tar.gz](https://github.com/vmware/govmomi/releases/download/v0.27.3/govc_Linux_x86_64.tar.gz) | 安装/配置 vCenter | GitHub release |
+
+注意 ESXi 和 vCenter 的版本最好是 7.0 及以上，我只在 ESXi 7.0.2 和 vCenter 7.0.3 上测试过，其他版本可能会有些差异；另外 ESXi 的版本不建议使用最新的 7.0.3，因为有比较严重的 bug，官方也建议用户生产环境不要使用该版本了 [vSphere 7.0 Update 3 Critical Known Issues - Workarounds & Fix (86287)](https://kb.vmware.com/s/article/86287) 。
+
+### 安装 govc 及依赖
+
+在本地机器上安装好 govc 和 jq，这两个工具后面在配置 vCenter 的时候会用到。
+
+- macOS
 
 ```bash
+$ brew install govc jq
+```
+
+- Debian/Ubuntu
+
+```bash
+$ tar -xf govc_Linux_x86_64.tar.gz -C /usr/local/bin
+$ apt install jq -y
+```
+
+- 其他 Linux 可以在 govc 和 jq 的 GitHub 上下载对应的安装文件进行安装
+
+### 安装 ESXi OS
+
+ESXi OS 的安装网上有很多教程，没有太多值得讲解的地方，因此就参照一下其他大佬写的博客或者官方的安装文档 [VMware ESXi 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/vsphere-esxi-701-installation-setup-guide.pdf) 来就行；需要注意一点，ESXi OS 安装时 VMFSL 分区将会占用大量的存储空间，这将会使得 ESXi OS 安装所在的磁盘最终创建出来的 datastore 比预期小很多，而且这个 VMFSL 分区在安装好之后就很难再做调整了。因此如果磁盘存储空间比较紧张，在安装 ESXi OS 之前可以考虑入如何去掉这个分区；或者和我的 HP Gen10 Plus 服务器一样将 ESXI OS 安装在了一个 16G 的 USB Dom 盘上，不过生产环境不建议采用这种方案。
+
+- 设置 govc 环境变量
+
+```bash
+# ESXi 节点的 IP
+export ESXI_IP="192.168.18.47"
+# ESXi 登录的用户名，初次安装后默认为 root
+export GOVC_USERNAME="root"
+# 在 ESXi 安装时设置的 root 密码
+export GOVC_PASSWORD="admin@2022"
+# 允许不安全的 SSL 连接
+export GOVC_INSECURE=true
+export GOVC_URL="https://${ESXI_IP}"
+export GOVC_DATASTORE=datastore1
+```
+
+- 测试 govc 是否能正常连接 ESXi 主机
+
+```bash
+Name:              localhost.local
+  Path:            /ha-datacenter/host/localhost/localhost
+  Manufacturer:    Dell
+  Logical CPUs:    20 CPUs @ 2394MHz
+  Processor type:  Intel(R) Xeon(R) Silver 4210R CPU @ 2.40GHz
+  CPU usage:       579 MHz (1.2%)
+  Memory:          261765MB
+  Memory usage:    16457 MB (6.3%)
+  Boot time:       2022-02-02 11:53:59.630124 +0000 UTC
+  State:           connected
+```
+
+### 安装 vCenter
+
+按照 VMware 官方的 vCenter 安装文档 [关于 vCenter Server 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-8DC3866D-5087-40A2-8067-1361A2AF95BD.html) 来安装实在是过于繁琐，其实官方的 ISO 安装方式无非是运行一个 installer web 服务，然后在浏览器上配置好 vCenter 虚拟机的参数，再将填写的配置信息在部署 vcsa 虚拟机的时候注入到 ova 的配置参数中。知道这个安装过程的原理之后我们也可以自己配置 vCenter，然后通过 govc 来部署 ova；这比使用 UI 的方式简单方便很多，最终只需要填写一个配置文件，一条命令就可以部署完成啦；
+
+- 首先是将 vcsa 虚拟机的 ova 模版从 vCenter 的 ISO 中提取出来；
+
+```bash
+$ mount -o loop VMware-VCSA-all-7.0.3-18778458.iso /mnt/VMware-VCSA-all-7.0.3-18778458.iso
+```
+
+- 根据自己的环境信息修改下面安装脚本中的相关配置；
+
+```bash
+#!/usr/bin/env bash
+VCSA_OVA_FILE=$1
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# ESXi 的 IP 地址
+export ESXI_IP="192.168.18.47"
+
+# ESXi 的用户名
+export GOVC_USERNAME="root"
+
+# ESXI 的密码
+export GOVC_PASSWORD="admin@2020"
+
+# 安装 vCenter 虚拟机使用的 datastore 名称
+export GOVC_DATASTORE=datastore1
+export GOVC_INSECURE=true
+export GOVC_URL="https://${ESXI_IP}"
+
+# vCenter 的登录密码
+VM_PASSWORD="admin@2020"
+# vCenter 的 IP 地址
+VM_IP=192.168.20.92
+# vCenter 虚拟机的名称
+VM_NAME=vCenter-Server-Appliance
+# vCenter 虚拟机使用的网络
+VM_NETWORK="VM Network"
+# DNS 服务器
+VM_DNS="223.6.6.6"
+# NTP 服务器
+VM_NTP="0.pool.ntp.org"
+
+deploy_vcsa_vm(){
+    config=$(govc host.info -k -json | jq -r '.HostSystems[].Config')
+    gateway=$(jq -r '.Network.IpRouteConfig.DefaultGateway' <<<"$config")
+    route=$(jq -r '.Network.RouteTableInfo.IpRoute[] | select(.DeviceName == "vmk0") | select(.Gateway == "0.0.0.0")' <<<"$config")
+    prefix=$(jq -r '.PrefixLength' <<<"$route")
+    opts=(
+        cis.vmdir.password=${VM_PASSWORD}
+        cis.appliance.root.passwd=${VM_PASSWORD}
+        cis.appliance.root.shell=/bin/bash
+        cis.deployment.node.type=embedded
+        cis.vmdir.domain-name=vsphere.local
+        cis.vmdir.site-name=VCSA
+        cis.appliance.net.addr.family=ipv4
+        cis.appliance.ssh.enabled=True
+        cis.ceip_enabled=False
+        cis.deployment.autoconfig=True
+        cis.appliance.net.addr=${VM_IP}
+        cis.appliance.net.prefix=${prefix}
+        cis.appliance.net.dns.servers=${VM_DNS}
+        cis.appliance.net.gateway=$gateway
+        cis.appliance.ntp.servers="${VM_NTP}"
+        cis.appliance.net.mode=static
+    )
+
+    props=$(printf -- "guestinfo.%s\n" "${opts[@]}" | jq --slurp -R 'split("\n") | map(select(. != "")) | map(split("=")) | map({"Key": .[0], "Value": .[1]})')
+
+    cat <<EOF | govc import.${VCSA_OVA_FILE##*.} -options - "${VCSA_OVA_FILE}"
+    {
+    "Name": "${VM_NAME}",
+    "Deployment": "tiny",
+    "DiskProvisioning": "thin",
+    "IPProtocol": "IPv4",
+    "Annotation": "VMware vCenter Server Appliance",
+    "PowerOn": false,
+    "WaitForIP": false,
+    "InjectOvfEnv": true,
+    "NetworkMapping": [
+        {
+        "Name": "Network 1",
+        "Network": "${VM_NETWORK}"
+        }
+    ],
+    "PropertyMapping": ${props}
+    }
+EOF
+
+}
+
+deploy_vcsa_vm
+govc vm.change -vm "${VM_NAME}" -g vmwarePhoton64Guest
+govc vm.power -on "${VM_NAME}"
+govc vm.ip -a "${VM_NAME}"
+```
+
+- 通过脚本安装 vCenter，指定第一参数为 OVA 的绝对路径
+
+```bash
+# 执行该脚本，第一个参数传入 vCenter ISO 中 vcsa ova 文件的绝对路径
+$ bash install-vcsa.sh /mnt/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
+
+[03-02-22 18:40:19] Uploading VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10-disk1.vmdk... OK
+[03-02-22 18:41:09] Uploading VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10-disk2.vmdk... (29%, 52.5MiB/s)
+[03-02-22 18:43:08] Uploading VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10-disk2.vmdk... OK
+[03-02-22 18:43:08] Injecting OVF environment...
+Powering on VirtualMachine:3... OK
+fe80::20c:29ff:fe03:2f80
+```
+
+- 设置 vCenter 登录环境变量
+
+```bash
+export GOVC_URL="https://192.168.20.92"
+export GOVC_USERNAME="administrator@vsphere.local"
+export GOVC_PASSWORD="admin@2022"
+export GOVC_INSECURE=true
+export GOVC_DATASTORE=datastore1
+```
+
+- 虚拟机启动后将自动进行 vCenter 的安装配置，等待 vCenter 安装好之后，再修改一下 govc 的环境变量配置，使用 govc about 查看 vCenter 的信息；
+
+```bash
+$ govc about
 FullName:     VMware vCenter Server 7.0.3 build-18778458
 Name:         VMware vCenter Server
 Vendor:       VMware, Inc.
@@ -41,48 +258,53 @@ Product ID:   vpx
 UUID:         0b49e119-e38f-4fbc-84a8-d7a0e548027d
 ```
 
+### 配置 vCenter
 
+这一步骤主要是配置 vCenter、创建 Datacenter、cluster、folder 等资源，并将 ESXi 主机添加到 cluster 当中；
+
+- 配置 vCenter
 
 ```bash
+# 创建 Datacenter
 $ govc datacenter.create SH-IDC
+# 创建 Cluster
 $ govc cluster.create -dc=SH-IDC Tanzu-Cluster
+# 将 ESXi 主机添加到 Cluster 当中
+$ govc cluster.add -dc=SH-IDC -cluster=Tanzu-Cluster -hostname=192.168.18.47 --username=root -password='admin@2020' -noverify
+# 创建 folder，用于将 Tanzu 的节点虚拟机存放到该文件夹下
 $ govc folder.create /SH-IDC/vm/Tanzu-node
-$ govc import.ova -ds='datastore*'  photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova
+# 导入 tanzu 汲取节点的虚拟机 ova 模版
+$ govc import.ova -dc='SH-IDC' -ds='datastore1' photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova
+# 将虚拟机转换为模版，后续 tanzu 集群将以该模版创建虚拟机
 $ govc vm.markastemplate photon-3-kube-v1.21.2
 ```
 
-
-
-### ESXi
-
-```bash
-Name:              192.168.69.76
-  Path:            /Datacenter/host/Tanzu/192.168.69.76
-  Manufacturer:    Dell
-  Logical CPUs:    24 CPUs @ 2195MHz
-  Processor type:  Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz
-  CPU usage:       9105 MHz (17.3%)
-  Memory:          130629MB
-  Memory usage:    83566 MB (64.0%)
-  Boot time:       2022-01-13 05:29:46.507529 +0000 UTC
-  State:           connected
-```
-
-## 部署原理
-
-## 部署流程
-
-### 导入 OVA
-
 ### 初始化 bootstrap 节点
 
-bootstrap 节点我是直接使用的 VMware 官方的 [Photon OS 4.0 Rev2](https://github.com/vmware/photon/wiki/Downloading-Photon-OS#photon-os-40-rev2-binaries) ，下载 OVA 格式的镜像直接导入到 ESXi 主机启动一台虚拟机即可。
+bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 LInux/macOS/Windows 的，但有一些比较严格的要求：
+
+| Arch: x86; ARM is currently unsupported                      |
+| ------------------------------------------------------------ |
+| RAM: 6 GB                                                    |
+| CPU: 2                                                       |
+| [Docker](https://docs.docker.com/engine/install/) Add your non-root user account to the docker user group. Create the group if it does not already exist. This lets the Tanzu CLI access the Docker socket, which is owned by the root user. For more information, see steps 1 to 4 in the [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) procedure in the Docker documentation. |
+| [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) |
+| Latest version of Chrome, Firefox, Safari, Internet Explorer, or Edge |
+| System time is synchronized with a Network Time Protocol (NTP) server. |
+| Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). For more information, see [Check and set the cgroup](https://tanzucommunityedition.io/docs/latest/support-matrix/#check-and-set-the-cgroup). |
+
+在这里为了避免这些麻烦的配置，我就直接使用的 VMware 官方的 [Photon OS 4.0 Rev2](https://github.com/vmware/photon/wiki/Downloading-Photon-OS#photon-os-40-rev2-binaries) ，下载 OVA 格式的镜像直接导入到 ESXi 主机启动一台虚拟机即可，能节省不少麻烦的配置；
 
 ```bash
 $ wget https://packages.vmware.com/photon/4.0/Rev2/ova/photon-ova-4.0-c001795b80.ova
-$ govc import.ova -ds='datastore*' -name bootstrap-node photon-ova-4.0-c001795b80.ova
-$ govc vm.change -c 4 -m 8192 bootstrap-node
+# 导入 OVA 虚拟机模版
+$ govc import.ova -ds='datastore1' -name bootstrap-node photon-ova-4.0-c001795b80.ova
+# 修改一下虚拟机的配置，调整为 4C8G
+$ govc vm.change -c 4 -m 8192 -vm bootstrap-node
+# 开启虚拟机
 $ govc vm.power -on bootstrap-node
+# 查看虚拟机获取到的 IPv4 地址
+$ govc vm.ip -a -wait 1m bootstrap-node
 $ ssh root@192.168.74.10
 # 密码默认为 changeme，输入完密码之后提示在输入一遍 changeme，然后再修改新的密码
 root@photon-machine [ ~ ]# cat /etc/os-release
@@ -104,62 +326,10 @@ root@photon-machine [ ~ ]# curl -LO https://dl.k8s.io/release/v1.21.2/bin/linux/
 root@photon-machine [ ~ ]# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-- 启动 docker，bootstrap 节点会以 kind 的方式运行一个 K8s 集群，需要用到 docker
+- 启动 docker，bootstrap 节点会以 kind 的方式运行一个 K8s 集群，需要用到 docker。虽然可以使用外部的 k8s 集群，但不是很推荐。因为 cluster-api 需要依赖 k8s 的版本，不能太高也不能太低；
 
 ```bash
 root@photon-machine [ ~ ]# systemctl enable docker --now
-root@photon-machine [ ~ ]# docker info
-Client:
- Context:    default
- Debug Mode: false
-
-Server:
- Containers: 0
-  Running: 0
-  Paused: 0
-  Stopped: 0
- Images: 0
- Server Version: 20.10.11
- Storage Driver: overlay2
-  Backing Filesystem: extfs
-  Supports d_type: true
-  Native Overlay Diff: true
-  userxattr: false
- Logging Driver: json-file
- Cgroup Driver: cgroupfs
- Cgroup Version: 1
- Plugins:
-  Volume: local
-  Network: bridge host ipvlan macvlan null overlay
-  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
- Swarm: inactive
- Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
- Default Runtime: runc
- Init Binary: docker-init
- containerd version: 05f951a3781f4f2c1911b05e61c160e9c30eaa8e
- runc version: 14faf1c20948688a48edb9b41367ab07ac11ca91
- init version: de40ad0
- Security Options:
-  apparmor
-  seccomp
-   Profile: default
- Kernel Version: 5.10.83-6.ph4-esx
- Operating System: VMware Photon OS/Linux
- OSType: linux
- Architecture: x86_64
- CPUs: 8
- Total Memory: 15.64GiB
- Name: photon-machine
- ID: TKEZ:L2WF:ZAFU:B5G6:IA55:V3UK:FICU:WKSO:M5HM:7TSF:3VIK:7L3S
- Docker Root Dir: /var/lib/docker
- Debug Mode: false
- Registry: https://index.docker.io/v1/
- Labels:
- Experimental: false
- Insecure Registries:
-  127.0.0.0/8
- Live Restore Enabled: false
- Product License: Community Engine
 ```
 
 - 从 [vmware-tanzu/community-edition](https://github.com/vmware-tanzu/community-edition/releases/tag/v0.9.1) 下载 tanzu 社区版的安装包，然后解压后安装；
@@ -182,11 +352,9 @@ Do not run this script as root
 + exit 1
 ```
 
-我就偏偏要以 root 用户来运行怎么惹！
+我就偏偏要以 root 用户来运行怎么惹 😡
 
-
-
-![告诉你！我就不表情包.jpg](pics/2022-01-22-deploy-tanzu-k8s-cluster/1536808420587637.jpg)
+![](https://p.k8s.li/2022-01-22-deploy-tanzu-k8s-cluster-01.jpg)
 
 ```bash
 # sed 去掉第一个 exit 1 就可以了
@@ -215,12 +383,12 @@ Installation complete!
 
 ### 部署管理集群
 
-先是部署一个 cluster-api 的管理集群，有两种方式，一种是通过官方文档中提到的。UI。其实这个 UI 界面比较羸弱。主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令还部署集群。并把集群部署的日志和进度展示出来。这一步同样也可以指通过 tanzu 命令来完成。
+先是部署一个 tanzu 的管理集群，有两种方式，一种是通过 [官方文档](https://tanzucommunityedition.io/docs/latest/getting-started/) 提到的通过 Web UI 的方式。其实这个 UI 界面比较羸弱。主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令来部署集群。并把集群部署的日志和进度展示出来；另一种就是通过 tanzu 命令指定配置文件来部署，这种方式不需要通过浏览器在 web 页面上傻乎乎地点来点去填一些参数。下面我们采用 tanzu 命令来部署，管理集群的配置文件模版如下：
 
-- 集群配置文件
+- tanzu-mgt-cluster.yaml
 
 ```yaml
-root@photon-machine [ ~ ]# cat /root/.config/tanzu/tkg/clusterconfigs/4tk4nbnuxz.yaml
+root@photon-machine [ ~ ]# cat tanzu-mgt-cluster.yaml
 # Cluster Pod IP 的 CIDR
 CLUSTER_CIDR: 100.96.0.0/11
 # Service 的 CIDR
@@ -287,16 +455,17 @@ DEPLOY_TKG_ON_VSPHERE7: "true"
 - 通过 tanzu CLI 部署管理集群
 
 ```bash
-$ tanzu management-cluster create --file mgt-cluster.yaml -v6
+$ tanzu management-cluster create --file tanzu-mgt-cluster.yaml -v6
 
 # 如果没有配置 VSPHERE_TLS_THUMBPRINT 会有一个确认 vSphere thumbprint 的交互，输入 Y 就可以
 Validating the pre-requisites...
 Do you want to continue with the vSphere thumbprint EB:F3:D8:7A:E8:3D:1A:59:B0:DE:73:96:DC:B9:5F:13:86:EF:B6:27 [y/N]: y
 ```
 
-### 部署进度
+### 部署日志
 
 ```bash
+root@photon-machine [ ~ ]# tanzu management-cluster create --file tanzu-mgt-cluster.yaml -v 6
 compatibility file (/root/.config/tanzu/tkg/compatibility/tkg-compatibility.yaml) already exists, skipping download
 BOM files inside /root/.config/tanzu/tkg/bom already exists, skipping download
 CEIP Opt-in status: false
@@ -311,13 +480,9 @@ resource pools. Configuring Tanzu Kubernetes Grid Service is done through vSpher
 
 Tanzu Kubernetes Grid Service is the preferred way to consume Tanzu Kubernetes Grid in vSphere 7.0 environments. Alternatively you may
 deploy a non-integrated Tanzu Kubernetes Grid instance on vSphere 7.0.
-Note: To skip the prompts and directly deploy a non-integrated Tanzu Kubernetes Grid instance on vSphere 7.0, you can set the 'DEPLOY_TKG_ON_VSPHERE7' configuration variable to 'true'
-
-Do you want to configure vSphere with Tanzu? [y/N]: n
-Would you like to deploy a non-integrated Tanzu Kubernetes Grid management cluster on vSphere 7.0? [y/N]: y
 Deploying TKG management cluster on vSphere 7.0 ...
 Identity Provider not configured. Some authentication features won't work.
-Checking if VSPHERE_CONTROL_PLANE_ENDPOINT 192.168.75.190 is already in use
+Checking if VSPHERE_CONTROL_PLANE_ENDPOINT 192.168.20.94 is already in use
 
 Setting up management cluster...
 Validating configuration...
@@ -337,27 +502,162 @@ dns:
   type: CoreDNS
   imageRepository: projects.registry.vmware.com/tkg
   imageTag: v1.8.0_vmware.5] [] [] []}
-Creating kind cluster: tkg-kind-c7mde4tkvpdsddjp6jhg
-Creating cluster "tkg-kind-c7mde4tkvpdsddjp6jhg" ...
+Creating kind cluster: tkg-kind-c7vj6kds0a6sf43e6210
+Creating cluster "tkg-kind-c7vj6kds0a6sf43e6210" ...
 Ensuring node image (projects.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1) ...
 Pulling image: projects.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1 ...
+Preparing nodes ...
+Writing configuration ...
+Starting control-plane ...
+Installing CNI ...
+Installing StorageClass ...
+Waiting 2m0s for control-plane = Ready ...
+Ready after 19s
+Bootstrapper created. Kubeconfig: /root/.kube-tkg/tmp/config_3fkzTCOL
+Installing providers on bootstrapper...
+Fetching providers
+Installing cert-manager Version="v1.1.0"
+Waiting for cert-manager to be available...
+Installing Provider="cluster-api" Version="v0.3.23" TargetNamespace="capi-system"
+Installing Provider="bootstrap-kubeadm" Version="v0.3.23" TargetNamespace="capi-kubeadm-bootstrap-system"
+Installing Provider="control-plane-kubeadm" Version="v0.3.23" TargetNamespace="capi-kubeadm-control-plane-system"
+Installing Provider="infrastructure-vsphere" Version="v0.7.10" TargetNamespace="capv-system"
+installed  Component=="cluster-api"  Type=="CoreProvider"  Version=="v0.3.23"
+installed  Component=="kubeadm"  Type=="BootstrapProvider"  Version=="v0.3.23"
+installed  Component=="kubeadm"  Type=="ControlPlaneProvider"  Version=="v0.3.23"
+installed  Component=="vsphere"  Type=="InfrastructureProvider"  Version=="v0.7.10"
+Waiting for provider infrastructure-vsphere
+Waiting for provider control-plane-kubeadm
+Waiting for provider cluster-api
+Waiting for provider bootstrap-kubeadm
+Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
+pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
+Passed waiting on provider bootstrap-kubeadm after 25.205820854s
+pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
+Passed waiting on provider infrastructure-vsphere after 30.185406332s
+Passed waiting on provider cluster-api after 30.213216243s
+Success waiting on all providers.
 
-$ root@photon-machine [ ~ ]# cp /root/.kube-tkg/tmp/config_7qWiNeHb /root/.kube/config
+Start creating management cluster...
+patch cluster object with operation status:
+	{
+		"metadata": {
+			"annotations": {
+				"TKGOperationInfo" : "{\"Operation\":\"Create\",\"OperationStartTimestamp\":\"2022-02-06 02:35:34.30219421 +0000 UTC\",\"OperationTimeout\":1800}",
+				"TKGOperationLastObservedTimestamp" : "2022-02-06 02:35:34.30219421 +0000 UTC"
+			}
+		}
+	}
+cluster control plane is still being initialized, retrying
+Getting secret for cluster
+Waiting for resource tanzu-control-plan-kubeconfig of type *v1.Secret to be up and running
+Saving management cluster kubeconfig into /root/.kube/config
+Installing providers on management cluster...
+Fetching providers
+Installing cert-manager Version="v1.1.0"
+Waiting for cert-manager to be available...
+Installing Provider="cluster-api" Version="v0.3.23" TargetNamespace="capi-system"
+Installing Provider="bootstrap-kubeadm" Version="v0.3.23" TargetNamespace="capi-kubeadm-bootstrap-system"
+Installing Provider="control-plane-kubeadm" Version="v0.3.23" TargetNamespace="capi-kubeadm-control-plane-system"
+Installing Provider="infrastructure-vsphere" Version="v0.7.10" TargetNamespace="capv-system"
+installed  Component=="cluster-api"  Type=="CoreProvider"  Version=="v0.3.23"
+installed  Component=="kubeadm"  Type=="BootstrapProvider"  Version=="v0.3.23"
+installed  Component=="kubeadm"  Type=="ControlPlaneProvider"  Version=="v0.3.23"
+installed  Component=="vsphere"  Type=="InfrastructureProvider"  Version=="v0.7.10"
+Waiting for provider control-plane-kubeadm
+Waiting for provider bootstrap-kubeadm
+Waiting for provider infrastructure-vsphere
+Waiting for provider cluster-api
+Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
+Passed waiting on provider control-plane-kubeadm after 10.046865402s
+Waiting for resource antrea-controller of type *v1.Deployment to be up and running
+Moving all Cluster API objects from bootstrap cluster to management cluster...
+Performing move...
+Discovering Cluster API objects
+Moving Cluster API objects Clusters=1
+Creating objects in the target cluster
+Deleting objects from the source cluster
+Waiting for additional components to be up and running...
+Waiting for packages to be up and running...
+Waiting for package: antrea
+Waiting for package: metrics-server
+Waiting for package: tanzu-addons-manager
+Waiting for package: vsphere-cpi
+Waiting for package: vsphere-csi
+Waiting for resource antrea of type *v1alpha1.PackageInstall to be up and running
+Waiting for resource vsphere-cpi of type *v1alpha1.PackageInstall to be up and running
+Waiting for resource vsphere-csi of type *v1alpha1.PackageInstall to be up and running
+Waiting for resource metrics-server of type *v1alpha1.PackageInstall to be up and running
+Waiting for resource tanzu-addons-manager of type *v1alpha1.PackageInstall to be up and running
+Successfully reconciled package: antrea
+Successfully reconciled package: vsphere-csi
+Successfully reconciled package: metrics-server
+Context set for management cluster tanzu-control-plan as 'tanzu-control-plan-admin@tanzu-control-plan'.
+Deleting kind cluster: tkg-kind-c7vj6kds0a6sf43e6210
+
+Management cluster created!
+
+
+You can now create your first workload cluster by running the following:
+
+  tanzu cluster create [name] -f [file]
+
+
+Some addons might be getting installed! Check their status by running the following:
+
+  kubectl get apps -A
 ```
 
-```bash
-Events:
-  Type     Reason     Age                From               Message
-  ----     ------     ----               ----               -------
-  Normal   Scheduled  32s                default-scheduler  Successfully assigned kube-system/metrics-server-6694b975cd-khflk to tanzu-control-plan-md-0-7cdc97c7c6-pjsfg
-  Normal   BackOff    26s                kubelet            Back-off pulling image "projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525"
-  Warning  Failed     26s                kubelet            Error: ImagePullBackOff
-  Normal   Pulling    13s (x2 over 31s)  kubelet            Pulling image "projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525"
-  Warning  Failed     9s (x2 over 27s)   kubelet            Failed to pull image "projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525": rpc error: code = FailedPrecondition desc = failed to pull and unpack image "projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525": failed commit on ref "layer-sha256:87cb1fbb952de6da2885403d3a77d5084e784c7816e8b8397f1cd18b1a315b5b": "layer-sha256:87cb1fbb952de6da2885403d3a77d5084e784c7816e8b8397f1cd18b1a315b5b" failed size validation: 12582912 != 24072527: failed precondition
-  Warning  Failed     9s (x2 over 27s)   kubelet            Error: ErrImagePull
+- 部署完成之后，将管理集群的 kubeconfig 文件复制到 .kube 目录下
 
-root [ /home/capv ]# crictl  pull projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525
-FATA[0004] pulling image: rpc error: code = FailedPrecondition desc = failed to pull and unpack image "projects.registry.vmware.com/tkg/metrics-server@sha256:3490ace6c30facd345cf4d8901f945aaff1a7a5d486500b154ce503b55f61525": failed commit on ref "layer-sha256:87cb1fbb952de6da2885403d3a77d5084e784c7816e8b8397f1cd18b1a315b5b": "layer-sha256:87cb1fbb952de6da2885403d3a77d5084e784c7816e8b8397f1cd18b1a315b5b" failed size validation: 12582912 != 24072527: failed precondition
+```bash
+root@photon-machine [ ~ ]# cp ${HOME}/.kube-tkg/config ${HOME}/.kube/config
+```
+
+- 查看集群状态信息
+
+```bash
+root@photon-machine [ ~ ]# kubectl get cluster -A
+NAMESPACE    NAME                 PHASE
+tkg-system   tanzu-control-plan   Provisioned
+root@photon-machine [ ~ ]# kubectl get machine -A
+NAMESPACE    NAME                                       PROVIDERID                                       PHASE         VERSION
+tkg-system   tanzu-control-plan-control-plane-gs4bl     vsphere://4239c450-f621-d78e-3c44-4ac8890c0cd3   Running       v1.21.2+vmware.1
+tkg-system   tanzu-control-plan-md-0-7cdc97c7c6-kxcnx   vsphere://4239d776-c04c-aacc-db12-3380542a6d03   Provisioned   v1.21.2+vmware.1
+root@photon-machine [ ~ ]# kubectl get pod -A
+NAMESPACE                           NAME                                                             READY   STATUS    RESTARTS   AGE
+capi-kubeadm-bootstrap-system       capi-kubeadm-bootstrap-controller-manager-6494884869-wlzhx       2/2     Running   0          8m37s
+capi-kubeadm-control-plane-system   capi-kubeadm-control-plane-controller-manager-857d687b9d-tpznv   2/2     Running   0          8m35s
+capi-system                         capi-controller-manager-778bd4dfb9-tkvwg                         2/2     Running   0          8m41s
+capi-webhook-system                 capi-controller-manager-9995bdc94-svjm2                          2/2     Running   0          8m41s
+capi-webhook-system                 capi-kubeadm-bootstrap-controller-manager-68845b65f8-sllgv       2/2     Running   0          8m38s
+capi-webhook-system                 capi-kubeadm-control-plane-controller-manager-9847c6747-vvz6g    2/2     Running   0          8m35s
+capi-webhook-system                 capv-controller-manager-55bf67fbd5-4t46v                         2/2     Running   0          8m31s
+capv-system                         capv-controller-manager-587fbf697f-bbzs9                         2/2     Running   0          8m31s
+cert-manager                        cert-manager-77f6fb8fd5-8tq6n                                    1/1     Running   0          11m
+cert-manager                        cert-manager-cainjector-6bd4cff7bb-6vlzx                         1/1     Running   0          11m
+cert-manager                        cert-manager-webhook-fbfcb9d6c-qpkbc                             1/1     Running   0          11m
+kube-system                         antrea-agent-5m9d4                                               2/2     Running   0          6m
+kube-system                         antrea-agent-8mpr7                                               2/2     Running   0          5m40s
+kube-system                         antrea-controller-5bbcb98667-hklss                               1/1     Running   0          5m50s
+kube-system                         coredns-8dcb5c56b-ckvb7                                          1/1     Running   0          12m
+kube-system                         coredns-8dcb5c56b-d98hf                                          1/1     Running   0          12m
+kube-system                         etcd-tanzu-control-plan-control-plane-gs4bl                      1/1     Running   0          12m
+kube-system                         kube-apiserver-tanzu-control-plan-control-plane-gs4bl            1/1     Running   0          12m
+kube-system                         kube-controller-manager-tanzu-control-plan-control-plane-gs4bl   1/1     Running   0          12m
+kube-system                         kube-proxy-d4wq4                                                 1/1     Running   0          12m
+kube-system                         kube-proxy-nhkgg                                                 1/1     Running   0          11m
+kube-system                         kube-scheduler-tanzu-control-plan-control-plane-gs4bl            1/1     Running   0          12m
+kube-system                         kube-vip-tanzu-control-plan-control-plane-gs4bl                  1/1     Running   0          12m
+kube-system                         metrics-server-59fcb9fcf-xjznj                                   1/1     Running   0          6m29s
+kube-system                         vsphere-cloud-controller-manager-kzffm                           1/1     Running   0          5m50s
+kube-system                         vsphere-csi-controller-74675c9488-q9h5c                          6/6     Running   0          6m31s
+kube-system                         vsphere-csi-node-dmvvr                                           3/3     Running   0          6m31s
+kube-system                         vsphere-csi-node-k6x98                                           3/3     Running   0          6m31s
+tkg-system                          kapp-controller-6499b8866-xnql7                                  1/1     Running   0          10m
+tkg-system                          tanzu-addons-controller-manager-657c587556-rpbjm                 1/1     Running   0          7m58s
+tkg-system                          tanzu-capabilities-controller-manager-6ff97656b8-cq7m7           1/1     Running   0          11m
+tkr-system                          tkr-controller-manager-6bc455b5d4-wm98s                          1/1     Running   0          10m
 ```
 
 ### 部署流程
@@ -391,281 +691,25 @@ var InitRegionSteps = []string{
 }
 ```
 
-#### 管理集群创建流程
+结合 [tanzu 的源码](https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go) 和部署输出的日志我们大体可以得知，tanzu 管理集群部署大致分为如下几步：
 
-```golang
-// InitRegion create management cluster
-func (c *TkgClient) InitRegion(options *InitRegionOptions) error { //nolint:funlen,gocyclo
-	var err error
-	var regionalConfigBytes []byte
-	var isSuccessful = false
-	var isStartedRegionalClusterCreation = false
-	var isBootstrapClusterCreated = false
-	var bootstrapClusterName string
-	var regionContext region.RegionContext
-	var filelock *fslock.Lock
-
-	bootstrapClusterKubeconfigPath, err := getTKGKubeConfigPath(false)
-	if err != nil {
-		return err
-	}
-
-	log.SendProgressUpdate(statusRunning, StepValidateConfiguration, InitRegionSteps)
-
-	log.Info("Validating configuration...")
-	defer func() {
-		if regionContext != (region.RegionContext{}) {
-			filelock, err = utils.GetFileLockWithTimeOut(filepath.Join(c.tkgConfigDir, constants.LocalTanzuFileLock), utils.DefaultLockTimeout)
-			if err != nil {
-				log.Warningf("cannot acquire lock for updating management cluster configuration, %s", err.Error())
-			}
-			err := c.regionManager.SaveRegionContext(regionContext)
-			if err != nil {
-				log.Warningf("Unable to persist management cluster %s info to tkg config", regionContext.ClusterName)
-			}
-
-			err = c.regionManager.SetCurrentContext(regionContext.ClusterName, regionContext.ContextName)
-			if err != nil {
-				log.Warningf("Unable to use context %s as current tkg context", regionContext.ContextName)
-			}
-			if err := filelock.Unlock(); err != nil {
-				log.Warningf("unable to release lock for updating management cluster configuration, %s", err.Error())
-			}
-		}
-
-		if isSuccessful {
-			log.SendProgressUpdate(statusSuccessful, "", InitRegionSteps)
-		} else {
-			log.SendProgressUpdate(statusFailed, "", InitRegionSteps)
-		}
-
-		// if management cluster creation failed after bootstrap kind cluster was successfully created
-		if !isSuccessful && isStartedRegionalClusterCreation {
-			c.displayHelpTextOnFailure(options, isBootstrapClusterCreated, bootstrapClusterKubeconfigPath)
-			return
-		}
-
-		if isBootstrapClusterCreated {
-			if err := c.teardownKindCluster(bootstrapClusterName, bootstrapClusterKubeconfigPath, options.UseExistingCluster); err != nil {
-				log.Warning(err.Error())
-			}
-		}
-		_ = utils.DeleteFile(bootstrapClusterKubeconfigPath)
-	}()
-
-	if customImageRepo, err := c.TKGConfigReaderWriter().Get(constants.ConfigVariableCustomImageRepository); err != nil && customImageRepo != "" && tkgconfighelper.IsCustomRepository(customImageRepo) {
-		log.Infof("Using custom image repository: %s", customImageRepo)
-	}
-
-	providerName, _, err := ParseProviderName(options.InfrastructureProvider)
-	if err != nil {
-		return errors.Wrap(err, "unable to parse provider name")
-	}
-
-	// validate docker only if user is not using an existing cluster
-	// Note: Validating in client code as well to cover the usecase where users use client code instead of command line.
-
-	if err := c.ValidatePrerequisites(!options.UseExistingCluster, true); err != nil {
-		return err
-	}
-
-	// validate docker resources if provider is docker
-	if providerName == "docker" {
-		if err := c.ValidateDockerResourcePrerequisites(); err != nil {
-			return err
-		}
-	}
-
-	log.Infof("Using infrastructure provider %s", options.InfrastructureProvider)
-	log.SendProgressUpdate(statusRunning, StepGenerateClusterConfiguration, InitRegionSteps)
-	log.Info("Generating cluster configuration...")
-
-	// Obtain management cluster configuration of a provided flavor
-	if regionalConfigBytes, options.ClusterName, err = c.BuildRegionalClusterConfiguration(options); err != nil {
-		return errors.Wrap(err, "unable to build management cluster configuration")
-	}
-
-	log.SendProgressUpdate(statusRunning, StepSetupBootstrapCluster, InitRegionSteps)
-	log.Info("Setting up bootstrapper...")
-	// Ensure bootstrap cluster and copy boostrap cluster kubeconfig to ~/kube-tkg directory
-	if bootstrapClusterName, err = c.ensureKindCluster(options.Kubeconfig, options.UseExistingCluster, bootstrapClusterKubeconfigPath); err != nil {
-		return errors.Wrap(err, "unable to create bootstrap cluster")
-	}
-
-	isBootstrapClusterCreated = true
-	log.Infof("Bootstrapper created. Kubeconfig: %s", bootstrapClusterKubeconfigPath)
-	bootStrapClusterClient, err := clusterclient.NewClient(bootstrapClusterKubeconfigPath, "", clusterclient.Options{OperationTimeout: c.timeout})
-	if err != nil {
-		return errors.Wrap(err, "unable to get bootstrap cluster client")
-	}
-
-	// configure variables required to deploy providers
-	if err := c.configureVariablesForProvidersInstallation(nil); err != nil {
-		return errors.Wrap(err, "unable to configure variables for provider installation")
-	}
-
-	log.SendProgressUpdate(statusRunning, StepInstallProvidersOnBootstrapCluster, InitRegionSteps)
-	log.Info("Installing providers on bootstrapper...")
-	// Initialize bootstrap cluster with providers
-	if err = c.InitializeProviders(options, bootStrapClusterClient, bootstrapClusterKubeconfigPath); err != nil {
-		return errors.Wrap(err, "unable to initialize providers")
-	}
-
-	isStartedRegionalClusterCreation = true
-
-	targetClusterNamespace := defaultTkgNamespace
-	if options.Namespace != "" {
-		targetClusterNamespace = options.Namespace
-	}
-
-	log.SendProgressUpdate(statusRunning, StepCreateManagementCluster, InitRegionSteps)
-	log.Info("Start creating management cluster...")
-	err = c.DoCreateCluster(bootStrapClusterClient, options.ClusterName, targetClusterNamespace, string(regionalConfigBytes))
-	if err != nil {
-		return errors.Wrap(err, "unable to create management cluster")
-	}
-
-	// save this context to tkg config incase the management cluster creation fails
-	bootstrapClusterContext := "kind-" + bootstrapClusterName
-	if options.UseExistingCluster {
-		bootstrapClusterContext, err = getCurrentContextFromDefaultKubeConfig()
-		if err != nil {
-			return err
-		}
-	}
-	regionContext = region.RegionContext{ClusterName: options.ClusterName, ContextName: bootstrapClusterContext, SourceFilePath: bootstrapClusterKubeconfigPath, Status: region.Failed}
-
-	kubeConfigBytes, err := c.WaitForClusterInitializedAndGetKubeConfig(bootStrapClusterClient, options.ClusterName, targetClusterNamespace)
-	if err != nil {
-		return errors.Wrap(err, "unable to wait for cluster and get the cluster kubeconfig")
-	}
-
-	regionalClusterKubeconfigPath, err := getTKGKubeConfigPath(true)
-	if err != nil {
-		return err
-	}
-	// put a filelock to ensure mutual exclusion on updating kubeconfig
-	filelock, err = utils.GetFileLockWithTimeOut(filepath.Join(c.tkgConfigDir, constants.LocalTanzuFileLock), utils.DefaultLockTimeout)
-	if err != nil {
-		return errors.Wrap(err, "cannot acquire lock for updating management cluster kubeconfig")
-	}
-
-	mergeFile := getDefaultKubeConfigFile()
-	log.Infof("Saving management cluster kubeconfig into %s", mergeFile)
-	// merge the management cluster kubeconfig into user input kubeconfig path/default kubeconfig path
-	err = MergeKubeConfigWithoutSwitchContext(kubeConfigBytes, mergeFile)
-	if err != nil {
-		return errors.Wrap(err, "unable to merge management cluster kubeconfig")
-	}
-
-	// merge the management cluster kubeconfig into tkg managed kubeconfig
-	kubeContext, err := MergeKubeConfigAndSwitchContext(kubeConfigBytes, regionalClusterKubeconfigPath)
-	if err != nil {
-		return errors.Wrap(err, "unable to save management cluster kubeconfig to TKG managed kubeconfig")
-	}
-
-	if err := filelock.Unlock(); err != nil {
-		log.Warningf("cannot acquire lock for updating management cluster kubeconfigconfig, reason: %v", err)
-	}
-
-	regionalClusterClient, err := clusterclient.NewClient(regionalClusterKubeconfigPath, kubeContext, clusterclient.Options{OperationTimeout: c.timeout})
-	if err != nil {
-		return errors.Wrap(err, "unable to get management cluster client")
-	}
-
-	log.SendProgressUpdate(statusRunning, StepInstallProvidersOnRegionalCluster, InitRegionSteps)
-	log.Info("Installing providers on management cluster...")
-	if err = c.InitializeProviders(options, regionalClusterClient, regionalClusterKubeconfigPath); err != nil {
-		return errors.Wrap(err, "unable to initialize providers on management cluster")
-	}
-
-	if err := regionalClusterClient.PatchClusterAPIAWSControllersToUseEC2Credentials(); err != nil {
-		return err
-	}
-
-	log.Info("Waiting for the management cluster to get ready for move...")
-	if err := c.WaitForClusterReadyForMove(bootStrapClusterClient, options.ClusterName, targetClusterNamespace); err != nil {
-		return errors.Wrap(err, "unable to wait for cluster getting ready for move")
-	}
-
-	log.Info("Waiting for addons installation...")
-	if err := c.WaitForAddons(waitForAddonsOptions{
-		regionalClusterClient: bootStrapClusterClient,
-		workloadClusterClient: regionalClusterClient,
-		clusterName:           options.ClusterName,
-		namespace:             options.Namespace,
-		waitForCNI:            true,
-	}); err != nil {
-		return errors.Wrap(err, "error waiting for addons to get installed")
-	}
-
-	log.SendProgressUpdate(statusRunning, StepMoveClusterAPIObjects, InitRegionSteps)
-	log.Info("Moving all Cluster API objects from bootstrap cluster to management cluster...")
-	// Move all Cluster API objects from bootstrap cluster to created to management cluster for all namespaces
-	if err = c.MoveObjects(bootstrapClusterKubeconfigPath, regionalClusterKubeconfigPath, targetClusterNamespace); err != nil {
-		return errors.Wrap(err, "unable to move Cluster API objects from bootstrap cluster to management cluster")
-	}
-
-	regionContext = region.RegionContext{ClusterName: options.ClusterName, ContextName: kubeContext, SourceFilePath: regionalClusterKubeconfigPath, Status: region.Success}
-
-	err = c.PatchClusterInitOperations(regionalClusterClient, options, targetClusterNamespace)
-	if err != nil {
-		return errors.Wrap(err, "unable to patch cluster object")
-	}
-
-	if err != nil {
-		return errors.Wrap(err, "unable to parse provider name")
-	}
-
-	// start CEIP telemetry cronjob if cluster is opt-in
-	if options.CeipOptIn {
-		bomConfig, err := c.tkgBomClient.GetDefaultTkgBOMConfiguration()
-		if err != nil {
-			return errors.Wrapf(err, "failed to get default bom configuration")
-		}
-
-		httpProxy, httpsProxy, noProxy := "", "", ""
-		if httpProxy, err = c.TKGConfigReaderWriter().Get(constants.TKGHTTPProxy); err == nil && httpProxy != "" {
-			httpsProxy, _ = c.TKGConfigReaderWriter().Get(constants.TKGHTTPSProxy)
-			noProxy, err = c.getFullTKGNoProxy(providerName)
-			if err != nil {
-				return err
-			}
-		}
-
-		if err = regionalClusterClient.AddCEIPTelemetryJob(options.ClusterName, providerName, bomConfig, "", "", httpProxy, httpsProxy, noProxy); err != nil {
-			log.Error(err, "Failed to start CEIP telemetry job on management cluster")
-
-			log.Warningf("\nTo have this cluster participate in VMware CEIP:")
-			log.Warningf("\ttanzu management-cluster ceip-participation set true")
-		}
-	}
-
-	log.Info("Waiting for additional components to be up and running...")
-	if err := c.WaitForAddonsDeployments(regionalClusterClient); err != nil {
-		return err
-	}
-
-	log.Info("Waiting for packages to be up and running...")
-	if err := c.WaitForPackages(regionalClusterClient, regionalClusterClient, options.ClusterName, targetClusterNamespace, true); err != nil {
-		log.Warningf("Warning: Management cluster is created successfully, but some packages are failing. %v", err)
-	}
-
-	log.Infof("You can now access the management cluster %s by running 'kubectl config use-context %s'", options.ClusterName, kubeContext)
-	isSuccessful = true
-	return nil
-}
-```
-
-
-
-
+- StepConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom`镜像，用于检查环境的兼容性；
 
 ```bash
-root@photon-machine [ ~/tce-linux-amd64-v0.9.1 ]# tanzu management-cluster create --file /root/.config/tanzu/tkg/clusterconfigs/8yapkyf51a.yaml -v 6
-compatibility file (/root/.config/tanzu/tkg/compatibility/tkg-compatibility.yaml) already exists, skipping download
-BOM files inside /root/.config/tanzu/tkg/bom already exists, skipping download
+Downloading TKG compatibility file from 'projects.registry.vmware.com/tkg/framework-zshippable/tkg-compatibility'
+Downloading the TKG Bill of Materials (BOM) file from 'projects.registry.vmware.com/tkg/tkg-bom:v1.4.0'
+Downloading the TKr Bill of Materials (BOM) file from 'projects.registry.vmware.com/tkg/tkr-bom:v1.21.2_vmware.1-tkg.1'
+ERROR 2022/02/06 02:24:46 svType != tvType; key=release, st=map[string]interface {}, tt=<nil>, sv=map[version:], tv=<nil>
 CEIP Opt-in status: false
+
+Validating the pre-requisites...
+
+vSphere 7.0 Environment Detected.
+```
+
+- ValidateConfiguration 配置文件校验，根据填写的参数校验配置是否正确
+
+```bash
 
 Validating the pre-requisites...
 
@@ -677,18 +721,24 @@ resource pools. Configuring Tanzu Kubernetes Grid Service is done through vSpher
 
 Tanzu Kubernetes Grid Service is the preferred way to consume Tanzu Kubernetes Grid in vSphere 7.0 environments. Alternatively you may
 deploy a non-integrated Tanzu Kubernetes Grid instance on vSphere 7.0.
-Note: To skip the prompts and directly deploy a non-integrated Tanzu Kubernetes Grid instance on vSphere 7.0, you can set the 'DEPLOY_TKG_ON_VSPHERE7' configuration variable to 'true'
-
-Do you want to configure vSphere with Tanzu? [y/N]: n
-Would you like to deploy a non-integrated Tanzu Kubernetes Grid management cluster on vSphere 7.0? [y/N]: y
 Deploying TKG management cluster on vSphere 7.0 ...
 Identity Provider not configured. Some authentication features won't work.
-Checking if VSPHERE_CONTROL_PLANE_ENDPOINT 192.168.75.190 is already in use
+Checking if VSPHERE_CONTROL_PLANE_ENDPOINT 192.168.20.94 is already in use
 
 Setting up management cluster...
 Validating configuration...
 Using infrastructure provider vsphere:v0.7.10
+```
+
+- GenerateClusterConfiguration 生成集群配置文件信息
+
+```bash
 Generating cluster configuration...
+```
+
+- SetupBootstrapCluster 设置 bootstrap 集群，目前默认为 kind，会运行一个 docker 容器，里面套娃运行着一个 kind k8s 集群；
+
+```bash
 Setting up bootstrapper...
 Fetching configuration for kind node image...
 kindConfig:
@@ -703,18 +753,23 @@ dns:
   type: CoreDNS
   imageRepository: projects.registry.vmware.com/tkg
   imageTag: v1.8.0_vmware.5] [] [] []}
-Creating kind cluster: tkg-kind-c7mdj9tkvpds01kldv60
-Creating cluster "tkg-kind-c7mdj9tkvpds01kldv60" ...
+Creating kind cluster: tkg-kind-c7vj6kds0a6sf43e6210
+Creating cluster "tkg-kind-c7vj6kds0a6sf43e6210" ...
 Ensuring node image (projects.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1) ...
-Image: projects.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1 present locally
+Pulling image: projects.registry.vmware.com/tkg/kind/node:v1.21.2_vmware.1 ...
 Preparing nodes ...
 Writing configuration ...
 Starting control-plane ...
 Installing CNI ...
 Installing StorageClass ...
 Waiting 2m0s for control-plane = Ready ...
-Ready after 29s
-Bootstrapper created. Kubeconfig: /root/.kube-tkg/tmp/config_XeymX3N6
+Ready after 19s
+Bootstrapper created. Kubeconfig: /root/.kube-tkg/tmp/config_3fkzTCOL
+```
+
+- InstallProvidersOnBootstrapCluster 在 bootstrap 集群上安装 cluste-api 相关组件；
+
+```bash
 Installing providers on bootstrapper...
 Fetching providers
 Installing cert-manager Version="v1.1.0"
@@ -728,66 +783,29 @@ installed  Component=="kubeadm"  Type=="BootstrapProvider"  Version=="v0.3.23"
 installed  Component=="kubeadm"  Type=="ControlPlaneProvider"  Version=="v0.3.23"
 installed  Component=="vsphere"  Type=="InfrastructureProvider"  Version=="v0.7.10"
 Waiting for provider infrastructure-vsphere
-Waiting for provider bootstrap-kubeadm
 Waiting for provider control-plane-kubeadm
 Waiting for provider cluster-api
+Waiting for provider bootstrap-kubeadm
 Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
 pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
 Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
-Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
+Passed waiting on provider bootstrap-kubeadm after 25.205820854s
 pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
-Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-webhook-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-webhook-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
-Passed waiting on provider control-plane-kubeadm after 45.090421449s
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Passed waiting on provider bootstrap-kubeadm after 45.145190037s
-Passed waiting on provider cluster-api after 45.164279414s
-Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider infrastructure-vsphere after 50.136019294s
+Passed waiting on provider infrastructure-vsphere after 30.185406332s
+Passed waiting on provider cluster-api after 30.213216243s
 Success waiting on all providers.
+```
+
+- CreateManagementCluster 创建管理集群
+
+```bash
 Start creating management cluster...
 patch cluster object with operation status:
 	{
 		"metadata": {
 			"annotations": {
-				"TKGOperationInfo" : "{\"Operation\":\"Create\",\"OperationStartTimestamp\":\"2022-01-23 04:31:48.203724236 +0000 UTC\",\"OperationTimeout\":1800}",
-				"TKGOperationLastObservedTimestamp" : "2022-01-23 04:31:48.203724236 +0000 UTC"
+				"TKGOperationInfo" : "{\"Operation\":\"Create\",\"OperationStartTimestamp\":\"2022-02-06 02:35:34.30219421 +0000 UTC\",\"OperationTimeout\":1800}",
+				"TKGOperationLastObservedTimestamp" : "2022-02-06 02:35:34.30219421 +0000 UTC"
 			}
 		}
 	}
@@ -796,9 +814,15 @@ cluster control plane is still being initialized, retrying
 cluster control plane is still being initialized, retrying
 cluster control plane is still being initialized, retrying
 cluster control plane is still being initialized, retrying
+cluster control plane is still being initialized, retrying
 Getting secret for cluster
 Waiting for resource tanzu-control-plan-kubeconfig of type *v1.Secret to be up and running
 Saving management cluster kubeconfig into /root/.kube/config
+```
+
+- InstallProvidersOnRegionalCluster 在管理集群上安装 cluster-api 相关组件
+
+```bash
 Installing providers on management cluster...
 Fetching providers
 Installing cert-manager Version="v1.1.0"
@@ -811,36 +835,34 @@ installed  Component=="cluster-api"  Type=="CoreProvider"  Version=="v0.3.23"
 installed  Component=="kubeadm"  Type=="BootstrapProvider"  Version=="v0.3.23"
 installed  Component=="kubeadm"  Type=="ControlPlaneProvider"  Version=="v0.3.23"
 installed  Component=="vsphere"  Type=="InfrastructureProvider"  Version=="v0.7.10"
-Waiting for provider infrastructure-vsphere
 Waiting for provider control-plane-kubeadm
 Waiting for provider bootstrap-kubeadm
+Waiting for provider infrastructure-vsphere
 Waiting for provider cluster-api
 Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
 pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
 Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
 pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
+Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
+pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
 Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
 pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
 pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
+pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
 pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
-Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider cluster-api after 5.222704053s
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
+pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
 Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider control-plane-kubeadm after 15.071911826s
+Passed waiting on provider control-plane-kubeadm after 10.046865402s
+Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
+Passed waiting on provider bootstrap-kubeadm after 10.085818482s
 pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-webhook-system', retrying
+pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
 pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Passed waiting on provider bootstrap-kubeadm after 20.136969953s
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
+Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
+pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
 Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider infrastructure-vsphere after 30.107974737s
+Passed waiting on provider infrastructure-vsphere after 20.091935635s
+Passed waiting on provider cluster-api after 20.109419304s
 Success waiting on all providers.
 Waiting for the management cluster to get ready for move...
 Waiting for resource tanzu-control-plan of type *v1alpha3.Cluster to be up and running
@@ -849,96 +871,20 @@ Waiting for resources type *v1alpha3.MachineList to be up and running
 Waiting for addons installation...
 Waiting for resources type *v1alpha3.ClusterResourceSetList to be up and running
 Waiting for resource antrea-controller of type *v1.Deployment to be up and running
+```
+
+- MoveClusterAPIObjects 将 bootstrap 集群上 cluster-api 相关的资源转移到管理集群上。这一步的目的是为了达到 self-hosted 自托管的功能；即管理集群的扩缩容也是通过 cluster-api 自身来完成。
+
+```bash
+
 Moving all Cluster API objects from bootstrap cluster to management cluster...
 Performing move...
 Discovering Cluster API objects
 Moving Cluster API objects Clusters=1
 Creating objects in the target cluster
 Deleting objects from the source cluster
-Waiting for additional components to be up and running...
-Waiting for resource tanzu-addons-controller-manager of type *v1.Deployment to be up and running
-Waiting for resource tkr-controller-manager of type *v1.Deployment to be up and running
-Waiting for resource kapp-controller of type *v1.Deployment to be up and running
-Waiting for packages to be up and running...
-Waiting for package: antrea
-Waiting for package: metrics-server
-Waiting for package: tanzu-addons-manager
-Waiting for package: vsphere-cpi
-Waiting for package: vsphere-csi
-Waiting for resource vsphere-csi of type *v1alpha1.PackageInstall to be up and running
-Waiting for resource antrea of type *v1alpha1.PackageInstall to be up and running
-Waiting for resource tanzu-addons-manager of type *v1alpha1.PackageInstall to be up and running
-Waiting for resource metrics-server of type *v1alpha1.PackageInstall to be up and running
-Waiting for resource vsphere-cpi of type *v1alpha1.PackageInstall to be up and running
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-Successfully reconciled package: tanzu-addons-manager
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "antrea" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-cpi" not found, retrying
-packageinstalls.packaging.carvel.dev "vsphere-csi" not found, retrying
-packageinstalls.packaging.carvel.dev "metrics-server" not found, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'metrics-server' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-package reconciliation failed: kapp: Error: Timed out waiting after 30s, retrying
-waiting for 'vsphere-cpi' Package to be installed, retrying
-waiting for 'vsphere-csi' Package to be installed, retrying
-waiting for 'antrea' Package to be installed, retrying
-Successfully reconciled package: antrea
-waiting for 'metrics-server' Package to be installed, retrying
-Successfully reconciled package: vsphere-csi
-Failure while waiting for package 'metrics-server'
-Warning: Management cluster is created successfully, but some packages are failing. Failure while waiting for packages to be installed: package reconciliation failed: kapp: Error: Timed out waiting after 30s
 Context set for management cluster tanzu-control-plan as 'tanzu-control-plan-admin@tanzu-control-plan'.
-Deleting kind cluster: tkg-kind-c7mdj9tkvpds01kldv60
+Deleting kind cluster: tkg-kind-c7vj6kds0a6sf43e6210
 
 Management cluster created!
 
@@ -953,123 +899,156 @@ Some addons might be getting installed! Check their status by running the follow
   kubectl get apps -A
 ```
 
+部署完成后会删除 bootstrap 集群，因为 bootstrap 集群中的资源已经转移到了管理集群中，它继续存在的意义不大。
+
 ## 部署 workload 集群
 
-根据官方文档 [vSphere Workload Cluster Template](https://tanzucommunityedition.io/docs/latest/vsphere-wl-template/) 中给出的模版创建一个配置文件即可
+上面我们只是部署好了一个 tanzu 管理集群，我们真正的工作负载并不适合运行在这个集群上，因此我们还需要再部署一个 workload 集群，类似于 k8s 集群中的 worker 节点。根据官方文档 [vSphere Workload Cluster Template](https://tanzucommunityedition.io/docs/latest/vsphere-wl-template/) 中给出的模版创建一个配置文件，然后再通过 tanzu 命令来部署即可。配置文件如下：
 
 ```yaml
-#! ---------------------------------------------------------------------
-#! Basic cluster creation configuration
-#! ---------------------------------------------------------------------
-
-CLUSTER_NAME: user-cluster-1
+# Cluster Pod IP 的 CIDR
+CLUSTER_CIDR: 100.96.0.0/11
+# Service 的 CIDR
+SERVICE_CIDR: 100.64.0.0/13
+# 集群的名称
+CLUSTER_NAME: tanzu-workload-cluster
+# 集群的类型
 CLUSTER_PLAN: dev
+# 集群节点的 arch
+OS_ARCH: amd64
+# 集群节点的 OS 名称
+OS_NAME: photon
+# 集群节点 OS 版本
+OS_VERSION: "3"
+# 基础设施资源的提供方
+INFRASTRUCTURE_PROVIDER: vsphere
+# cluster, machine 等自定义资源创建的 namespace
 NAMESPACE: default
+# CNI 选用类型
 CNI: antrea
 
-#! ---------------------------------------------------------------------
-#! vSphere configuration
-#! ---------------------------------------------------------------------
-
-OS_ARCH: amd64
-OS_NAME: photon
-OS_VERSION: "3"
-TKG_HTTP_PROXY_ENABLED: "false"
+# 集群的 VIP
+VSPHERE_CONTROL_PLANE_ENDPOINT: 192.168.20.95
+# control-plan 节点的磁盘大小
 VSPHERE_CONTROL_PLANE_DISK_GIB: "20"
-VSPHERE_CONTROL_PLANE_ENDPOINT: 192.168.75.192
+# control-plan 节点的内存大小
 VSPHERE_CONTROL_PLANE_MEM_MIB: "8192"
+# control-plan 节点的 CPU 核心数量
 VSPHERE_CONTROL_PLANE_NUM_CPUS: "4"
-VSPHERE_DATACENTER: /SH-IDC
-VSPHERE_DATASTORE: /SH-IDC/datastore/datastore1
-VSPHERE_FOLDER: /SH-IDC/vm/Tanzu-node
-VSPHERE_NETWORK: /SH-IDC/network/VM Network
-VSPHERE_PASSWORD: <encoded:SEMM=>
-VSPHERE_RESOURCE_POOL: /SH-IDC/host/Tanzu-Cluster/Resources
-VSPHERE_SERVER: 192.168.75.110
-VSPHERE_SSH_AUTHORIZED_KEY: ssh-rsa 
-VSPHERE_TLS_THUMBPRINT: EB:F3:D8:7A:E8:3D:1A:59:B0:DE:73:96:DC:B9:5F:13:86:EF:B6:27
-VSPHERE_USERNAME: administrator@vsphere.local
+# work 节点的磁盘大小
 VSPHERE_WORKER_DISK_GIB: "20"
+# work 节点的内存大小
 VSPHERE_WORKER_MEM_MIB: "4096"
+# work 节点的 CPU 核心数量
 VSPHERE_WORKER_NUM_CPUS: "2"
 
-#! ---------------------------------------------------------------------
-#! Machine Health Check configuration
-#! ---------------------------------------------------------------------
+# vCenter 的 Datacenter 路径
+VSPHERE_DATACENTER: /SH-IDC
+# 虚拟机创建的 Datastore 路径
+VSPHERE_DATASTORE: /SH-IDC/datastore/datastore1
+# 虚拟机创建的文件夹
+VSPHERE_FOLDER: /SH-IDC/vm/Tanzu-node
+# 虚拟机使用的网络
+VSPHERE_NETWORK: /SH-IDC/network/VM Network
+# 虚拟机关联的资源池
+VSPHERE_RESOURCE_POOL: /SH-IDC/host/Tanzu-Cluster/Resources
 
+# vCenter 的 IP
+VSPHERE_SERVER: 192.168.20.92
+# vCenter 的用户名
+VSPHERE_USERNAME: administrator@vsphere.local
+# vCenter 的密码，以 base64 编码
+VSPHERE_PASSWORD: <encoded:YWRtaW5AMjAyMA==>
+# vCenter 的证书指纹，可以通过 govc about.cert -json | jq -r '.ThumbprintSHA1' 获取
+VSPHERE_TLS_THUMBPRINT: CB:23:48:E8:93:34:AD:27:D8:FD:88:1C:D7:08:4B:47:9B:12:F4:E0
+# 虚拟机注入的 ssh 公钥，需要用它来 ssh 登录集群节点
+VSPHERE_SSH_AUTHORIZED_KEY: ssh-rsa
+
+# 一些默认参数
+AVI_ENABLE: "false"
+IDENTITY_MANAGEMENT_TYPE: none
+ENABLE_AUDIT_LOGGING: "false"
+ENABLE_CEIP_PARTICIPATION: "false"
+TKG_HTTP_PROXY_ENABLED: "false"
+DEPLOY_TKG_ON_VSPHERE7: "true"
+# 是否开启虚拟机健康检查
 ENABLE_MHC: true
 MHC_UNKNOWN_STATUS_TIMEOUT: 5m
 MHC_FALSE_STATUS_TIMEOUT: 12m
-
-#! ---------------------------------------------------------------------
-#! Common configuration
-#! ---------------------------------------------------------------------
-
-# TKG_CUSTOM_IMAGE_REPOSITORY: ""
-# TKG_CUSTOM_IMAGE_REPOSITORY_CA_CERTIFICATE: ""
-
-# TKG_HTTP_PROXY: ""
-# TKG_HTTPS_PROXY: ""
-# TKG_NO_PROXY: ""
-
-ENABLE_AUDIT_LOGGING: true
-
+# 是否部署 vsphere cis 组件
 ENABLE_DEFAULT_STORAGE_CLASS: true
-
-CLUSTER_CIDR: 100.96.0.0/11
-SERVICE_CIDR: 100.64.0.0/13
-
-# OS_NAME: ""
-# OS_VERSION: ""
-# OS_ARCH: ""
-
-#! ---------------------------------------------------------------------
-#! Autoscaler configuration
-#! ---------------------------------------------------------------------
-
+# 是否开启集群自动扩缩容
 ENABLE_AUTOSCALER: false
+```
+
+- 通过 tanzu 命令来部署 workload 集群
+
+```bash
+root@photon-machine [ ~ ]# tanzu cluster create tanzu-workload-cluster --file tanzu-workload-cluster.yaml
+Validating configuration...
+Warning: Pinniped configuration not found. Skipping pinniped configuration in workload cluster. Please refer to the documentation to check if you can configure pinniped on workload cluster manually
+Creating workload cluster 'tanzu-workload-cluster'...
+Waiting for cluster to be initialized...
+
+Waiting for cluster nodes to be available...
+
+Waiting for cluster autoscaler to be available...
+
+
+Unable to wait for autoscaler deployment to be ready. reason: deployments.apps "tanzu-workload-cluster-cluster-autoscaler" not found
+Waiting for addons installation...
+Waiting for packages to be up and running...
+
+Workload cluster 'tanzu-workload-cluster' created
+
+root@photon-machine [ ~ ]# kubectl get cluster
+NAME                     PHASE
+tanzu-workload-cluster   Provisioned
+root@photon-machine [ ~ ]# kubectl get machine
+NAME                                          PROVIDERID                                       PHASE     VERSION
+tanzu-workload-cluster-control-plane-4tdwq    vsphere://423950ac-1c6d-e5ef-3132-77b6a53cf626   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-a72ac4dec484   Running   v1.21.2+vmware.1
 ```
 
 ## 扩容集群
 
+集群部署好之后，如果想对集群节点进行扩缩容，我们可以想 deployment 的一样，只需要修改一下一些 CR 的信息即可。cluster-api 会 watch 到这些 CR 的变化，并根据它的 spec 进行调谐操作。如果当前集群节点数量低于所定义的节点副本数量，则会自动调用对应的 Provider 创建虚拟机，并对虚拟机进行初始化操作，将它转换为 k8s 里的一个 node 资源；
+
 ### 扩容 control-plan 节点
 
-```bash
-root@photon-machine [ ~ ]# kubectl scale kcp user-cluster-1-control-plane --replicas=3
-root@photon-machine [ ~ ]# kubectl get machine
-NAME                                   PROVIDERID                                       PHASE     VERSION
-user-cluster-1-control-plane-nc9w5     vsphere://42166405-f905-30e2-9c80-4446a5db3843   Running   v1.21.2+vmware.1
-user-cluster-1-control-plane-ph6nw                                                      Pending   v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-phqnx   vsphere://4216471e-2aeb-cf3f-ea8c-dc2bf4d4b2de   Running   v1.21.2+vmware.1
-root@photon-machine [ ~ ]# kubectl get machine
-NAME                                   PROVIDERID                                       PHASE          VERSION
-user-cluster-1-control-plane-nc9w5     vsphere://42166405-f905-30e2-9c80-4446a5db3843   Running        v1.21.2+vmware.1
-user-cluster-1-control-plane-ph6nw                                                      Provisioning   v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-phqnx   vsphere://4216471e-2aeb-cf3f-ea8c-dc2bf4d4b2de   Running        v1.21.2+vmware.1
-root@photon-machine [ ~ ]# kubectl get machine
+即扩容 master 节点，通过修改 `KubeadmControlPlane` 这个 CR 中的 `replicas` 副本数即可：
 
+```bash
+root@photon-machine [ ~ ]# kubectl scale kcp tanzu-workload-cluster-control-plane --replicas=3
 root@photon-machine [ ~ ]# kubectl get machine
-NAME                                   PROVIDERID                                       PHASE          VERSION
-user-cluster-1-control-plane-nc9w5     vsphere://42166405-f905-30e2-9c80-4446a5db3843   Running        v1.21.2+vmware.1
-user-cluster-1-control-plane-ph6nw     vsphere://42160071-77a8-2edf-aed7-9f3dacd57e93   Provisioning   v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-phqnx   vsphere://4216471e-2aeb-cf3f-ea8c-dc2bf4d4b2de   Running        v1.21.2+vmware.1
+NAME                                          PROVIDERID                                       PHASE          VERSION
+tanzu-workload-cluster-control-plane-4tdwq    vsphere://423950ac-1c6d-e5ef-3132-77b6a53cf626   Running        v1.21.2+vmware.1
+tanzu-workload-cluster-control-plane-mkmd2                                                     Provisioning   v1.21.2+vmware.1
+tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-a72ac4dec484   Running        v1.21.2+vmware.1
 ```
 
 ### 扩容 work 节点
 
-```bash
-root@photon-machine [ ~ ]# kubectl scale md user-cluster-1-control-plane --replicas=3
-root@photon-machine [ ~ ]# kubectl get machine
-NAME                                   PROVIDERID                                       PHASE          VERSION
-user-cluster-1-control-plane-ph6nw     vsphere://42160071-77a8-2edf-aed7-9f3dacd57e93   Running        v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-f2pmr                                                    Provisioning   v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-fdmd5                                                    Provisioning   v1.21.2+vmware.1
-user-cluster-1-md-0-7d5d6958b8-hncwr   vsphere://4216189f-1ed6-f850-337f-aef1d0e74e59   Running        v1.21.2+vmware.1
+扩容 worker 节点，通过修改 `MachineDeployment` 这个 CR 中的 `replicas` 副本数即可：
 
-root@photon-machine [ ~ ]# kubectl get machine -o wide
-NAME                                   PROVIDERID                                       PHASE     VERSION            NODENAME
-user-cluster-1-control-plane-ph6nw     vsphere://42160071-77a8-2edf-aed7-9f3dacd57e93   Running   v1.21.2+vmware.1   user-cluster-1-control-plane-ph6nw
-user-cluster-1-md-0-7d5d6958b8-f2pmr   vsphere://4216ea4f-551a-5660-e4b5-e5ec2ed88cda   Running   v1.21.2+vmware.1   user-cluster-1-md-0-7d5d6958b8-f2pmr
-user-cluster-1-md-0-7d5d6958b8-fdmd5   vsphere://421662d8-3feb-3b79-2c1f-232e31c81968   Running   v1.21.2+vmware.1   user-cluster-1-md-0-7d5d6958b8-fdmd5
-user-cluster-1-md-0-7d5d6958b8-hncwr   vsphere://4216189f-1ed6-f850-337f-aef1d0e74e59   Running   v1.21.2+vmware.1   user-cluster-1-md-0-7d5d6958b8-hncwr
+```bash
+root@photon-machine [ ~ ]# kubectl scale md tanzu-workload-cluster-md-0 --replicas=3
+root@photon-machine [ ~ ]# kubectl get machine
+NAME                                          PROVIDERID                                       PHASE     VERSION
+tanzu-workload-cluster-control-plane-4tdwq    vsphere://423950ac-1c6d-e5ef-3132-77b6a53cf626   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-control-plane-mkmd2    vsphere://4239278c-0503-f03a-08b8-df92286bcdd7   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-control-plane-rt5mb    vsphere://4239c882-2fe5-a394-60c0-616941a6363e   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-md-0-8555bbbfc-4hlqk   vsphere://42395deb-e706-8b4b-a44f-c755c222575c   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-a72ac4dec484   Running   v1.21.2+vmware.1
+tanzu-workload-cluster-md-0-8555bbbfc-ftmlp   vsphere://42399640-8e94-85e5-c4bd-8436d84966e0   Running   v1.21.2+vmware.1
 ```
+
+## 后续
+
+本文只是介绍了 tanzu 集群部署的大体流程，里面包含了 cluster-api 相关的概念在本文并没有做深入的分析，因为实在是太复杂了 😂，后续我会单独写一篇博客来讲解一些 cluster-api 相关的内容；到那时候在结合本文来看就容易理解很多。
+
+## 参考
+
+- [Deploying a workload cluster](https://tanzucommunityedition.io/docs/latest/workload-clusters/)
+- [Examine the Management Cluster Deployment](https://tanzucommunityedition.io/docs/latest/verify-deployment/)
+- [Prepare to Deploy a Management or Standalone Clusters to vSphere](https://tanzucommunityedition.io/docs/latest/vsphere/)
