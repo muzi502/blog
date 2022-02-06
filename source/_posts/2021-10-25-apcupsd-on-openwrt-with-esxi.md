@@ -124,7 +124,7 @@ NETSERVER on
 # 以下三个参数定义了何时触发 doshutdown 关机事件
 # 当剩余电池电量低于指定百分比
 BATTERYLEVEL 30
-# 当UPS内部计算的电池剩余运行时间低于指定的分钟数  
+# 当UPS内部计算的电池剩余运行时间低于指定的分钟数
 MINUTES 15
 # 发生电源故障后，进入 UPS 电池模式时间
 TIMEOUT 0

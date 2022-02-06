@@ -87,7 +87,7 @@ comment: true
 
 - [k8sli/kubeplay](https://github.com/k8sli/kubeplay)：无网环境中 K8s 离线部署的工具
 - [registry-mirrors](https://github.com/muzi502/registry-mirrors)：使用 GitHub actions 自动同步镜像的工具
-- [k8sli/os-packages](https://github.com/k8sli/os-packages)：yum/dnf/apt 离线源自动化构建工具 
+- [k8sli/os-packages](https://github.com/k8sli/os-packages)：yum/dnf/apt 离线源自动化构建工具
 - [tg.k8s.li](https://tg.k8s.li/)：Kubernetes 相关 RSS 频道，订阅人数 1300+，欢迎小伙伴们加入：）
 - [kindle](https://github.com/muzi502/kindle) ：将 Kindle 上 `.txt` 格式的标注文本转换成 `.html` 的 Python 脚本
 

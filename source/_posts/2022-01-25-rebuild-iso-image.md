@@ -2,7 +2,7 @@
 title: 使用 overlay2 或 bind 重新构建 ISO 镜像
 date: 2022-01-25
 updated: 2022-01-26
-slug: 
+slug:
 categories: 技术
 tag:
   - overlay2

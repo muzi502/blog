@@ -13,9 +13,9 @@ copyright: true
 comment: true
 ---
 
-之前接触的 Kubernetes 集群部署工具大多数都是依赖于 ssh 连接到待部署的节点上进行部署操作，这样就要求部署前需要提前准备好集群节点，且要保证这些节点的网络互通以及时钟同步等问题。类似于 kubespray 或者 kubekey 这些部署工具时不会去管这些底层的 IaaS 资源的，是要自己提前准备好。但是对于一些企业私有云环境中，使用了如 VMware vShpere 或 OpenStack 这些虚拟化平台，是可以将 K8s 集群部署与 IaaS 资源创建这两步统一起来的。
+之前接触的 Kubernetes 集群部署工具大多数都是依赖于 ssh 连接到待部署的节点上进行部署操作，这样就要求部署前需要提前准备好集群节点，且要保证这些节点的网络互通以及时钟同步等问题。类似于 kubespray 或者 kubekey 这些部署工具是不会去管这些底层的 IaaS 资源的创建，是要自己提前准备好。但是对于一些企业私有云环境中，使用了如 [VMware vShpere](https://docs.vmware.com/cn/VMware-vSphere/index.html) 或 [OpenStack](https://www.openstack.org/) 这些虚拟化平台，是可以将 K8s 集群部署与 IaaS 资源创建这两步统一起来的，这样就可以避免手动创建和配置虚拟机这些繁琐的步骤。
 
-目前将 IaaS 资源创建与 K8s 集群部署结合起来也有比较成熟的方案，比如基于 cluster-api 项目的 [tanzu](https://github.com/vmware-tanzu) 。本文就以 [VMware Tanzu 社区版](https://github.com/vmware-tanzu/community-edition) 为例从一台裸服务器开始，从安装 ESXi 到部署完成 Tanzu workload 集群，来体验一下这种部署方案与众不同之处。
+目前将 IaaS 资源创建与 K8s 集群部署结合起来也有比较成熟的方案，比如基于 [cluster-api](https://github.com/kubernetes-sigs/cluster-api) 项目的 [tanzu](https://github.com/vmware-tanzu) 。本文就以 [VMware Tanzu 社区版](https://github.com/vmware-tanzu/community-edition) 为例从一台裸服务器开始，从安装 ESXi 到部署完成 Tanzu workload 集群，来体验一下这种部署方案与众不同之处。
 
 ## 部署流程
 
@@ -81,7 +81,7 @@ $ tar -xf govc_Linux_x86_64.tar.gz -C /usr/local/bin
 $ apt install jq -y
 ```
 
-- 其他 Linux 可以在 govc 和 jq 的 GitHub 上下载对应的安装文件进行安装
+- 其他 Linux 可以在 govc 和 jq 的 GitHub 上下载对应的安装文件进行安装。
 
 ### 安装 ESXi OS
 
@@ -119,15 +119,19 @@ Name:              localhost.local
 
 ### 安装 vCenter
 
-按照 VMware 官方的 vCenter 安装文档 [关于 vCenter Server 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-8DC3866D-5087-40A2-8067-1361A2AF95BD.html) 来安装实在是过于繁琐，其实官方的 ISO 安装方式无非是运行一个 installer web 服务，然后在浏览器上配置好 vCenter 虚拟机的参数，再将填写的配置信息在部署 vcsa 虚拟机的时候注入到 ova 的配置参数中。知道这个安装过程的原理之后我们也可以自己配置 vCenter，然后通过 govc 来部署 ova；这比使用 UI 的方式简单方便很多，最终只需要填写一个配置文件，一条命令就可以部署完成啦；
+按照 VMware 官方的 vCenter 安装文档 [关于 vCenter Server 安装和设置](https://docs.vmware.com/cn/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-8DC3866D-5087-40A2-8067-1361A2AF95BD.html) 来安装实在是过于繁琐，其实官方的 ISO 安装方式无非是运行一个 installer web 服务，然后在浏览器上配置好 vCenter 虚拟机的参数，再将填写的配置信息在部署 vcsa 虚拟机的时候注入到 ova 的配置参数中。
 
-- 首先是将 vcsa 虚拟机的 ova 模版从 vCenter 的 ISO 中提取出来；
+知道这个安装过程的原理之后我们也可以自己配置 vCenter 的参数信息，然后通过 govc 来部署 ova；这比使用 UI 的方式简单方便很多，最终只需要填写一个配置文件，一条命令就可以部署完成啦。
+
+- 首先是挂载 vCenter 的 ISO，找到 vcsa ova 文件
 
 ```bash
 $ mount -o loop VMware-VCSA-all-7.0.3-18778458.iso /mnt/VMware-VCSA-all-7.0.3-18778458.iso
+$ ls /mnt/VMware-VCSA-all-7.0.3-18778458.iso/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
+/mnt/VMware-VCSA-all-7.0.3-18778458.iso/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova
 ```
 
-- 根据自己的环境信息修改下面安装脚本中的相关配置；
+- 根据自己的环境信息修改下面安装脚本中的相关配置：
 
 ```bash
 #!/usr/bin/env bash
@@ -281,7 +285,7 @@ $ govc vm.markastemplate photon-3-kube-v1.21.2
 
 ### 初始化 bootstrap 节点
 
-bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 LInux/macOS/Windows 的，但有一些比较严格的要求：
+bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 Linux/macOS/Windows 的，但有一些比较严格的要求：
 
 | Arch: x86; ARM is currently unsupported                      |
 | ------------------------------------------------------------ |
@@ -293,7 +297,7 @@ bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支
 | System time is synchronized with a Network Time Protocol (NTP) server. |
 | Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). For more information, see [Check and set the cgroup](https://tanzucommunityedition.io/docs/latest/support-matrix/#check-and-set-the-cgroup). |
 
-在这里为了避免这些麻烦的配置，我就直接使用的 VMware 官方的 [Photon OS 4.0 Rev2](https://github.com/vmware/photon/wiki/Downloading-Photon-OS#photon-os-40-rev2-binaries) ，下载 OVA 格式的镜像直接导入到 ESXi 主机启动一台虚拟机即可，能节省不少麻烦的配置；
+在这里为了避免这些麻烦的配置，我就直接使用的 VMware 官方的 [Photon OS 4.0 Rev2](https://github.com/vmware/photon/wiki/Downloading-Photon-OS#photon-os-40-rev2-binaries) ，下载 OVA 格式的镜像直接导入到 ESXi 主机启动一台虚拟机即可，能节省不少麻烦的配置；还有一个好处就是在一台单独的虚拟机上运行 tanzu 部署工具不会污染本地的开发环境。
 
 ```bash
 $ wget https://packages.vmware.com/photon/4.0/Rev2/ova/photon-ova-4.0-c001795b80.ova
@@ -318,7 +322,7 @@ HOME_URL="https://vmware.github.io/photon/"
 BUG_REPORT_URL="https://github.com/vmware/photon/issues"
 ```
 
-- 安装部署需要的一些工具，Photon OS 里竟然连个 tar 命令都没有，吃惊 😱
+- 安装部署时需要的一些工具（切，Photon OS 里竟然连个 tar 命令都没有 😠
 
 ```bash
 root@photon-machine [ ~ ]# tdnf install sudo tar -y
@@ -383,12 +387,13 @@ Installation complete!
 
 ### 部署管理集群
 
-先是部署一个 tanzu 的管理集群，有两种方式，一种是通过 [官方文档](https://tanzucommunityedition.io/docs/latest/getting-started/) 提到的通过 Web UI 的方式。其实这个 UI 界面比较羸弱。主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令来部署集群。并把集群部署的日志和进度展示出来；另一种就是通过 tanzu 命令指定配置文件来部署，这种方式不需要通过浏览器在 web 页面上傻乎乎地点来点去填一些参数。下面我们采用 tanzu 命令来部署，管理集群的配置文件模版如下：
+先是部署一个 tanzu 的管理集群，有两种方式，一种是通过 [官方文档](https://tanzucommunityedition.io/docs/latest/getting-started/) 提到的通过 Web UI 的方式。其实这个 UI 界面比较羸弱，它主要是用来让用户填写一些配置参数，然后调用后台的 tanzu 命令来部署集群。并把集群部署的日志和进度展示出来；部署完成之后，这个 UI 又不能管理这些集群，又不支持部署 workload 集群（
+
+另一种就是通过 tanzu 命令指定配置文件来部署，这种方式不需要通过浏览器在 web 页面上傻乎乎地点来点去填一些参数，只需要提前填写好一个 yaml 格式的配置文件即可。下面我们采用 tanzu 命令来部署集群，管理集群的配置文件模版如下：
 
 - tanzu-mgt-cluster.yaml
 
 ```yaml
-root@photon-machine [ ~ ]# cat tanzu-mgt-cluster.yaml
 # Cluster Pod IP 的 CIDR
 CLUSTER_CIDR: 100.96.0.0/11
 # Service 的 CIDR
@@ -608,7 +613,7 @@ Some addons might be getting installed! Check their status by running the follow
   kubectl get apps -A
 ```
 
-- 部署完成之后，将管理集群的 kubeconfig 文件复制到 .kube 目录下
+- 部署完成之后，将管理集群的 kubeconfig 文件复制到 kubectl 默认的目录下
 
 ```bash
 root@photon-machine [ ~ ]# cp ${HOME}/.kube-tkg/config ${HOME}/.kube/config
@@ -617,13 +622,16 @@ root@photon-machine [ ~ ]# cp ${HOME}/.kube-tkg/config ${HOME}/.kube/config
 - 查看集群状态信息
 
 ```bash
+# 管理集群的 cluster 资源信息，管理集群的 CR 默认保存在了 tkg-system namespace 下
 root@photon-machine [ ~ ]# kubectl get cluster -A
 NAMESPACE    NAME                 PHASE
 tkg-system   tanzu-control-plan   Provisioned
+# 管理集群的 machine 资源信息
 root@photon-machine [ ~ ]# kubectl get machine -A
 NAMESPACE    NAME                                       PROVIDERID                                       PHASE         VERSION
 tkg-system   tanzu-control-plan-control-plane-gs4bl     vsphere://4239c450-f621-d78e-3c44-4ac8890c0cd3   Running       v1.21.2+vmware.1
 tkg-system   tanzu-control-plan-md-0-7cdc97c7c6-kxcnx   vsphere://4239d776-c04c-aacc-db12-3380542a6d03   Provisioned   v1.21.2+vmware.1
+# 运行的组件状态
 root@photon-machine [ ~ ]# kubectl get pod -A
 NAMESPACE                           NAME                                                             READY   STATUS    RESTARTS   AGE
 capi-kubeadm-bootstrap-system       capi-kubeadm-bootstrap-controller-manager-6494884869-wlzhx       2/2     Running   0          8m37s
@@ -662,9 +670,10 @@ tkr-system                          tkr-controller-manager-6bc455b5d4-wm98s     
 
 ### 部署流程
 
-```go
-https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go
+结合 [tanzu 的源码](https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go) 和部署输出的日志我们大体可以得知，tanzu 管理集群部署大致分为如下几步：
 
+```go
+// https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go
 
 // management cluster init step constants
 const (
@@ -691,8 +700,6 @@ var InitRegionSteps = []string{
 }
 ```
 
-结合 [tanzu 的源码](https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go) 和部署输出的日志我们大体可以得知，tanzu 管理集群部署大致分为如下几步：
-
 - StepConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom`镜像，用于检查环境的兼容性；
 
 ```bash
@@ -707,10 +714,9 @@ Validating the pre-requisites...
 vSphere 7.0 Environment Detected.
 ```
 
-- ValidateConfiguration 配置文件校验，根据填写的参数校验配置是否正确
+- ValidateConfiguration 配置文件校验，根据填写的参数校验配置是否正确，以及检查 vCenter 当中有无匹配的虚拟机模版；
 
 ```bash
-
 Validating the pre-requisites...
 
 vSphere 7.0 Environment Detected.
@@ -730,13 +736,13 @@ Validating configuration...
 Using infrastructure provider vsphere:v0.7.10
 ```
 
-- GenerateClusterConfiguration 生成集群配置文件信息
+- GenerateClusterConfiguration 生成集群配置文件信息；
 
 ```bash
 Generating cluster configuration...
 ```
 
-- SetupBootstrapCluster 设置 bootstrap 集群，目前默认为 kind，会运行一个 docker 容器，里面套娃运行着一个 kind k8s 集群；
+- SetupBootstrapCluster 设置 bootstrap 集群，目前默认为 kind。会运行一个 docker 容器，里面套娃运行着一个 k8s 集群；这个 bootstrap k8s 集群只是临时运行 cluster-api 来部署管理集群用的，部署完成之后 bootstrap 集群也就没用了，会自动删掉；
 
 ```bash
 Setting up bootstrapper...
@@ -772,6 +778,7 @@ Bootstrapper created. Kubeconfig: /root/.kube-tkg/tmp/config_3fkzTCOL
 ```bash
 Installing providers on bootstrapper...
 Fetching providers
+# 安装 cert-manager 主要是为了生成 k8s 集群部署所依赖的那一堆证书
 Installing cert-manager Version="v1.1.0"
 Waiting for cert-manager to be available...
 Installing Provider="cluster-api" Version="v0.3.23" TargetNamespace="capi-system"
@@ -786,17 +793,12 @@ Waiting for provider infrastructure-vsphere
 Waiting for provider control-plane-kubeadm
 Waiting for provider cluster-api
 Waiting for provider bootstrap-kubeadm
-Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider bootstrap-kubeadm after 25.205820854s
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
 Passed waiting on provider infrastructure-vsphere after 30.185406332s
 Passed waiting on provider cluster-api after 30.213216243s
 Success waiting on all providers.
 ```
 
-- CreateManagementCluster 创建管理集群
+- CreateManagementCluster 创建管理集群，这一步主要是创建虚拟机、初始化节点、运行 kubeadm 部署 k8s 集群；
 
 ```bash
 Start creating management cluster...
@@ -810,17 +812,12 @@ patch cluster object with operation status:
 		}
 	}
 cluster control plane is still being initialized, retrying
-cluster control plane is still being initialized, retrying
-cluster control plane is still being initialized, retrying
-cluster control plane is still being initialized, retrying
-cluster control plane is still being initialized, retrying
-cluster control plane is still being initialized, retrying
 Getting secret for cluster
 Waiting for resource tanzu-control-plan-kubeconfig of type *v1.Secret to be up and running
 Saving management cluster kubeconfig into /root/.kube/config
 ```
 
-- InstallProvidersOnRegionalCluster 在管理集群上安装 cluster-api 相关组件
+- InstallProvidersOnRegionalCluster 在管理集群上安装 cluster-api 相关组件；
 
 ```bash
 Installing providers on management cluster...
@@ -839,27 +836,6 @@ Waiting for provider control-plane-kubeadm
 Waiting for provider bootstrap-kubeadm
 Waiting for provider infrastructure-vsphere
 Waiting for provider cluster-api
-Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-control-plane-controller-manager' in namespace 'capi-kubeadm-control-plane-system', retrying
-pods are not yet running for deployment 'capi-kubeadm-bootstrap-controller-manager' in namespace 'capi-kubeadm-bootstrap-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-Waiting for resource capi-kubeadm-control-plane-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider control-plane-kubeadm after 10.046865402s
-Waiting for resource capi-kubeadm-bootstrap-controller-manager of type *v1.Deployment to be up and running
-Passed waiting on provider bootstrap-kubeadm after 10.085818482s
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-system', retrying
-pods are not yet running for deployment 'capv-controller-manager' in namespace 'capv-system', retrying
-Waiting for resource capi-controller-manager of type *v1.Deployment to be up and running
-pods are not yet running for deployment 'capi-controller-manager' in namespace 'capi-webhook-system', retrying
 Waiting for resource capv-controller-manager of type *v1.Deployment to be up and running
 Passed waiting on provider infrastructure-vsphere after 20.091935635s
 Passed waiting on provider cluster-api after 20.109419304s
@@ -873,10 +849,9 @@ Waiting for resources type *v1alpha3.ClusterResourceSetList to be up and running
 Waiting for resource antrea-controller of type *v1.Deployment to be up and running
 ```
 
-- MoveClusterAPIObjects 将 bootstrap 集群上 cluster-api 相关的资源转移到管理集群上。这一步的目的是为了达到 self-hosted 自托管的功能；即管理集群的扩缩容也是通过 cluster-api 自身来完成。
+- MoveClusterAPIObjects 将 bootstrap 集群上 cluster-api 相关的资源转移到管理集群上。这一步的目的是为了达到 self-hosted 自托管的功能；即管理集群自身的扩缩容也是通过 cluster-api 来完成，这样就不用再依赖先前的那个 bootstrap 集群了；
 
 ```bash
-
 Moving all Cluster API objects from bootstrap cluster to management cluster...
 Performing move...
 Discovering Cluster API objects
@@ -887,7 +862,6 @@ Context set for management cluster tanzu-control-plan as 'tanzu-control-plan-adm
 Deleting kind cluster: tkg-kind-c7vj6kds0a6sf43e6210
 
 Management cluster created!
-
 
 You can now create your first workload cluster by running the following:
 
@@ -903,7 +877,9 @@ Some addons might be getting installed! Check their status by running the follow
 
 ## 部署 workload 集群
 
-上面我们只是部署好了一个 tanzu 管理集群，我们真正的工作负载并不适合运行在这个集群上，因此我们还需要再部署一个 workload 集群，类似于 k8s 集群中的 worker 节点。根据官方文档 [vSphere Workload Cluster Template](https://tanzucommunityedition.io/docs/latest/vsphere-wl-template/) 中给出的模版创建一个配置文件，然后再通过 tanzu 命令来部署即可。配置文件如下：
+上面我们只是部署好了一个 tanzu 管理集群，我们真正的工作负载并不适合运行在这个集群上，因此我们还需要再部署一个 workload 集群，类似于 k8s 集群中的 worker 节点。部署 workload 集群的时候不再依赖 bootstrap 集群，而是使用管理集群。
+
+根据官方文档 [vSphere Workload Cluster Template](https://tanzucommunityedition.io/docs/latest/vsphere-wl-template/) 中给出的模版创建一个配置文件，然后再通过 tanzu 命令来部署即可。配置文件内容如下：
 
 ```yaml
 # Cluster Pod IP 的 CIDR
@@ -924,7 +900,7 @@ OS_VERSION: "3"
 INFRASTRUCTURE_PROVIDER: vsphere
 # cluster, machine 等自定义资源创建的 namespace
 NAMESPACE: default
-# CNI 选用类型
+# CNI 选用类型，目前应该只支持 VMware 自家的 antrea
 CNI: antrea
 
 # 集群的 VIP
@@ -989,21 +965,21 @@ Validating configuration...
 Warning: Pinniped configuration not found. Skipping pinniped configuration in workload cluster. Please refer to the documentation to check if you can configure pinniped on workload cluster manually
 Creating workload cluster 'tanzu-workload-cluster'...
 Waiting for cluster to be initialized...
-
 Waiting for cluster nodes to be available...
-
 Waiting for cluster autoscaler to be available...
-
-
 Unable to wait for autoscaler deployment to be ready. reason: deployments.apps "tanzu-workload-cluster-cluster-autoscaler" not found
 Waiting for addons installation...
 Waiting for packages to be up and running...
-
 Workload cluster 'tanzu-workload-cluster' created
+```
 
+- 部署完成之后查看一下集群的 CR 信息
+
+```bash
 root@photon-machine [ ~ ]# kubectl get cluster
 NAME                     PHASE
 tanzu-workload-cluster   Provisioned
+# machine 状态处于 Running 说明节点已经正常运行了
 root@photon-machine [ ~ ]# kubectl get machine
 NAME                                          PROVIDERID                                       PHASE     VERSION
 tanzu-workload-cluster-control-plane-4tdwq    vsphere://423950ac-1c6d-e5ef-3132-77b6a53cf626   Running   v1.21.2+vmware.1
@@ -1012,7 +988,7 @@ tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-
 
 ## 扩容集群
 
-集群部署好之后，如果想对集群节点进行扩缩容，我们可以想 deployment 的一样，只需要修改一下一些 CR 的信息即可。cluster-api 会 watch 到这些 CR 的变化，并根据它的 spec 进行调谐操作。如果当前集群节点数量低于所定义的节点副本数量，则会自动调用对应的 Provider 创建虚拟机，并对虚拟机进行初始化操作，将它转换为 k8s 里的一个 node 资源；
+集群部署好之后，如果想对集群节点进行扩缩容，我们可以像 deployment 的一样，只需要修改一下一些 CR 的信息即可。cluster-api 相关组件会 watch 到这些 CR 的变化，并根据它的 spec 进行一系列调谐操作。如果当前集群节点数量低于所定义的节点副本数量，则会自动调用对应的 Provider 创建虚拟机，并对虚拟机进行初始化操作，将它转换为 k8s 里的一个 node 资源；
 
 ### 扩容 control-plan 节点
 
@@ -1020,6 +996,7 @@ tanzu-workload-cluster-md-0-8555bbbfc-74vdg   vsphere://4239b83b-6003-d990-4555-
 
 ```bash
 root@photon-machine [ ~ ]# kubectl scale kcp tanzu-workload-cluster-control-plane --replicas=3
+# 可以看到 machine 已经处于 Provisioning 状态，说明集群节点对应的虚拟机正在创建中
 root@photon-machine [ ~ ]# kubectl get machine
 NAME                                          PROVIDERID                                       PHASE          VERSION
 tanzu-workload-cluster-control-plane-4tdwq    vsphere://423950ac-1c6d-e5ef-3132-77b6a53cf626   Running        v1.21.2+vmware.1
@@ -1045,10 +1022,14 @@ tanzu-workload-cluster-md-0-8555bbbfc-ftmlp   vsphere://42399640-8e94-85e5-c4bd-
 
 ## 后续
 
-本文只是介绍了 tanzu 集群部署的大体流程，里面包含了 cluster-api 相关的概念在本文并没有做深入的分析，因为实在是太复杂了 😂，后续我会单独写一篇博客来讲解一些 cluster-api 相关的内容；到那时候在结合本文来看就容易理解很多。
+本文只是介绍了 tanzu 集群部署的大体流程，里面包含了 cluster-api 相关的概念在本文并没有做深入的分析，因为实在是太复杂了 😂，到现在我还是没太理解其中的一些原理，因此后续我再单独写一篇博客来讲解一些 cluster-api 相关的内容；到那时候在结合本文来看就容易理解很多。
 
 ## 参考
 
+- [community-edition](https://github.com/vmware-tanzu/community-edition)
+- [vmware/photon](https://github.com/vmware/photon)
+- [tanzu-framework](https://github.com/vmware-tanzu/tanzu-framework/blob/main/pkg/v1/tkg/client/init.go)
+- [cluster-api-provider-vsphere](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere)
 - [Deploying a workload cluster](https://tanzucommunityedition.io/docs/latest/workload-clusters/)
 - [Examine the Management Cluster Deployment](https://tanzucommunityedition.io/docs/latest/verify-deployment/)
 - [Prepare to Deploy a Management or Standalone Clusters to vSphere](https://tanzucommunityedition.io/docs/latest/vsphere/)

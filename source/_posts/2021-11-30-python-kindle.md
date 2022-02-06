@@ -75,8 +75,8 @@ comment: true
 ```json
 [
   {
-    "time": mark_time, 
-    "address": mark_address, 
+    "time": mark_time,
+    "address": mark_address,
     "content": mark_content
 	}
 ]
@@ -173,7 +173,7 @@ def get_book_index(book_name):
     return -1
 
 
-# 定义渲染处理标注文本的函数  
+# 定义渲染处理标注文本的函数
 def render_clippings(file_name):
     global all_marks
     global all_books
@@ -199,18 +199,18 @@ def render_clippings(file_name):
             book_info = re.split(r"[()<>|\[\]（）《》【】｜]\s*", mark[0])
             # 获取书名，一般为第一个元素，目的是为了去除 kinlde 中文商店下载的又长又臭的书名
             book_name = book_info[0] if str(book_info[0]) != "" else (mark[0])
-            
+
             # 获取该书的作者
             book_author = book_info[-2] if len(book_info) > 1 else ""
-            
+
             mark_info = mark[1].split("|")
   					# 获取该书的标记时间和标注位置
             mark_time = mark_info[1]
             mark_address = mark_info[0].strip("- ")
-            
+
             # 获取该标注的正文内容
             mark_content = mark[2]
-            
+
             # 查询该书的列表索引，将该标记插入到该书的 marks 列表中
             book_index = get_book_index(book_name)
             if book_index == -1:
@@ -230,7 +230,7 @@ def render_clippings(file_name):
             all_books[book_index]["nums"] += 1
     # 使用 lambda 函数以标注数量为 key 对所有书籍进行倒序排序
     all_books.sort(key=lambda x: x["nums"], reverse=True)
-    
+
     # 以下就是将 all_books 列表以 json 格式写入到一个 json 文件中，或许会有一些其他的用途，比如前端展示
     try:
         json_str = json.dumps(all_books, indent=2, ensure_ascii=False)
@@ -405,20 +405,20 @@ def render_date_json():
         if len(mark) == 4:
             # 第二行就是标注的时间，以年月日关键字进行分隔，第一个元素就是年，第二个就是月，第三个就是日
             date = re.split(r"[年月日]\s*",mark[1].split("|")[1].split(" ")[2])
-            
+
             # 在 1-9 月前面补充一个 0
             month = date[1] if len(date[1]) == 2 else "0" + date[1]
 
             # 在 1-9 日前面补充一个 0
             day = date[2] if len(date[2]) == 2 else "0" + date[2]
-            
+
             # 最后拼凑成 2021-12-05 这样的时间格式
             date = date[0] + "-" + month + "-" + day
-            
+
             # 如果当前日期没有在字典中，则将它添加到字典中
             if date not in all_dates:
                 all_dates[date] = 0
- 
+
             # 对天数的 value 值进行自增 1
             all_dates[date] += 1
     # 将数据写入 json 文件当中
@@ -449,7 +449,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
