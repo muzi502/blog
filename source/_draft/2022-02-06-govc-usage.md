@@ -17,7 +17,7 @@ comment: true
 
 ## govc
 
-[govc](https://github.com/vmware/govmomi/tree/master/govc) 是 VMware 官方 [govmomi](https://github.com/vmware/govmom) 库的一个封装实现。使用它可以完成对 ESXi 主机或 vCenter 的一些操作。比如创建虚拟机、管理快照等。基本上能在 ESXi 或 vCenter 上的操作，在 govmomi 中都有对应的实现。
+[govc](https://github.com/vmware/govmomi/tree/master/govc) 是 VMware 官方 [govmomi](https://github.com/vmware/govmom) 库的一个封装实现。使用它可以完成对 ESXi 主机或 vCenter 的一些操作。比如创建虚拟机、管理快照等。基本上能在 ESXi 或 vCenter 上的操作，在 govmomi 中都有对应的实现。支持的 ESXi / vCenter 版本：ESXi / vCenter 7.0, 6.7, 6.5 , 6.0 (5.5和5.1版本功能部分支持, 但官方不再支持)
 
 使用 govc 连接 ESXi 主机或 vCenter 可以通过设置环境变量或者命令行参数。
 
@@ -531,3 +531,6 @@ func main() {
 }
 ```
 
+## 参考
+
+- [vSphere go命令行管理工具govc](https://gitbook.curiouser.top/origin/vsphere-govc.html)
