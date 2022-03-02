@@ -111,13 +111,13 @@ compose:
 
 #### kubespray
 
-| 参数                         | 说明                     | 示例           |
-| ---------------------------- | ------------------------ | -------------- |
-| kube_version                 | kubernetes 版本号        | v1.21.3        |
-| external_apiserver_access_ip | 集群APIserver外部访问 IP | 192.168.10.100 |
-| kube_network_plugin          | 选用 CNI 网络插件名称    | calico         |
-| container_manager            | 容器运行时               | containerd     |
-| etcd_deployment_type         | etcd 部署方式            | host           |
+| 参数                         | 说明                       | 示例           |
+| ---------------------------- | -------------------------- | -------------- |
+| kube_version                 | kubernetes 版本号          | v1.21.3        |
+| external_apiserver_access_ip | 集群 APIserver 外部访问 IP | 192.168.10.100 |
+| kube_network_plugin          | 选用 CNI 网络插件名称      | calico         |
+| container_manager            | 容器运行时                 | containerd     |
+| etcd_deployment_type         | etcd 部署方式              | host           |
 
 ```yaml
 kubespray:
@@ -145,7 +145,7 @@ inventory 为 kubernetes 集群节点的 ssh 登录配置，支持 yaml, json, i
 | ansible_port                 | 主机 ssh 登录端口号       | 22                               |
 | ansible_user                 | 主机 ssh 登录用户名       |                                  |
 | ansible_ssh_pass             | 主机 ssh 登录密码         |                                  |
-| ansible_ssh_private_key_file | 如果使用 private key 登录 | 必须为`/kubespray/config/id_rsa` |
+| ansible_ssh_private_key_file | 如果使用 private key 登录 | 必须为 `/kubespray/config/id_rsa` |
 | ansible_host                 | 节点 IP                   |                                  |
 
 - yaml 格式
@@ -304,22 +304,20 @@ inventory: |
   calico_rr
 ```
 
-
-
 #### default
 
 以下几个默认的参数在没有特殊要求的情况下不建议修改，直接保持默认即可。`ntp_server` 参数为默认值时会自动替换成 compose 中的 `internal_ip` 值；`registry_ip` 和 `offline_resources_url` 这两个参数会根据 compose 中的参数自动生成无需修改。
 
-| 参数                      | 说明                                     |  示例   |
+| 参数                      | 说明                                     |  示例  |
 | ------------------------- | ---------------------------------------- | :-----: |
 | ntp_server                | ntp 时钟同步服务器域名或 IP              |    -    |
 | registry_ip               | 镜像仓库节点 IP                          |    -    |
 | offline_resources_url     | 提供离线资源下载的 URL 地址              |    -    |
-| offline_resources_enabled | 是否为离线部署                           |  true   |
-| generate_domain_crt       | 是否为镜像仓库域名生成自签证书           |  true   |
+| offline_resources_enabled | 是否为离线部署                           |  true  |
+| generate_domain_crt       | 是否为镜像仓库域名生成自签证书           |  true  |
 | image_repository          | 镜像仓库的 repo 或 project               | library |
 | registry_https_port       | 镜像仓库的端口号，该端口已禁止 PUSH 镜像 |   443   |
-| registry_push_port        | 用于 PUSH 镜像的 registry 端口号         |  5000   |
+| registry_push_port        | 用于 PUSH 镜像的 registry 端口号         |  5000  |
 | download_container        | 是否在所有节点 pull 下所有组件的镜像     |  false  |
 
 ```yaml
@@ -378,4 +376,3 @@ $ bash install.sh remove
 ```
 
 ## 未完后续补充
-

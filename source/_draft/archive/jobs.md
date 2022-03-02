@@ -25,7 +25,7 @@ comment: true
 
 ## 工作经历
 
-离职前在字节跳动负责的工作事项偏向于运维开发或SRE：
+离职前在字节跳动负责的工作事项偏向于运维开发或 SRE：
 
 ### 版本发布
 
@@ -58,27 +58,24 @@ comment: true
 
 总之，个人在工作上还算用心吧，一些总结和梳理工作都是自己默默完成的（虽然 OKR 或者绩效评估时这些也无法体现出来）。有时候为了验证一个想法或方案也常常半夜一两点从床上爬起来到电脑桌旁一顿 xjb 搞。
 
-----
+---
 
 之前在看 [PingCAP 招聘](https://careers.pingcap.com/) 的职位时就发现一些职位和自己做的十分相似，自己所负责的工作事项在 PingCAP 都有单独的职位：比如负责平台组件部署的[自动化运维研发工程师](https://careers.pingcap.com/apply/pingcap/39950/#/job/8319a481-94cf-44f0-97b4-2d42d7b22bbe)；负责产品版本发布的 [Release Manager](https://careers.pingcap.com/apply/pingcap/39950/#/job/a890aa70-d280-42aa-bfe0-d355cde3cc77)；负责组件 CI/CD 自动化流水线的 [Site Reliability Engineer](https://careers.pingcap.com/apply/pingcap/39950/#/job/5b9e8422-fc61-42cb-b291-1576da224c88)；负责 On-call 的 [售后技术支持](https://careers.pingcap.com/apply/pingcap/39950/#/job/5e8f330e-8326-48b5-b8c7-b2ebdd71028c)；
 
-突然意识到自己一个人完成四种职能的工作 😂，可能是因为我们的产品还不算太复杂，没有 PingCAP 规模那么大，做的内容也没有那么精细，所以自己一个人 take 起来这些工作事项也没问题。这还不是因为年初的时候组织架构大调整导致之前的业务小组解散，整个小组遗留的工作都落在了我一个人身上，所以就一个人干完了这么多人做的事儿。想想自己一个人能 take 起来四个人的活儿，拿那么点的薪资就可气😡，不离职才怪。
+突然意识到自己一个人完成四种职能的工作 😂，可能是因为我们的产品还不算太复杂，没有 PingCAP 规模那么大，做的内容也没有那么精细，所以自己一个人 take 起来这些工作事项也没问题。这还不是因为年初的时候组织架构大调整导致之前的业务小组解散，整个小组遗留的工作都落在了我一个人身上，所以就一个人干完了这么多人做的事儿。想想自己一个人能 take 起来四个人的活儿，拿那么点的薪资就可气 😡，不离职才怪。
 
-----
-
+---
 
 ## 技术能力
 
 - 大学时就喜欢玩 Linux ，接触一些开源社区向大佬们学习。常见的 Linux 发行版如 CentOS、Ubuntu、Debian 基本的运维管理掌握的还算可以，日常的开发测试都在这些发行版上搞，也在这些发行版上是适配过 K8s 部署。一些常见的自动化运维工具如 Ansible、Terraform 等自己都是日常使用，掌握的还行。
 - 对 IaaS 虚拟化有些了解，日常使用 ESXi 作为 NAS 主机 OS ，上面开了一些虚拟机跑了一些服务；使用 Proxmox VE/KVM 作为开发测试环境，qemu 和 cloud-init 管理虚拟机那是真香。
-
--  深入研究过容器镜像构建、存储、分发的流程和原理，并将其应用在产品的打包发布流水线中以提升产品发布效率。
--  熟悉云原生 PaaS ToB 产品版本发布和私有化交付全流程； 曾为近 20 个客户主导完成 50 多个 OEM 定制化补丁包版本发布，拥有一定的 ToB 项目管理经验； 能够推动并落地一些提升产品研发效率的公共事务规范，解决产品私有化交付过程中的遇到的痛点。
-
--  掌握了 Python、Shell、Ansible 编程，给 kubernetes 社区的 kubespray 项目贡献过十几个 [PR](https://github.com/kubernetes-sigs/kubespray/pulls?q=is%3Apr+author%3Amuzi502+is%3Aclosed)。
+- 深入研究过容器镜像构建、存储、分发的流程和原理，并将其应用在产品的打包发布流水线中以提升产品发布效率。
+- 熟悉云原生 PaaS ToB 产品版本发布和私有化交付全流程； 曾为近 20 个客户主导完成 50 多个 OEM 定制化补丁包版本发布，拥有一定的 ToB 项目管理经验； 能够推动并落地一些提升产品研发效率的公共事务规范，解决产品私有化交付过程中的遇到的痛点。
+- 掌握了 Python、Shell、Ansible 编程，给 kubernetes 社区的 kubespray 项目贡献过十几个 [PR](https://github.com/kubernetes-sigs/kubespray/pulls?q=is%3Apr+author%3Amuzi502+is%3Aclosed)。
 - 至于 Golang 目前还在学习中，算是掌握了一些基本的语法和数据结构。年初的时候写过一个 CLI 工具，使用 [go-gitlab](https://github.com/xanzy/go-gitlab) 库进行 CRUD 操作，从 Gitlab  repo 中获某个 tag 下的一些特定目录下的文件。当时体会到了写 Go 的乐趣，不过后来因为工作的原因很少会用 Go 写代码，基本上都是自己慢慢摸索着学。
 - 能够使用 Jenkins、Gitlab CI、GitHub Actions 等工具为平台组件及产品构建 CI/CD 流水线、私有化打包发布流水线。
--  拥有腾讯云、GCP、AWS、Oracle 等云服务器，具备高速稳定的科学上网环境； 业余喜欢折腾 NAS 存储、虚拟化、OpenWrt 软路由。
+- 拥有腾讯云、GCP、AWS、Oracle 等云服务器，具备高速稳定的科学上网环境； 业余喜欢折腾 NAS 存储、虚拟化、OpenWrt 软路由。
 - 文档写作能力还行，最近几个月一直坚持每月写至少两篇博客，之前在字节的时候也是负责撰写产品的各种文档，如安装手册、运维手册、实施方案、QA 文档等。
 - 业余时间喜欢阅读大佬们的技术博客、收藏博客文章；自己也时常写博客，并以 [k8s.li](https://k8s.li/) 作为个人域名（日均 1.3K UV）；在云原生实验室、K8sMeetup、CNCF 等公众号投稿过至少 12 篇个人原创技术文章。
 - 对技术一直保持着好奇心和求知欲，经常参加过一些像 CNCF、Rancher、青云 kubesphere 等社区举办的活动，向大佬们学习经验。

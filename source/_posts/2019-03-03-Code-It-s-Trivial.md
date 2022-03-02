@@ -9,10 +9,10 @@ copyright: true
 comment: true
 ---
 
-本文转载至 stack overflow 创始人 Jeff Atwood 的[Code: It's Trivial](https://blog.codinghorror.com/code-its-trivial/)
-背景是：当时 stack overflow 刚成立不久，而且使用的技术是 Windows server 及.net，就有特别多的人喷 stack overflow 技术垃圾，声称花一个周末的时间就能开发出像 stack overflow 一样的网站。 Jeff Atwood 于是写这篇文章怼回去，仔细看看 hack news 上的评论挺有意思的。[hack news 的链接在这](https://news.ycombinator.com/item?id=678501) 。还有当时的 [droxbox](https://news.ycombinator.com/item?id=8863)和[Airbnb](https://news.ycombinator.com/item?id=426120) 也被喷的狗血淋头。十年多过去了，喷他们的人只留下了一个ID，而被喷的人留下了一个伟大的网站。
+本文转载至 stack overflow 创始人 Jeff Atwood 的 [Code: It's Trivial](https://blog.codinghorror.com/code-its-trivial/)
+背景是：当时 stack overflow 刚成立不久，而且使用的技术是 Windows server 及.net，就有特别多的人喷 stack overflow 技术垃圾，声称花一个周末的时间就能开发出像 stack overflow 一样的网站。 Jeff Atwood 于是写这篇文章怼回去，仔细看看 hack news 上的评论挺有意思的。[hack news 的链接在这](https://news.ycombinator.com/item?id=678501) 。还有当时的 [droxbox](https://news.ycombinator.com/item?id=8863) 和 [Airbnb](https://news.ycombinator.com/item?id=426120) 也被喷的狗血淋头。十年多过去了，喷他们的人只留下了一个 ID，而被喷的人留下了一个伟大的网站。
 
-----------
+---
 
 Remember that Stack Overflow thing we've been working on? Some commenters on a recent Hacker News article questioned the pricing of Stack Exchange -- essentially, a hosted Stack Overflow:
 Seems really pricey for a relatively simple software like this. Someone write an open source alternative? it looks like something that can be thrown together in a weekend.
@@ -55,7 +55,7 @@ Building a better Stack Overflow experience does involve writing code and buildi
 12. helping set up logistics for the Stack Overflow DevDays conferences
 13. setting up the next site in the trilogy, and figuring out where we go next As programmers, as much as we might want to believe thatlots_of_awesome_code = success;
 
-----------
+---
 
 There's nothing particularly magical about the production of source code. In fact, writing code is a tiny proportion of what makes most businesses successful.
 Code is meaningless if nobody knows about your product. Code is meaningless if the IRS comes and throws you in jail because you didn't do your taxes. Code is meaningless if you get sued because you didn't bother having a software license created by a lawyer.

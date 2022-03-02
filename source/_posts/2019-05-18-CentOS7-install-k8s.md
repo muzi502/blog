@@ -13,7 +13,7 @@ comment: true
 
 ## 0.准备
 
-1.临时关闭swap、SELinux、防火墙。官方建议这么做。
+1.临时关闭 swap、SELinux、防火墙。官方建议这么做。
 
 ```bash
 swapoff -a
@@ -23,7 +23,7 @@ systemctl disable iptables-services firewalld
 systemctl stop iptables-services firewalld
 ```
 
-2.打开bridge-nf-call-iptables
+2.打开 bridge-nf-call-iptables
 
 ```bash
 cat > /etc/sysctl.d/99-kubernetes-cri.conf <<EOF
@@ -34,34 +34,34 @@ EOF
 sysctl --system
 ```
 
-3.加载br_netfilter内核模块，安装docker后也会默认开启
+3.加载 br_netfilter 内核模块，安装 docker 后也会默认开启
 
 ```bash
 modprobe br_netfilter
 lsmod | grep br_netfilter
 ```
 
-## 1.安装docker
+## 1.安装 docker
 
 1.安装 yum-utils 提供 yum-config-manager 工具
-devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2
+devicemapper 存储驱动依赖 device-mapper-persistent-data 和 lvm2
 
 `sudo yum install -y yum-utils device-mapper-persistent-data lvm2`
 
-2.添加aliyun软件包源
+2.添加 aliyun 软件包源
 `sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo`
 
-3.安装docker-ce-stable
-官方文档写了建议安装18.06.2，其他版本的docker支持的不太好
+3.安装 docker-ce-stable
+官方文档写了建议安装 18.06.2，其他版本的 docker 支持的不太好
 On each of your machines, install Docker. Version 18.06.2 is recommended, but 1.11, 1.12, 1.13, 17.03 and 18.09 are known to work as well. Keep track of the latest verified Docker version in the Kubernetes release notes.
 
-`sudo yum list docker-ce.x86_64  --showduplicates |sort -r` 选择`docker-ce-18.06.1.ce-3.el7`版
+`sudo yum list docker-ce.x86_64  --showduplicates |sort -r` 选择 `docker-ce-18.06.1.ce-3.el7` 版
 
 `yum install -y docker-ce-18.06.1.ce-3.el7`
 
-4.添加Docker 用户和用户组(可选) `sudo usermod -aG docker $USER`
+4.添加 Docker 用户和用户组(可选) `sudo usermod -aG docker $USER`
 
-5.修改docker daemon配置文件
+5.修改 docker daemon 配置文件
 
 ```bash
 mkdir -p /etc/docker/
@@ -83,7 +83,7 @@ EOF
 [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
 ```
 
-6.启动docker并添加到开机自启
+6.启动 docker 并添加到开机自启
 
 ```bash
 systemctl enable docker
@@ -93,7 +93,7 @@ systemctl daemon-reload
 
 ## 2.在国外服务器下载所需要的镜像并传输回国内服务器上
 
-我自己在aws上做了个非官方k8s镜像站，仅仅包含了kubeadm初始化k8s集群时所需要的镜像[mirror](https://images.k8s.k8s.li)，没有对镜像做任何修改，定时任务每周拉取最新的镜像。你信得过我的话也可以去我的镜像站下载。上面log有校验的校验码，下载后记得校验一下。😂。我使用IDM下载，开启16个线程下载速度能打到15Mb/s。HTTPS传输，不用注册。国内的一些博主用百度云😂来分享这些镜像，十分不友好。这才是我建这个镜像站的原因。
+我自己在 aws 上做了个非官方 k8s 镜像站，仅仅包含了 kubeadm 初始化 k8s 集群时所需要的镜像 [mirror](https://images.k8s.k8s.li)，没有对镜像做任何修改，定时任务每周拉取最新的镜像。你信得过我的话也可以去我的镜像站下载。上面 log 有校验的校验码，下载后记得校验一下。😂。我使用 IDM 下载，开启 16 个线程下载速度能打到 15Mb/s。HTTPS 传输，不用注册。国内的一些博主用百度云 😂 来分享这些镜像，十分不友好。这才是我建这个镜像站的原因。
 下载完成后使用 `docker load < k8s.image.tar.gz` 就能加载镜像，无需解压。
 
 你也可以自己在国外的服务器上下载这些镜像并传输回国内的服务器上。
@@ -113,9 +113,9 @@ docker save -o k8s.tar $(docker images | grep k8s.gcr.io | cut -d ' ' -f1)
 gzip k8s.tar k8s.tar.gz
 ```
 
-将这些镜像导出并压缩，传输回国内。http方式多线程传输最快。IDM64线程能跑满带宽😂，不到一分钟就下载到本地。然后再scp传输回国内的云服务器上。grep B是为了过滤掉输出结果第一行显示的 `REPOSITORY  TAG  IMAGE ID  CREATED  SIZE`😂
-在使用docker save的时候，要指定镜像的名称，不要指定镜像的ID，不然你装载镜像的时候全是node的镜像，是启动不起来的😥
-ps：第一次我使用的是`docker save $(docker images -q)`导出了所有的镜像。在装入镜像的时候发现镜像NAME全是node😂。使用`docker images | grep B | cut -d ' ' -f1`过滤出的是带NAME的镜像。
+将这些镜像导出并压缩，传输回国内。http 方式多线程传输最快。IDM64 线程能跑满带宽 😂，不到一分钟就下载到本地。然后再 scp 传输回国内的云服务器上。grep B 是为了过滤掉输出结果第一行显示的 `REPOSITORY  TAG  IMAGE ID  CREATED  SIZE`😂
+在使用 docker save 的时候，要指定镜像的名称，不要指定镜像的 ID，不然你装载镜像的时候全是 node 的镜像，是启动不起来的 😥
+ps：第一次我使用的是 `docker save $(docker images -q)` 导出了所有的镜像。在装入镜像的时候发现镜像 NAME 全是 node😂。使用 `docker images | grep B | cut -d ' ' -f1` 过滤出的是带 NAME 的镜像。
 
 `docker save -o k8s.tar $(docker images | grep B | cut -d ' ' -f1) | gzip k8s.tar k8s.tar.gz`
 
@@ -123,7 +123,7 @@ ps：第一次我使用的是`docker save $(docker images -q)`导出了所有的
 
 ## 3.安装 kubelet kubeadm kubectl
 
-添加国内阿里云的kubernetes镜像站点
+添加国内阿里云的 kubernetes 镜像站点
 
 ```bash
 cat>>/etc/yum.repos.d/kubrenetes.repo<<EOF
@@ -140,7 +140,7 @@ systemctl enable kubelet && systemctl start kubelet
 
 ## 4.初始化集群
 
-使用kubeadm init初始化kubernetes集群，可以指定配置文件，把IP替换为这台机器的内网IP，要k8s-node节点能够访问得到IP。
+使用 kubeadm init 初始化 kubernetes 集群，可以指定配置文件，把 IP 替换为这台机器的内网 IP，要 k8s-node 节点能够访问得到 IP。
 
 `kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=IP`
 
@@ -194,14 +194,14 @@ f6d2cd0b03cd        k8s.gcr.io/pause:3.1   "/pause"                 7 minutes ag
 ba61bed68ecc        k8s.gcr.io/pause:3.1   "/pause"                 9 minutes ago       Up 9 minutes                            k8s_POD_kube-proxy-g4nd4_kube-system_afc4ba92-7657-11e9-b684-2aabd22d242a_4
 ```
 
-----
+---
 
-## 5.将node加入到master管理当中来
+## 5.将 node 加入到 master 管理当中来
 
-node节点的安装过程和master一样，只是在最后一步时不相同。master为init初始化k8s集群，而node节点为join集群当中来。安装 docker、kubelet 、kubeadm 、kubectl好，并导入所需要的镜像。再执行
+node 节点的安装过程和 master 一样，只是在最后一步时不相同。master 为 init 初始化 k8s 集群，而 node 节点为 join 集群当中来。安装 docker、kubelet 、kubeadm 、kubectl 好，并导入所需要的镜像。再执行
 
 `kubeadm join IP:6443 --token ************ \--discovery-token-ca-cert-hashsha256:******`
 
-也就是 master 节点初始化成功后生成的那个😂。注意这个 token 是有有效期的，默认是 3h。也可以手动生成 token 给 node 加入 master 来用。ttl为token有效期，为 0 的话就是永久生效。
+也就是 master 节点初始化成功后生成的那个 😂。注意这个 token 是有有效期的，默认是 3h。也可以手动生成 token 给 node 加入 master 来用。ttl 为 token 有效期，为 0 的话就是永久生效。
 
 `kubeadm token create $(kubeadm token generate)  --print-join-command --ttl=0`

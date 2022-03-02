@@ -13,14 +13,14 @@ comment: true
 
 [原文链接](https://www.computerworld.com/article/2469218/oracle-rips-red-hat-and--sort-of--launches-a-new-linux.html)
 
-----
+---
 
 今天看到推特上 RedHat 换了新的 logo，不过还是那顶红帽子。其实 RedHat 曾经被 Oracle 绿过，换成绿帽子再适合不过了。😂
 即兴找了一下当年 Oracle 撕碎 RedHat 的报道文章。
-Oracle 曾诚意满满地派了 100 多个程序员帮助红帽子公司开发 RedHat Linux 发行版，慢慢地Oracle公司的员工逐渐掌握了 RedHat 的开发，相当于把 RedHat 架空了。RedHat 被绿了一把😂。后来 Oracle 推出了自己的 Oracle Linux，接着收购 SUN公司。拥有了硬件基础。自此 Oracle 从硬件到 OS 再到数据库都有了自己的产品。推出了 Oracle 一体机。
+Oracle 曾诚意满满地派了 100 多个程序员帮助红帽子公司开发 RedHat Linux 发行版，慢慢地 Oracle 公司的员工逐渐掌握了 RedHat 的开发，相当于把 RedHat 架空了。RedHat 被绿了一把 😂。后来 Oracle 推出了自己的 Oracle Linux，接着收购 SUN 公司。拥有了硬件基础。自此 Oracle 从硬件到 OS 再到数据库都有了自己的产品。推出了 Oracle 一体机。
 很难想象不可一世的 RedHat 被 Oracle 打趴在地。
 
-----
+---
 
 [Oracle](http://www.oracle.com) made a weird announcement at its [Oracle OpenWorld](http://www.oracle.com/us/openworld/splash/index.html) love-fest and trade-show. The company announced that it was releasing its own Linux: the [Oracle's Unbreakable Enterprise Kernel for Oracle Linux](http://www.marketwatch.com/story/oracle-debuts-oracles-unbreakable-enterprise-kernel-for-oracle-linux-2010-09-20-111130).
 

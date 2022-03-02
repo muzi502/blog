@@ -21,7 +21,7 @@ comment: true
 
 [ubuntu-18.04.3-server-amd64.iso](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/ubuntu-18.04.3-server-amd64.iso)
 
-安装过程就不赘述了，主要是懒，安装过程图还要截图什么的，麻烦😂。建议使用 lvm 分区，安装上 openssh-server 就行，其他的组件一概不用安装，这样能减少系统占用空间的而大小。以后需要安装的话再安装就行。
+安装过程就不赘述了，主要是懒，安装过程图还要截图什么的，麻烦 😂。建议使用 lvm 分区，安装上 openssh-server 就行，其他的组件一概不用安装，这样能减少系统占用空间的而大小。以后需要安装的话再安装就行。
 
 安装进入系统后使用 `sudo passwd` 来重置 root 的密码
 
@@ -246,7 +246,7 @@ dd: error writing '/zero': No space left on device
 1.3G Aug 28 15:48 Ubuntu1804.ova   # 置零前的大小
 ```
 
-经过置零后，导出的 ova 虚拟机模板体积 460M 左右，骤然减少了接近 2 倍的大小😂
+经过置零后，导出的 ova 虚拟机模板体积 460M 左右，骤然减少了接近 2 倍的大小 😂
 
 ### 2. Debian 10
 
@@ -304,7 +304,7 @@ tmpfs                        395M     0  395M   0% /run/user/0
 
 #### 6. 导出 OVA 虚拟机模板
 
-最终导出的 vmdk 模板为 351M ，棒棒哒😂
+最终导出的 vmdk 模板为 351M ，棒棒哒 😂
 
 ```bash
 351M Sep  1 16:17 disk-0.vmdk
@@ -314,7 +314,7 @@ tmpfs                        395M     0  395M   0% /run/user/0
 
 #### 1. 安装镜像
 
-安装镜像就选择使用[CentOS-7-x86_64-Minimal-1810.iso](https://mirrors.ustc.edu.cn/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso) 版的 iso 就行，安装过程就不再赘述啦。磁盘分区建议为 lvm ，因为这个是虚拟机模板文件，并不清楚以后的用途和所占用的空间。使用 lvm 可以很方便地扩展根分区。
+安装镜像就选择使用 [CentOS-7-x86_64-Minimal-1810.iso](https://mirrors.ustc.edu.cn/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso) 版的 iso 就行，安装过程就不再赘述啦。磁盘分区建议为 lvm ，因为这个是虚拟机模板文件，并不清楚以后的用途和所占用的空间。使用 lvm 可以很方便地扩展根分区。
 
 #### 2. 卸载不用的软件包
 

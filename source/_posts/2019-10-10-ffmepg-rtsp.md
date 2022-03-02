@@ -12,11 +12,11 @@ comment: true
 
 ## 背景
 
-由于自己住的是价格及其便宜的民宿，四人间的合租房间。房东家住的大概有二十号人吧，人多眼杂，上月舍友丢失了一台笔记本。自己的台式机幸免遇难未被盗走。所以决定装个 IP 摄像头，防患于未然😂
+由于自己住的是价格及其便宜的民宿，四人间的合租房间。房东家住的大概有二十号人吧，人多眼杂，上月舍友丢失了一台笔记本。自己的台式机幸免遇难未被盗走。所以决定装个 IP 摄像头，防患于未然 😂
 
 ## 选购摄像头
 
-在闲鱼和某宝上挑了很久很久，一直没有找到合适的。有那种 WiFi 摄像头，比如小米、海康威视、大华，还有其他的。价格也相对来讲便宜些，一般都在 100 元左右。不过这种摄像头坑爹的是，远程存储需要购买他们的云服务，最便宜的也要 60元/30G/年，真他奶奶的割韭菜。而且还不能单独使用 NAS 之类的存储。因为我需要的是将监控视频远程保存到服务器上，保存到自己的服务器上，我不喜欢把数据交给国内的毒瘤厂商。
+在闲鱼和某宝上挑了很久很久，一直没有找到合适的。有那种 WiFi 摄像头，比如小米、海康威视、大华，还有其他的。价格也相对来讲便宜些，一般都在 100 元左右。不过这种摄像头坑爹的是，远程存储需要购买他们的云服务，最便宜的也要 60 元/30G/年，真他奶奶的割韭菜。而且还不能单独使用 NAS 之类的存储。因为我需要的是将监控视频远程保存到服务器上，保存到自己的服务器上，我不喜欢把数据交给国内的毒瘤厂商。
 
 摄像头根据传输介质大概分为模拟传输、网络传输。模拟传输就是采用的模拟信号，把监控视频流采集到专门的录像机上，一般录像机的价格要比一个摄像头的价格贵很多。另外还要给监控录像机供电也是一笔开销，遂不考虑使用模拟摄像头。
 
@@ -28,7 +28,7 @@ comment: true
 
 ![](https://p.k8s.li/1561802376886.jpg.jpg)
 
-找了半天最终还是找到了一个摄像头，价格也比较便宜😂。特意问了卖家能不能通过浏览器访问、能不能不需要专用的摄像机来访问摄像头。卖家说是可以的。
+找了半天最终还是找到了一个摄像头，价格也比较便宜 😂。特意问了卖家能不能通过浏览器访问、能不能不需要专用的摄像机来访问摄像头。卖家说是可以的。
 
 ![](https://p.k8s.li/1570702505815.png)
 
@@ -36,7 +36,7 @@ comment: true
 
 ## 安装摄像头
 
-把路由器的电源适配器输出接口给剪了，又接了一个 DC 2.5mm 的插头，这样一个电源适配器同时供路由器和摄像头使用了😂。不用担心功率，一个摄像头和路由器总功耗还不到 8W。
+把路由器的电源适配器输出接口给剪了，又接了一个 DC 2.5mm 的插头，这样一个电源适配器同时供路由器和摄像头使用了 😂。不用担心功率，一个摄像头和路由器总功耗还不到 8W。
 
 ![](https://p.k8s.li/1570704495847.png)
 
@@ -44,7 +44,7 @@ comment: true
 
 ![](https://p.k8s.li/1570702472108.png)
 
-穹妹哦😂，骨科？
+穹妹哦 😂，骨科？
 
 ![](https://p.k8s.li/1570702482302.png)
 
@@ -98,13 +98,13 @@ remote_port = 554
 
 如何访问摄像头的 RTSP 视频流？，一般摄像头的固件供应商那里会有帮助手册，总算在官方网站找到了。
 
-> **使用VLC按RTSP协议连接我司的设备网络串流的格式**
+> **使用 VLC 按 RTSP 协议连接我司的设备网络串流的格式**
 >
-> ——使用第3方的播放器通过RTSP连接我司设备的URL格式如下：
+> ——使用第 3 方的播放器通过 RTSP 连接我司设备的 URL 格式如下：
 >
 > ``rtsp://$(IP):$(PORT)/user=$(USER)&password=$(PWD)&channel=$(Channel)&stream=$(Stream).sdp?real_stream``
 >
-> ——类似 ``rtsp://10.6.10.25:554/user=admin&password=&channel=1&stream=0.sdp?real_stream``如果是通过公网需要将RTSP端口开放（ 默认是554），这个端口在网络服务->RTSP中可以设置
+> ——类似 ``rtsp://10.6.10.25:554/user=admin&password=&channel=1&stream=0.sdp?real_stream`` 如果是通过公网需要将 RTSP 端口开放（ 默认是 554），这个端口在网络服务->RTSP 中可以设置
 
 按照官方规定的 URL ，我的摄像头 RTSP 视频流访问 URL 就是如下：
 
@@ -116,7 +116,7 @@ rtsp="rtsp://192.168.0.241:554/user=user&password=password&channel=Channel&strea
 
 ![](https://p.k8s.li/1570705720287.png)
 
-然后服务器端安装好 FFmpeg ，使用 FFmpeg读取 rtsp 视频流即可
+然后服务器端安装好 FFmpeg ，使用 FFmpeg 读取 rtsp 视频流即可
 
 ```bash
 apt install FFmpeg -y
@@ -126,7 +126,7 @@ RTSP="rtsp://127.0.0.1:554/user=user&password=password&channel=Channel&stream=St
 ffmpeg  -rtsp_transport tcp  -i $RTSP -vcodec  copy -r 1 -t 60  -y $(TZ=UTC-8 date +\%m\%d\%H\%M).mp4
 ```
 
-其中 -r 参数是指定帧率，-t 参数是指定时间。关于 FFmpeg 的详细使用参数可以去参考一下官方手册，在此就不赘述了😂
+其中 -r 参数是指定帧率，-t 参数是指定时间。关于 FFmpeg 的详细使用参数可以去参考一下官方手册，在此就不赘述了 😂
 
 ```bash
 ╭─root@sg-02 ~/log
@@ -176,14 +176,14 @@ video:6838kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing 
 
 不得不说 FFmpeg 真是强大的，偶尔了解了 FFmpeg 作者，巨牛逼的天才啊。
 
-> - 1997年他发现了最快速的计算圆周率的算法，是Bailey-Borwein-Plouffe 公式的变体。
-> - 2000年他化名Gérard Lantau，创建了 FFmpeg 项目。2004年他编写了一个只有138KB的启动加载程序TCCBOOT，可以在15秒内从源代码编译并启动Linux系统。
-> - 2003年开发了Emacs克隆QEmacs。2005年用普通PC和VGA卡设计了一个数字电视系统。
-> - 2009年12月31日，他声称打破了圆周率计算的世界纪录，算出小数点后2.7万亿位，仅用一台普通PC机。
-> - 2011年，他单用JavaScript写了一个PC虚拟机Jslinux 。这个虚拟机仿真了一个32位的x86兼容处理器，一个8259可编程中断控制器，一个8254可编程中断计时器，和一个16450 UART。
-> - Fabrice Bellard，法国著名程序员，QEMU、TinyCC、FFmpeg等作者。
+> - 1997 年他发现了最快速的计算圆周率的算法，是 Bailey-Borwein-Plouffe 公式的变体。
+> - 2000 年他化名 Gérard Lantau，创建了 FFmpeg 项目。2004 年他编写了一个只有 138KB 的启动加载程序 TCCBOOT，可以在 15 秒内从源代码编译并启动 Linux 系统。
+> - 2003 年开发了 Emacs 克隆 QEmacs。2005 年用普通 PC 和 VGA 卡设计了一个数字电视系统。
+> - 2009 年 12 月 31 日，他声称打破了圆周率计算的世界纪录，算出小数点后 2.7 万亿位，仅用一台普通 PC 机。
+> - 2011 年，他单用 JavaScript 写了一个 PC 虚拟机 Jslinux 。这个虚拟机仿真了一个 32 位的 x86 兼容处理器，一个 8259 可编程中断控制器，一个 8254 可编程中断计时器，和一个 16450 UART。
+> - Fabrice Bellard，法国著名程序员，QEMU、TinyCC、FFmpeg 等作者。
 
-不得不再提一嘴 FFmpeg 这个项目 [从FFmpeg耻辱榜看开源软件的“潜规则”](http://history.programmer.com.cn/3877/)
+不得不再提一嘴 FFmpeg 这个项目 [从 FFmpeg 耻辱榜看开源软件的“潜规则”](http://history.programmer.com.cn/3877/)
 
-> FFmpeg是一个开源免费跨平台的视频和音频流方案，属于自由软件，采用LGPL或GPL许可证。2009年，韩国名软KMPlayer被FFmpeg开源项目发现使用了它们的代码和二进制文件，但没有按照规定/惯例开放相应说明/源码。被人举报后，KMPlayer进入了FFmpeg官网上的耻辱黑名单。最近，国内也有同样的产品被列入黑名单比如暴风影音、QQ影音等。
-> [FFmpeg](http://ffmpeg.org/index.html)是一个跨平台的视频和音频流方案，属于自由软件，采用LGPL或GPL许可证（依据你选择的组件）。*今年2月韩国播放软件KMPlayer被加入到FFmpeg耻辱名单中，随后网友yegle向FFmpeg举报，指出暴风影音使用了大量开源代码，侵犯了FFmpeg的许可证。5月10日，另一位用户cehoyos下载了暴风软件，用7z解压之后发现其安装程序内包含了大量的开源和私有解码器的dll：avcodec，avformat，avutil，x264，xvid，bass，wmvdmod等等。杀毒软件AntiVir报告lib_VoiceEngine_dll.dll是木马程序“TR\Spy.Legmir.SS.2”。之后暴风影音被正式加入到FFmpeg耻辱名单之列。*
+> FFmpeg 是一个开源免费跨平台的视频和音频流方案，属于自由软件，采用 LGPL 或 GPL 许可证。2009 年，韩国名软 KMPlayer 被 FFmpeg 开源项目发现使用了它们的代码和二进制文件，但没有按照规定/惯例开放相应说明/源码。被人举报后，KMPlayer 进入了 FFmpeg 官网上的耻辱黑名单。最近，国内也有同样的产品被列入黑名单比如暴风影音、QQ 影音等。
+> [FFmpeg](http://ffmpeg.org/index.html) 是一个跨平台的视频和音频流方案，属于自由软件，采用 LGPL 或 GPL 许可证（依据你选择的组件）。*今年 2 月韩国播放软件 KMPlayer 被加入到 FFmpeg 耻辱名单中，随后网友 yegle 向 FFmpeg 举报，指出暴风影音使用了大量开源代码，侵犯了 FFmpeg 的许可证。5 月 10 日，另一位用户 cehoyos 下载了暴风软件，用 7z 解压之后发现其安装程序内包含了大量的开源和私有解码器的 dll：avcodec，avformat，avutil，x264，xvid，bass，wmvdmod 等等。杀毒软件 AntiVir 报告 lib_VoiceEngine_dll.dll 是木马程序“TR\Spy.Legmir.SS.2”。之后暴风影音被正式加入到 FFmpeg 耻辱名单之列。*

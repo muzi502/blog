@@ -38,7 +38,7 @@ mv /var/cache/yum/x86_64/7/extras/packages/* /root/docker-ce
 # 需要注意的是 --downloadonly 参数只会将所安装的包及其依赖下载到你指定的位置，但需要升级的包,即 Updating dependencies 默认下载到了# /var/cache/yum/x86_64/7/ 这几个目录下，这一点比较坑。
 ```
 
-提示要安装 3 个包 即 `docker-ce` 、`docker-ce-cli` 、`containerd.io` 加9个依赖包，一共十二个包会下载到我们指定路径下，剩余 10 个要升级的依赖包即`Updating dependencies`并不会下载到指定的路径下，而是根据对应的 `Repository`下载到 `/var/cache/yum/x86_64/7/` 目录下，所以也需要将这些包也一同移动到我们指定的路径下。
+提示要安装 3 个包 即 `docker-ce` 、`docker-ce-cli` 、`containerd.io` 加 9 个依赖包，一共十二个包会下载到我们指定路径下，剩余 10 个要升级的依赖包即 `Updating dependencies` 并不会下载到指定的路径下，而是根据对应的 `Repository` 下载到 `/var/cache/yum/x86_64/7/` 目录下，所以也需要将这些包也一同移动到我们指定的路径下。
 
 ```bash
 Package                            Version                Repository
@@ -112,7 +112,7 @@ setools-libs-3.3.8-4.el7.x86_64.rpm
 
 ## 生成本地 yum 源
 
-这一步操作可以在本地这台机器上生成 yum 元数据信息，也可以在生产环境那台机器上执行，不过需要单独安装createrepo 工具来生成。
+这一步操作可以在本地这台机器上生成 yum 元数据信息，也可以在生产环境那台机器上执行，不过需要单独安装 createrepo 工具来生成。
 
 ```bash
 createrepo -d /root/docker-ce/

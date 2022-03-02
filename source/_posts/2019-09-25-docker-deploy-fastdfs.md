@@ -12,7 +12,7 @@ comment: true
 
 如果你的 FastDFS 文件系统需要高可用，需要部署在多台机器上的话，并且你的这些服务器上只跑 FastDFS 这个服务，那么 FastDFS 可能并不适合用 Docker 来部署，按照官方文档直接部署在机器上就可以，没必要采用容器来部署。其实 FastDFS 并不适合容器化部署，因为 tracker 服务器向 storage 服务器报告自己的 IP， 而这个 IP 是容器内的 IP 。是 Docker 的一个私有 IP 段，这将导致客户端无法访问 storage 服务器。当然如果使用 host 网络或者能打通客户端到 storage 的网络解决方案，比如 flannel ，calico 等，这都可以，在 Kubernetes 基于服务发现，客户端也可以访问到 storage 服务器。
 
-那么 FastDFS 采用 Docker 部署适用于什么场景呢？其实比较适合中小型的项目，对高可用，高性能要求不大的情况下。或者将 FastDFS 所有的服务封装在一个容器里运行，和其他服务一起使用 docker-compose 启动，这样用再适合不过了。我的项目就是这种场景，由于服务器资源有限，不可能去单独部署一个 FastDFS 服务器集群，巴拉巴拉整个高可用。所有的项目组件都采用 Docker 部署在一台机器上，FastDFS 里的  nginx 也是没有单独去部署，和 tracker、storage 服务器一起装在一个容器里。为了节省资源没得办法😂
+那么 FastDFS 采用 Docker 部署适用于什么场景呢？其实比较适合中小型的项目，对高可用，高性能要求不大的情况下。或者将 FastDFS 所有的服务封装在一个容器里运行，和其他服务一起使用 docker-compose 启动，这样用再适合不过了。我的项目就是这种场景，由于服务器资源有限，不可能去单独部署一个 FastDFS 服务器集群，巴拉巴拉整个高可用。所有的项目组件都采用 Docker 部署在一台机器上，FastDFS 里的  nginx 也是没有单独去部署，和 tracker、storage 服务器一起装在一个容器里。为了节省资源没得办法 😂
 
 ## 构建 docker 镜像
 
@@ -44,9 +44,8 @@ rm -rf fastdfs
 
 所有的配置文件都在 conf 里，我们根据自身的需要修改一下各个配置文件即可，关于 fastdfs 配置文件的各个参数可以去参考一下下面的博客。
 
-- [用FastDFS一步步搭建文件管理系统](https://www.cnblogs.com/chiangchou/p/fastdfs.html)
-
-- [FastDFS配置参数tracker.conf、storage.conf详解](https://mhl.xyz/Linux/fastdfs-tracker-storage.html)
+- [用 FastDFS 一步步搭建文件管理系统](https://www.cnblogs.com/chiangchou/p/fastdfs.html)
+- [FastDFS 配置参数 tracker.conf、storage.conf 详解](https://mhl.xyz/Linux/fastdfs-tracker-storage.html)
 
 我修改了默认的配置，数据存放目录修改成了 `/var/fdfs` ,在写 `Dockerfile` 的时候需要建立这个目录，如果你的目录没有修改的话，就把 Dockerfile 里后面那里建立文件夹的路径修改成默认的即可。
 
@@ -138,7 +137,7 @@ tail -f  /dev/null
 
 #### 把 bash 替换成 sh
 
-其实这一步骤可以不做，使用 bash 启动的话，需要在 alpine 安装 bash ，会增加 6MB 左右的镜像大小，感觉也没必要这样做😂
+其实这一步骤可以不做，使用 bash 启动的话，需要在 alpine 安装 bash ，会增加 6MB 左右的镜像大小，感觉也没必要这样做 😂
 
 ```bash
 sed -i 's/bash/sh/g' `grep -nr bash | awk -F ':' '{print $1}'`
@@ -264,7 +263,7 @@ fastdfs             centos              c1488537c23c        30 minutes ago      
 
 #### alpine
 
-基于 alpine 的基础镜像构建完成后，只有三层镜像😂
+基于 alpine 的基础镜像构建完成后，只有三层镜像 😂
 
 ![](https://p.k8s.li/1569728744655.png)
 
@@ -331,7 +330,7 @@ docker run -d -e FASTDFS_IPADDR=10.10.107.230 \
 
 ### 文件上传测试
 
-  测试样本为 10W 张 8KB-100 KB 大小不等的图片
+测试样本为 10W 张 8KB-100 KB 大小不等的图片
 
 ![](https://p.k8s.li/1564128425387.png)
 

@@ -14,25 +14,25 @@ comment: true
 
 ## ESXi 透明代理虚拟机
 
-弃坑了，太鸡儿难用了😡，还是使用了 [LEDE软路由](https://blog.k8s.li/esxi-lede)
+弃坑了，太鸡儿难用了 😡，还是使用了 [LEDE 软路由](https://blog.k8s.li/esxi-lede)
 
 ## 0. 项目背景
 
-由于工作的环境是 ESXi ，上面运行着一堆虚拟机，用来做部署方案测试使用。因为要经常访问 GitHub 以及要去 gcr.k8s.io  上拉去镜像；而且在写 Dockerfile build 镜像的时候，也需要去 GitHub 下载 release 包；使用helm初始化时需要的docker 镜像无法pull那个速度比百度网盘还慢啊啊啊啊，气死人。我觉着 GFW 的存在严重第影响了我的工作效率，遂决定搓一个虚拟机来当代理网关，或者叫旁路网关。被需要代理的机器仅仅需要修改网关和 DNS 为透明代理服务器 IP 即可。
+由于工作的环境是 ESXi ，上面运行着一堆虚拟机，用来做部署方案测试使用。因为要经常访问 GitHub 以及要去 gcr.k8s.io  上拉去镜像；而且在写 Dockerfile build 镜像的时候，也需要去 GitHub 下载 release 包；使用 helm 初始化时需要的 docker 镜像无法 pull 那个速度比百度网盘还慢啊啊啊啊，气死人。我觉着 GFW 的存在严重第影响了我的工作效率，遂决定搓一个虚拟机来当代理网关，或者叫旁路网关。被需要代理的机器仅仅需要修改网关和 DNS 为透明代理服务器 IP 即可。
 
 题外话：其实用软路由 LEDE/OpenWrt 实现最合适，而且占用资源也极低，但因为使用软路由发生了一次事故，所以就不再用软路由了。那时候刚入职实习，在 ESXi 上装了个 LEDE 软路由，然后办公室的网络就瘫痪了。。
 
 ## 1.实现功能
 
 1. 透明代理，客户端仅仅需要修改默认网关为上游透明网关即可，无需安装其他代理软件
-2. 国外/国内域名分开解析，解决运营商DNS域名污染问题
-3. 加快客户端访问GitHub、Google等网站速度，clone速度峰值 15MB/S
+2. 国外/国内域名分开解析，解决运营商 DNS 域名污染问题
+3. 加快客户端访问 GitHub、Google 等网站速度，clone 速度峰值 15MB/S
 4. Docker pull 镜像速度 15MB/S，clone [torvalds/linux](https://github.com/torvalds/linux)
 5. 需要代理的内网机器仅仅需要修改网关和 DNS 即可实现透明代理
 
 ## 2. 实现效果
 
-### 1. wget 下载 GitHub release 上的文件，以 Linux为例
+### 1. wget 下载 GitHub release 上的文件，以 Linux 为例
 
 `163M Aug 23 21:35 v5.3-rc5.tar.gz` 163M 的文件用时不到 30s
 
@@ -40,7 +40,7 @@ comment: true
 
 ### 2. kubeadm config image pull
 
-使用 kubeadm 命令加上 `--kubernetes-version=` 参数指定镜像的版本号，速度还是可以的😂
+使用 kubeadm 命令加上 `--kubernetes-version=` 参数指定镜像的版本号，速度还是可以的 😂
 
 ![](https://p.k8s.li/1566566813113.png)
 
@@ -50,7 +50,7 @@ comment: true
 
 ### 4. git clone GitHub 上的 repo
 
-在此还是以 linux 项目为例，clone 过程速度飘忽不定，但一般都会在 10MiB/S 以上，按照这个速度，还和我物理机器的网卡有关，虽然号称是千兆网卡，但实际测试峰值就达不到 500Mbps，欲哭无泪🤦‍♂️
+在此还是以 linux 项目为例，clone 过程速度飘忽不定，但一般都会在 10MiB/S 以上，按照这个速度，还和我物理机器的网卡有关，虽然号称是千兆网卡，但实际测试峰值就达不到 500Mbps，欲哭无泪 🤦‍♂️
 
 ![](https://p.k8s.li/1566567116544.png)
 
@@ -70,7 +70,7 @@ comment: true
 
 主要使用到 [ss-tproxy](https://github.com/zfl9/ss-tproxy) 这个项目，按照项目上的 README 部署部署起来就 ojbk
 
-大佬的博客[ss/ssr/v2ray/socks5 透明代理](https://www.zfl9.com/ss-redir.html) ,很详细，建议认真读完
+大佬的博客 [ss/ssr/v2ray/socks5 透明代理](https://www.zfl9.com/ss-redir.html) ,很详细，建议认真读完
 
 ### 1. OS
 
@@ -261,7 +261,7 @@ ss-tproxy start
 
 ## 4. 结语
 
-完成以上该能跑起来了，需要注意的是，透明网关要和需要代理的机器在同一网段，不可跨网段，只能在一个 LAN 局域网里。最后祝 GFW 早点倒吧😡
+完成以上该能跑起来了，需要注意的是，透明网关要和需要代理的机器在同一网段，不可跨网段，只能在一个 LAN 局域网里。最后祝 GFW 早点倒吧 😡
 
 完整脚本，在 Debian 10 下测试通过
 

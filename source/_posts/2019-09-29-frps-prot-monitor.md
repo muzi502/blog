@@ -22,7 +22,7 @@ comment: true
 
 我的 twilio 账号是四个月前注册的了，注册过程也忘了，大致就是填写邮箱账号、设置密码、绑定信用卡、验证 +1 手机号，巴拉巴拉。
 
-注册绑定信用卡赠送 10 $，这些足够发送 1000 条短信了，足够咱使用了😂
+注册绑定信用卡赠送 10 $，这些足够发送 1000 条短信了，足够咱使用了 😂
 
 ![](https://p.k8s.li/1569744256905.png)
 
@@ -91,7 +91,7 @@ curl -X POST https://api.twilio.com/2010-04-01/Accounts/ACe4a6468bf04cd72fb4ffda
 {"code": 20003, "detail": "Your AccountSid or AuthToken was incorrect.", "message": "Authentication Error - No credentials provided", "more_info": "https://www.twilio.com/docs/errors/20003", "status": 401}curl: (6) Could not resolve host: lls
 ```
 
- 进入到这个页面 [geo-permissions)](https://www.twilio.com/console/sms/settings/geo-permissions) ，在对应的国家区号上✔就行。
+进入到这个页面 [geo-permissions)](https://www.twilio.com/console/sms/settings/geo-permissions) ，在对应的国家区号上 ✔ 就行。
 
 ## 检测端口
 

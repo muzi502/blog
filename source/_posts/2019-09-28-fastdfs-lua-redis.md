@@ -22,7 +22,7 @@ comment: true
 
 `M00` 是文件所在的 storage 服务器上的分区
 
- `00/05` 就是文件所在的一级子目录/二级子目录，是文件所在的真实路径
+`00/05` 就是文件所在的一级子目录/二级子目录，是文件所在的真实路径
 
 `Cgpr6F1A7O6ASWv9AAA-az6haWc850.jpg` 是新生成的文件名
 
@@ -52,11 +52,11 @@ comment: true
 
 ### 1. 获取原文件名和新生成的文件 ID
 
-在客户端(C语言版)的日志中提取出以下格式的日志，其他版本的客户端可以在数据库中获取，该日志记录了原文件名和上传后由 FastDFS 存储服务生成的文件 ID 。
+在客户端(C 语言版)的日志中提取出以下格式的日志，其他版本的客户端可以在数据库中获取，该日志记录了原文件名和上传后由 FastDFS 存储服务生成的文件 ID 。
 
 ![](https://p.k8s.li/1564650287719.png)
 
-需要在原文件名前加上一个 ```/``` 作为 请求的 `uri`头 ,转换后的格式如下
+需要在原文件名前加上一个 ``/`` 作为 请求的 `uri` 头 ,转换后的格式如下
 
 ![](https://p.k8s.li/1564650709667.png)
 
@@ -245,21 +245,20 @@ server {
 
 1. 修改 FastDFS 日志输出的内容，添加元文件名字段，根据日志的操作记录对 Redis 进行增删改查
 
-	通过源码可知，FastDFS 在日志中记录了文件的操作类型，可以根据这些类型对 Redis 数据库进行增删改查，从而可以监控日志的而输出来对 Redis 数据库进行增删改查。
+   通过源码可知，FastDFS 在日志中记录了文件的操作类型，可以根据这些类型对 Redis 数据库进行增删改查，从而可以监控日志的而输出来对 Redis 数据库进行增删改查。
 
-	```c
-	//storage access log actions
-	#define ACCESS_LOG_ACTION_UPLOAD_FILE    "upload"
-	#define ACCESS_LOG_ACTION_DOWNLOAD_FILE  "download"
-	#define ACCESS_LOG_ACTION_DELETE_FILE    "delete"
-	#define ACCESS_LOG_ACTION_GET_METADATA   "get_metadata"
-	#define ACCESS_LOG_ACTION_SET_METADATA   "set_metadata"
-	#define ACCESS_LOG_ACTION_MODIFY_FILE    "modify"
-	#define ACCESS_LOG_ACTION_APPEND_FILE    "append"
-	#define ACCESS_LOG_ACTION_TRUNCATE_FILE  "truncate"
-	#define ACCESS_LOG_ACTION_QUERY_FILE     "status"
-	```
-
+   ```c
+   //storage access log actions
+   #define ACCESS_LOG_ACTION_UPLOAD_FILE    "upload"
+   #define ACCESS_LOG_ACTION_DOWNLOAD_FILE  "download"
+   #define ACCESS_LOG_ACTION_DELETE_FILE    "delete"
+   #define ACCESS_LOG_ACTION_GET_METADATA   "get_metadata"
+   #define ACCESS_LOG_ACTION_SET_METADATA   "set_metadata"
+   #define ACCESS_LOG_ACTION_MODIFY_FILE    "modify"
+   #define ACCESS_LOG_ACTION_APPEND_FILE    "append"
+   #define ACCESS_LOG_ACTION_TRUNCATE_FILE  "truncate"
+   #define ACCESS_LOG_ACTION_QUERY_FILE     "status"
+   ```
 2. 仔细阅读了 FastDFS  storage 模块的源代码后发现， FastDFS 服务端是不保存原文件名的，而且在相应的文件属性结构体里也未包含原文件名。需要修改源码才能将原文件名输出到日志，难度较大。
 
 ```C

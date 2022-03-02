@@ -14,29 +14,29 @@ comment: true
 
 ## Debian 透明代理网关？
 
-之前写过一篇，用了一段时间后，感觉太难用了。其中最大的问题还是DNS ，不知道是怎么配置的问题， DNS 查询特别慢，往往需要将近一分钟才能查询到域名。速度上还算可以，能跑满我的 VPS 带宽。
+之前写过一篇，用了一段时间后，感觉太难用了。其中最大的问题还是 DNS ，不知道是怎么配置的问题， DNS 查询特别慢，往往需要将近一分钟才能查询到域名。速度上还算可以，能跑满我的 VPS 带宽。
 
 ## 下载安装 x86 OpenWRT
 
-下载地址在 OpenWRT [官网](https://downloads.openwrt.org/releases/18.06.4/targets/x86/generic/)，固件选择[openwrt-18.06.4-x86-legacy-combined-ext4.img.gz](https://downloads.openwrt.org/releases/18.06.4/targets/x86/legacy/openwrt-18.06.4-x86-legacy-combined-ext4.img.gz) 就可以，他们之间的[区别在与](https://antkillerfarm.github.io/linux/2015/02/01/Openwrt.html)
+下载地址在 OpenWRT [官网](https://downloads.openwrt.org/releases/18.06.4/targets/x86/generic/)，固件选择 [openwrt-18.06.4-x86-legacy-combined-ext4.img.gz](https://downloads.openwrt.org/releases/18.06.4/targets/x86/legacy/openwrt-18.06.4-x86-legacy-combined-ext4.img.gz) 就可以，他们之间的[区别在与](https://antkillerfarm.github.io/linux/2015/02/01/Openwrt.html)
 
 > 这里解释一下该文件夹下各个文件的区别：
 >
 > openwrt-x86-generic-combined-ext4.img.gz
 >
-> rootfs工作区存储格式为ext4
+> rootfs 工作区存储格式为 ext4
 >
 > openwrt-x86-generic-combined-jffs2-128k.img
 >
-> jffs2可以修改，也就是可以自行更换（删除）rootfs的配置文件，而不需要重新刷固件。
+> jffs2 可以修改，也就是可以自行更换（删除）rootfs 的配置文件，而不需要重新刷固件。
 >
 > openwrt-x86-generic-combined-squashfs.img
 >
-> squashfs是个只读的文件系统，相当于win的ghost，使用中配置错误，可直接恢复默认。
+> squashfs 是个只读的文件系统，相当于 win 的 ghost，使用中配置错误，可直接恢复默认。
 >
 > openwrt-x86-generic-rootfs-ext4.img.gz
 >
-> rootfs的镜像，不带引导，可自行定义用grub或者syslinux来引导，存储区为ext4。
+> rootfs 的镜像，不带引导，可自行定义用 grub 或者 syslinux 来引导，存储区为 ext4。
 
 下载好 `openwrt-18.06.4-x86-legacy-combined-ext4.img.gz` 文件后解压后得到 `openwrt-18.06.4-x86-legacy-combined-ext4.img` 是 img 格式的文件，不过这个并不能直接供 ESXi 使用，需要使用镜像转换的工具转换成 vmdk 磁盘格式的才可以。
 
@@ -117,4 +117,3 @@ uci del dhcp.cfg01411c.nonegcache
 ![](https://p.k8s.li/1568878441039.png)
 
 ## 初始化安装系统
-

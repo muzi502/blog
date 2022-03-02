@@ -13,13 +13,13 @@ comment: true
 
 ## 国内知名镜像源
 
-|  所属  |                 官网                  |   评价    |
-| :----: | :-----------------------------------: | :-------: |
-|  清华  | https://mirrors.tuna.tsinghua.edu.cn/ | 速度 NO.1 |
-| 中科大 |     https://mirrors.ustc.edu.cn/      | 速度最差  |
-|  163   |       https://mirrors.163.com/        | 速度 NO.3 |
-| 阿里云 |      https://mirrors.aliyun.com/      | 速度 NO.2 |
-|  华为  |   https://mirrors.huaweicloud.com/    | 速度最快  |
+|  所属  |                                    官网                                    |   评价   |
+| :----: | :------------------------------------------------------------------------: | :-------: |
+|  清华  | [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/) | 速度 NO.1 |
+| 中科大 |          [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)          | 速度最差 |
+|  163  |              [https://mirrors.163.com/](https://mirrors.163.com/)              | 速度 NO.3 |
+| 阿里云 |           [https://mirrors.aliyun.com/](https://mirrors.aliyun.com/)           | 速度 NO.2 |
+|  华为  |      [https://mirrors.huaweicloud.com/](https://mirrors.huaweicloud.com/)      | 速度最快 |
 
 ## 测试系统
 
@@ -110,7 +110,7 @@ E: Some files failed to download
 
 测试结果 `Fetched 1005 MB in 37min 31s (446 kB/s)` ，1000MB 的包下载用时将近 40 分钟
 
-测试过程中多次出现 `[Waiting for headers]`  速度有几分钟都在`17.6 kB/s 13h 58min 9s`、 `159 kB/s 1h 38min 9s` 🤦‍♂️ ，其中还出现了 `2850 PB/s 0s` 😂
+测试过程中多次出现 `[Waiting for headers]`  速度有几分钟都在 `17.6 kB/s 13h 58min 9s`、 `159 kB/s 1h 38min 9s` 🤦‍♂️ ，其中还出现了 `2850 PB/s 0s` 😂
 
 ### 163
 
@@ -201,15 +201,15 @@ Download complete and in download only mode
 
 `xfce4 、gnome 、libreoffice 、 vlc`  1574 个包，总大小 `1014 MB` 测试时间为白天工作时间
 
-| 序号 |   清华    |  中科大  |    163    |  阿里云   |  华为云   |
+| 序号 |   清华   |  中科大  |    163    |  阿里云  |  华为云  |
 | :--: | :-------: | :------: | :-------: | :-------: | :-------: |
-|  1   | 8246 kB/s | 446 kB/s | 2295 kB/s | 5815 kB/s | 12.0 MB/s |
-|  2   | 462 kB/s  | 980 kB/s | 5498 kB/s | 2642 kB/s | 15.8 MB/s |
-|  3   | 1144 kB/s | 657 kB/s | 1333 kB/s | 5938 kB/s | 13.1 MB/s |
+|  1  | 8246 kB/s | 446 kB/s | 2295 kB/s | 5815 kB/s | 12.0 MB/s |
+|  2  | 462 kB/s | 980 kB/s | 5498 kB/s | 2642 kB/s | 15.8 MB/s |
+|  3  | 1144 kB/s | 657 kB/s | 1333 kB/s | 5938 kB/s | 13.1 MB/s |
 
 ## 建议
 
-根据一轮的测试速度来看，华为胜出😂
+根据一轮的测试速度来看，华为胜出 😂
 
 1. 华为
 2. 阿里云

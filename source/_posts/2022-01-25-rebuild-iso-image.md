@@ -11,9 +11,9 @@ copyright: true
 comment: true
 ---
 
-笔者之前在字节跳动的时候是负责 PaaS 容器云平台的私有化部署相关的工作，所以经常会和一些容器镜像打交道，对容器镜像也有一些研究，之前还写过不少博客文章。比如 [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html)、[overlay2 在打包发布流水线中的应用](https://blog.k8s.li/overlay2-on-package-pipline.html) 等等。
+笔者之前在字节跳动的时候是负责 PaaS 容器云平台的私有化部署相关的工作，所以经常会和一些容器镜像打交道，对容器镜像也有一些研究，之前还写过不少博客文章。比如 [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html)、[overlay2 在打包发布流水线中的应用](https://blog.k8s.li/overlay2-on-package-pipline.html) 等等。
 
-自从换了新工作之后，则开始负责 [超融合产品](https://www.smartx.com/smartx-hci/) 集群部署相关工作，因此也会接触很多`镜像`，不过这个镜像是操作系统的 ISO 镜像而不是容器镜像 😂。虽然两者都统称为镜像，但两者有着本质的区别。
+自从换了新工作之后，则开始负责 [超融合产品](https://www.smartx.com/smartx-hci/) 集群部署相关工作，因此也会接触很多 `镜像`，不过这个镜像是操作系统的 ISO 镜像而不是容器镜像 😂。虽然两者都统称为镜像，但两者有着本质的区别。
 
 首先两者构建的方式有本质的很大的区别，ISO 镜像一般使用 `mkisofs` 或者 `genisoimage` 等命令将一个包含操作系统安装所有文件目录构建为一个 ISO 镜像；而容器镜像构建则是根据 `Dockerfile` 文件使用相应的容器镜像构建工具来一层一层构建；
 
@@ -75,13 +75,13 @@ frags = 20
 Setting supported flag to 0
 ```
 
-对于 ISO 镜像比较小或者该操作不是很频繁的情况下按照这种方式是最省事儿的，但如果是 ISO 镜像比较大，或者是在 CI/CD 流水线中频繁地重新构建镜像，每次都要 cp 复制原 ISO 镜像的内容确实比较浪费时间。那有没有一个更加高效的方法呢🤔️
+对于 ISO 镜像比较小或者该操作不是很频繁的情况下按照这种方式是最省事儿的，但如果是 ISO 镜像比较大，或者是在 CI/CD 流水线中频繁地重新构建镜像，每次都要 cp 复制原 ISO 镜像的内容确实比较浪费时间。那有没有一个更加高效的方法呢 🤔️
 
 经过一番摸索，折腾出来两种可以避免使用 cp 复制这种占用大量 IO 操作的构建方案，可以根据不同的场景进行选择。
 
 ## overlay2
 
-熟悉 docker 镜像的应该都知道镜像是只读的，使用镜像的时候则是通过联合挂载的方式将镜像的每一层 layer 挂载为只读层，将容器实际运行的目录挂载为读写层，而容器运行期间在读写层的所有操作不会影响到镜像原有的内容。容器镜像挂载的方式使用最多的是 overlay2 技术，在 [overlay2 在打包发布流水线中的应用](https://blog.k8s.li/overlay2-on-package-pipline.html) 和 [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html) 中咱曾对它进行过比较深入的研究和使用，对 overlay2 技术感兴趣的可以翻看一下这两篇博客，本文就不再详解其中的技术原理了，只对使用 overlay2 技术重新构建 ISO 镜像的可行性进行一下分析。
+熟悉 docker 镜像的应该都知道镜像是只读的，使用镜像的时候则是通过联合挂载的方式将镜像的每一层 layer 挂载为只读层，将容器实际运行的目录挂载为读写层，而容器运行期间在读写层的所有操作不会影响到镜像原有的内容。容器镜像挂载的方式使用最多的是 overlay2 技术，在 [overlay2 在打包发布流水线中的应用](https://blog.k8s.li/overlay2-on-package-pipline.html) 和 [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html) 中咱曾对它进行过比较深入的研究和使用，对 overlay2 技术感兴趣的可以翻看一下这两篇博客，本文就不再详解其中的技术原理了，只对使用 overlay2 技术重新构建 ISO 镜像的可行性进行一下分析。
 
 - 首先是创建 overlay2 挂载所需要的几个目录
 
@@ -201,13 +201,13 @@ mount: /mnt/newiso: WARNING: device write-protected, mounted read-only.
 
 不止如此 overlay2 这种联合挂载的特性，还可以用在其他地方。比如我有一个公共的 NFS 共享服务器，共享着一些目录，所有人都可以以 root 用户并以读写的权限进行 NFS 挂载。这种情况下很难保障一些重要的文件和数据被误删。这时候就可以使用 overlay2 的方式将一些重要的文件数据挂载为 overlay2 的 lowerdir 只读层，保证这些数据就如容器镜像一样，每次挂载使用的时候都作为一个只读层。所有的读写操作都在 overlay2 的 merged 那一层，不会真正影响到只读层的内容。
 
-草草地水了一篇博客，是不是没有用的知识又增加了😂
+草草地水了一篇博客，是不是没有用的知识又增加了 😂
 
 ## 推荐阅读
 
 - [overlayfs.txt](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt)
-- [Docker存储驱动—Overlay/Overlay2「译」](https://arkingc.github.io/2017/05/05/2017-05-05-docker-filesystem-overlay/)
-- [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html)
+- [Docker 存储驱动—Overlay/Overlay2「译」](https://arkingc.github.io/2017/05/05/2017-05-05-docker-filesystem-overlay/)
+- [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html)
 - [聊一聊 ISO 9660](https://zdyxry.github.io/2019/01/12/%E8%81%8A%E4%B8%80%E8%81%8A-ISO-9660/)
 - [WORKING WITH ISO IMAGES](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)
 - [overlay2 在打包发布流水线中的应用](https://blog.k8s.li/overlay2-on-package-pipline.html)

@@ -257,4 +257,3 @@ done
 ![image-20210827021756974](https://p.k8s.li/2021-08-25-build-k8s-binary-by-github-actions-5.png)
 
 使用 GitHub Actions 的好处就是能够为我们解决代码管理和产物管理，构建好的二进制文件存放在 GitHub release 当中，下载和使用起来十分方便，不用在自己搞一台单独的机器或者存储服务器，节省很多人力维护成本。
-

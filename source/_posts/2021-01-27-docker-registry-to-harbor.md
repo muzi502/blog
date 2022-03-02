@@ -16,7 +16,7 @@ comment: true
 
 ### Docker Distribution
 
-[Docker Distribution](https://github.com/distribution/distribution) 是第一个是实现了打包、发布、存储和镜像分发的工具，起到 Docker registry 的作用。（目前 Distribution 已经捐赠给了 CNCF）。其中 Docker Distribution 中的 [spec 规范](https://github.com/distribution/distribution/tree/main/docs/spec) 后来也就成为了 OCI [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范。可以认为 Docker Distribution 实现了大部分 OCI 镜像分发的规范，二者在很大程度上也是兼容的。 OCI 的指导思想是先有工业界的实践，再将这些实践总结成技术规范，因此尽管 OCI 的 [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范还没有正式发布（目前版本是[v1.0.0-rc1](https://github.com/opencontainers/distribution-spec/releases/tag/v1.0.0-rc1)），但以 Docker Distribution 作为基础的镜像仓库已经成为普遍采用的方案，Docker registry HTTP API V2 也就成为了事实上的标准。
+[Docker Distribution](https://github.com/distribution/distribution) 是第一个是实现了打包、发布、存储和镜像分发的工具，起到 Docker registry 的作用。（目前 Distribution 已经捐赠给了 CNCF）。其中 Docker Distribution 中的 [spec 规范](https://github.com/distribution/distribution/tree/main/docs/spec) 后来也就成为了 OCI [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范。可以认为 Docker Distribution 实现了大部分 OCI 镜像分发的规范，二者在很大程度上也是兼容的。 OCI 的指导思想是先有工业界的实践，再将这些实践总结成技术规范，因此尽管 OCI 的 [distribution-spec](https://github.com/opencontainers/distribution-spec) 规范还没有正式发布（目前版本是 [v1.0.0-rc1](https://github.com/opencontainers/distribution-spec/releases/tag/v1.0.0-rc1)），但以 Docker Distribution 作为基础的镜像仓库已经成为普遍采用的方案，Docker registry HTTP API V2 也就成为了事实上的标准。
 
 ### Harbor
 
@@ -30,7 +30,7 @@ Harbor 也是采用了 Docker Distribution （docker registry）作为后端镜�
 
 ## 获取 registry 所有镜像的列表
 
-首先在迁移之前我们要拉清单，获取一份 docker registry 中镜像的列表，这样我们才能保证迁移后没有镜像丢失。根据木子在 [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html) 文章中提到的 registry 的存储目录结构。在 registry 存储目录中，每个镜像的 tag 都是由 `current/index` 这个文件指向该 tag 镜像的 manifests 文件的，由此我们可以通过遍历 registry 存储目录中 `current/index` 文件的方式来得到所有镜像的 tag，由此得到该 registry 中所有镜像的列表。注意，这样只能得到有 tag 的镜像，其他没 tag 的镜像无法获取到。
+首先在迁移之前我们要拉清单，获取一份 docker registry 中镜像的列表，这样我们才能保证迁移后没有镜像丢失。根据木子在 [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html) 文章中提到的 registry 的存储目录结构。在 registry 存储目录中，每个镜像的 tag 都是由 `current/index` 这个文件指向该 tag 镜像的 manifests 文件的，由此我们可以通过遍历 registry 存储目录中 `current/index` 文件的方式来得到所有镜像的 tag，由此得到该 registry 中所有镜像的列表。注意，这样只能得到有 tag 的镜像，其他没 tag 的镜像无法获取到。
 
 ![](https://p.k8s.li/registry-storage.jpeg)
 
@@ -62,13 +62,13 @@ docker tag registry.k8s.li/library/alpine:latest harbor.k8s.li/library/alpine:la
 docker push harbor.k8s.li/library/alpine:latest
 ```
 
-如果你之前读过木子曾经写过的 [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html) 和 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 并且已经在日常生活中使用 skopeo ，你一定会很觉着这个方案很蠢，因为 docker pull –> docker tag –> docker pull 的过程中会对镜像的 layer 进行解压缩。对于只是将镜像从一个 registry 复制到另一个 registry 来说，这些 docker 在这些过程中做了很多无用功。详细的原理可以翻看一下刚提到的两篇文章，在此就不再赘述。
+如果你之前读过木子曾经写过的 [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html) 和 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 并且已经在日常生活中使用 skopeo ，你一定会很觉着这个方案很蠢，因为 docker pull –> docker tag –> docker pull 的过程中会对镜像的 layer 进行解压缩。对于只是将镜像从一个 registry 复制到另一个 registry 来说，这些 docker 在这些过程中做了很多无用功。详细的原理可以翻看一下刚提到的两篇文章，在此就不再赘述。
 
 那么为了追求高效，肯定不会使用 docker retag 这么蠢的办法啦，下面就讲一下方案二：
 
 ## 方案二：skopeo
 
-在 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 中介绍过可以使用 skopeo copy 直接从一个 registry 中复制镜像原始 blobs 到另一个 registry 中，在此期间不会涉及镜像 layer 解压缩操作。至于性能和耗时，比使用 docker 的方式高到不知道哪里去了😂。
+在 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 中介绍过可以使用 skopeo copy 直接从一个 registry 中复制镜像原始 blobs 到另一个 registry 中，在此期间不会涉及镜像 layer 解压缩操作。至于性能和耗时，比使用 docker 的方式高到不知道哪里去了 😂。
 
 - 使用 skopeo copy
 
@@ -133,7 +133,7 @@ chown -R 10000:10000 ./registry
 
 但对于某些特定的场景下，不能像方案二那样拥有一个 docker registry 的 HTTP 服务，只有一个 docker registry 的压缩包，这如何将 docker registry 的存储目录中的镜像迁移到 harbor 2.0 中呢？
 
-在 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 中提到过 skopeo 支持的`镜像格式`有如下几种：
+在 [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html) 中提到过 skopeo 支持的 `镜像格式` 有如下几种：
 
 | IMAGE NAMES             | example                                    |
 | :---------------------- | :----------------------------------------- |
@@ -412,16 +412,16 @@ sync_image
 
 ```
 
-其实魔改一下 skopeo 的源码也是可以无缝支持 registry 存储目录的，目前正在研究中😃
+其实魔改一下 skopeo 的源码也是可以无缝支持 registry 存储目录的，目前正在研究中 😃
 
 ## 对比
 
-|      | 方法         | 适用范围                           | 缺点              |
-| ---- | ------------ | ---------------------------------- | ----------------- |
-| 一   | docker retag | 两个 registry 之间同步镜像         |                   |
-| 二   | skopeo       | 两个 registry 之间同步镜像         |                   |
-| 三   | 解压目录     | registry 存储目录到另一个 registry | harbor 1.x        |
-| 四   | skopeo dir   | registry 存储目录到另一个 registry | 适用于 harbor 2.x |
+|    | 方法         | 适用范围                           | 缺点              |
+| -- | ------------ | ---------------------------------- | ----------------- |
+| 一 | docker retag | 两个 registry 之间同步镜像         |                   |
+| 二 | skopeo       | 两个 registry 之间同步镜像         |                   |
+| 三 | 解压目录     | registry 存储目录到另一个 registry | harbor 1.x        |
+| 四 | skopeo dir   | registry 存储目录到另一个 registry | 适用于 harbor 2.x |
 
 对比总结一下以上几种方案：
 
@@ -432,5 +432,5 @@ sync_image
 
 ## 参考
 
-- [《harbor权威指南》](http://www.broadview.com.cn/book/6297)
+- [《harbor 权威指南》](http://www.broadview.com.cn/book/6297)
 - [Harbor 2.0 takes a giant leap in expanding supported artifacts with OCI support](https://goharbor.io/blog/harbor-2.0/)

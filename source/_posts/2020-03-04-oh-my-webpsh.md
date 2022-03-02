@@ -10,25 +10,25 @@ copyright: true
 comment: true
 ---
 
-> 咱来推销 webp server go 啦 （x小声
+> 咱来推销 webp server go 啦 （x 小声
 
-## 劝退三连😂
+## 劝退三连 😂
 
 - 需要配置 nginx 反向代理（＞﹏＜）
 - 图片必须放在自己的服务器上，图床不得行 (ﾉ*･ω･)ﾉ
 - 需要独立的服务器，GitHub page 之类的不得行（╯︿╰）
 
-不过，对于已经会自由访问互联网的人来说这都不难 (●ˇ∀ˇ●) ，食用过程中有什么疑问的话也可以联系咱，咱会尽自己所能提供一些帮助😘，一起来完善这个开源项目。
+不过，对于已经会自由访问互联网的人来说这都不难 (●ˇ∀ˇ●) ，食用过程中有什么疑问的话也可以联系咱，咱会尽自己所能提供一些帮助 😘，一起来完善这个开源项目。
 
 ## WebP
 
-> WebP的有损压缩算法是基于VP8视频格式的帧内编码[17]，并以RIFF作为容器格式。[2] 因此，它是一个具有八位色彩深度和以1:2的比例进行色度子采样的亮度-色度模型（YCbCr 4:2:0）的基于块的转换方案。[18] 不含内容的情况下，RIFF容器要求只需20字节的开销，依然能保存额外的 元数据(metadata)。[2] WebP图像的边长限制为16383像素。
+> WebP 的有损压缩算法是基于 VP8 视频格式的帧内编码[17]，并以 RIFF 作为容器格式。[2] 因此，它是一个具有八位色彩深度和以 1:2 的比例进行色度子采样的亮度-色度模型（YCbCr 4:2:0）的基于块的转换方案。[18] 不含内容的情况下，RIFF 容器要求只需 20 字节的开销，依然能保存额外的 元数据(metadata)。[2] WebP 图像的边长限制为 16383 像素。
 
 WebP 是一种衍生自 Google VP8 的图像格式，同时支持有损和无损编码。当使用有损模式，它在相同体积提供比 JPG 图像更好的质量；当使用无损模式，它提供比最佳压缩的 PNG 图像更小的体积。简单来说，WebP 图片格式的存在，让我们在 WebP 上展示的图片体积可以有较大幅度的缩小。网站上的图片资源如果使用 WebP，那么自然也会减少这些图片文件的加载时间，也就带来了网站加载性能的提升。关于 webp 图像格式的具体实现细节可以去维基百科或者文末我提到的推荐阅读看一下，总之 webp 很香就是啦 (●'◡'●)
 
 ### 支持情况
 
-根据 [caniuse](https://caniuse.com/#search=webp) 的统计情况，主流浏览器（接近80%）都支持 webp 了，如果遇到 Safari 这样的奇葩，咱直接返回原图。IE 浏览器？？
+根据 [caniuse](https://caniuse.com/#search=webp) 的统计情况，主流浏览器（接近 80%）都支持 webp 了，如果遇到 Safari 这样的奇葩，咱直接返回原图。IE 浏览器？？
 
 ![](https://p.k8s.li/20200306094307271.png)
 
@@ -37,11 +37,11 @@ WebP 是一种衍生自 Google VP8 的图像格式，同时支持有损和无损
 - 官网 [webp.sh](https://webp.sh)
 - GitHub [webp-sh](https://github.com/webp-sh)
 
-webp server 顾名思义就是 webp 服务器啦，用于将网站里的图片（jpg、png、jpeg等）转换成 webp 图像编码格式，而且无须修改博客站点内图片的 url ，因此对于访问图片资源的客户端来讲是透明的。主流的 CDN 也支持这样类似的功能，比如 Cloudflare 的 [Polish]() ，可以参考 [Using Cloudflare Polish to compress images](https://support.cloudflare.com/hc/en-us/articles/360000607372-Using-Cloudflare-Polish-to-compress-images) 。但是天下没有免费的午餐，图片转码与编码这都是要算力的，都是要计算资源的，都是要 CPU 的，都是要花钱的😂。说到底还是穷啊（咱 webp server 是开源免费的。
+webp server 顾名思义就是 webp 服务器啦，用于将网站里的图片（jpg、png、jpeg 等）转换成 webp 图像编码格式，而且无须修改博客站点内图片的 url ，因此对于访问图片资源的客户端来讲是透明的。主流的 CDN 也支持这样类似的功能，比如 Cloudflare 的 [Polish]() ，可以参考 [Using Cloudflare Polish to compress images](https://support.cloudflare.com/hc/en-us/articles/360000607372-Using-Cloudflare-Polish-to-compress-images) 。但是天下没有免费的午餐，图片转码与编码这都是要算力的，都是要计算资源的，都是要 CPU 的，都是要花钱的 😂。说到底还是穷啊（咱 webp server 是开源免费的。
 
 > 最重要的一点是——我们访问的 URL 可以完全不用改变，访客访问的依然是 `https://image.nova.moe/tsuki/tsuki.jpg` ，但是得到的图片格式为：`image/webp`，而且体积减少了不少。
 
-其实 webp server 有多种语言都实现了，并且这些仓库还都放在了 [webp-sh](https://github.com/webp-sh) 该 Organizations 下。不过咱比较喜欢 golang 所以就推荐 webp server go 啦😂，隔壁的 webp server rust 别打我啊（逃
+其实 webp server 有多种语言都实现了，并且这些仓库还都放在了 [webp-sh](https://github.com/webp-sh) 该 Organizations 下。不过咱比较喜欢 golang 所以就推荐 webp server go 啦 😂，隔壁的 webp server rust 别打我啊（逃
 
 > 这个工具就是由 [Nova 童鞋](https://nova.moe/)、 [Benny](https://www.bennythink.com) 、[cocoa](https://blog.0xbbc.com/) 以及 [muzi](https://blog.k8s.li/) 小盆友一起鼓捣的 webp_server_go 啦！
 
@@ -57,7 +57,7 @@ webp server 顾名思义就是 webp 服务器啦，用于将网站里的图片�
 
 首先到 [release](https://github.com/webp-sh/webp_server_go/releases) 页面下载已经编译好的二进制文件或者根据自己的发行版选择下载 rpm 或 deb 包，在此要注意选择下载符合自己的 arch 和 OS。
 
-至于安装路径，我个人更倾向于放在 `/opt/` 目录下，因为这个目录下的东西都是自己安装的，而且也不依赖于特定的发行版，方便博客迁移（搬家），搬家的时候直接打包 `/opt` 目录，然后 scp 一下就卷铺盖走人，多方便呀😂。
+至于安装路径，我个人更倾向于放在 `/opt/` 目录下，因为这个目录下的东西都是自己安装的，而且也不依赖于特定的发行版，方便博客迁移（搬家），搬家的时候直接打包 `/opt` 目录，然后 scp 一下就卷铺盖走人，多方便呀 😂。
 
 ### 2. 配置
 
@@ -111,7 +111,7 @@ server {
 }
 ```
 
-不过在此需要注意，nginx 的 location 字段的路径一定要和 webp server `config.json` 里的 `IMG_PATH` 相对应，不然会导致请求资源的 uri 与 webp server 转换后的文件路径不一致而导致资源 404 。还有一点就是 location 那里不能仅仅添加 `proxy_pass http://127.0.0.1:3333;` ，这样浏览器的 UA 会被 nginx 给吃掉😄，nginx 将请求 proxy 给 webp server 后无法从 headers 那里获取到 UA ，而导致 `Safari` 浏览器无法正常输出原图。所以以下几行添加在 `proxy_pass` 下面是必须的：
+不过在此需要注意，nginx 的 location 字段的路径一定要和 webp server `config.json` 里的 `IMG_PATH` 相对应，不然会导致请求资源的 uri 与 webp server 转换后的文件路径不一致而导致资源 404 。还有一点就是 location 那里不能仅仅添加 `proxy_pass http://127.0.0.1:3333;` ，这样浏览器的 UA 会被 nginx 给吃掉 😄，nginx 将请求 proxy 给 webp server 后无法从 headers 那里获取到 UA ，而导致 `Safari` 浏览器无法正常输出原图。所以以下几行添加在 `proxy_pass` 下面是必须的：
 
 ```nginx
             proxy_set_header HOST $http_host;
@@ -180,21 +180,21 @@ webp-server-go 有个预加载的功能，就是提前将全部的图片资源�
 
 ### 测试结果
 
-| file_size_range | file_num | src_size | dist_size |  total  |   user   | system | cpu  | core |
+| file_size_range | file_num | src_size | dist_size |  total  |   user   | system | cpu | core |
 | :-------------: | :------: | :------: | :-------: | :-----: | :------: | :----: | :--: | :--: |
-|  (10KB,500KB)   |   4600   |   1.3G   |   310M    | 1:44.49 | 905.41s  | 9.55s  | 875% |  8   |
-|   (500KB,1MB)   |   3500   |   2.4G   |   361M    | 2:04.81 | 1092.50s | 7.98s  | 881% |  8   |
-|    (1MB,4MB)    |   2000   |   3.8G   |   342M    | 2:32.64 | 1345.73s | 10.84s | 888% |  8   |
-|   (4MB,32MB)    |   500    |   3.6G   |   246M    | 1:44.53 | 916.91s  | 12.03s | 888% |  8   |
+|  (10KB,500KB)  |   4600   |   1.3G   |   310M   | 1:44.49 | 905.41s | 9.55s | 875% |  8  |
+|   (500KB,1MB)   |   3500   |   2.4G   |   361M   | 2:04.81 | 1092.50s | 7.98s | 881% |  8  |
+|    (1MB,4MB)    |   2000   |   3.8G   |   342M   | 2:32.64 | 1345.73s | 10.84s | 888% |  8  |
+|   (4MB,32MB)   |   500   |   3.6G   |   246M   | 1:44.53 | 916.91s | 12.03s | 888% |  8  |
 
 #### 不同核心 total 对比
 
 | file_size_range | file_num | src_size | dist_size |    8    |    4    |    2    |    1    |
 | :-------------: | :------: | :------: | :-------: | :-----: | :-----: | :-----: | :-----: |
-|  (10KB,500KB)   |   4600   |   1.3G   |   310M    | 1:44.49 | 2:18.49 | 3:36.05 | 5:20.88 |
-|   (500KB,1MB)   |   3500   |   2.4G   |   361M    | 2:04.81 | 2:49.46 | 4:16.41 | 6:28.97 |
-|    (1MB,4MB)    |   2000   |   3.8G   |   342M    | 2:32.64 | 3:26.18 | 5:22.15 | 7:53.45 |
-|   (4MB,32MB)    |   500    |   3.6G   |   246M    | 1:44.53 | 2:21.22 | 3:39.16 | 5:28.65 |
+|  (10KB,500KB)  |   4600   |   1.3G   |   310M   | 1:44.49 | 2:18.49 | 3:36.05 | 5:20.88 |
+|   (500KB,1MB)   |   3500   |   2.4G   |   361M   | 2:04.81 | 2:49.46 | 4:16.41 | 6:28.97 |
+|    (1MB,4MB)    |   2000   |   3.8G   |   342M   | 2:32.64 | 3:26.18 | 5:22.15 | 7:53.45 |
+|   (4MB,32MB)   |   500   |   3.6G   |   246M   | 1:44.53 | 2:21.22 | 3:39.16 | 5:28.65 |
 
 ```bash
 ### 10KB-500KB
@@ -227,7 +227,7 @@ webp-server-go 有个预加载的功能，就是提前将全部的图片资源�
 
 ### 转换前后大小对比
 
-以下咱就截取一小部分的测试结果，完整的日志放在了我的 gist 上 **[webp-server-go_test.log](https://gist.github.com/muzi502/4f7c4128895ac3f438e7a183df219661)** 。图片都是真是的数据，根据文件名的 ID 可以在 pixiv.net 上找到源文件，相信老司机们都懂得😂。
+以下咱就截取一小部分的测试结果，完整的日志放在了我的 gist 上 **[webp-server-go_test.log](https://gist.github.com/muzi502/4f7c4128895ac3f438e7a183df219661)** 。图片都是真是的数据，根据文件名的 ID 可以在 pixiv.net 上找到源文件，相信老司机们都懂得 😂。
 
 #### (10KB,500KB)
 
@@ -418,7 +418,7 @@ src				dist		num
 
 ## 实际效果
 
-为了做个对比，咱使用  `hexo.k8s.li` 这个域名为对照组，即输出源文件，使用 `blog.k8s.li` 这个域名为实验组加上 webp server 来测试，各位读者也可以分别访问这两个域名来实际体验之间的差别，肉眼可见😂。
+为了做个对比，咱使用  `hexo.k8s.li` 这个域名为对照组，即输出源文件，使用 `blog.k8s.li` 这个域名为实验组加上 webp server 来测试，各位读者也可以分别访问这两个域名来实际体验之间的差别，肉眼可见 😂。
 
 ### no webps
 
@@ -446,6 +446,6 @@ src				dist		num
 - [WebP Server in Rust](https://await.moe/2020/02/webp-server-in-rust/)
 - [个人网站无缝切换图片到 webp](https://www.bennythink.com/flying-webp.html)
 - [优雅的让 Halo 支持 webp 图片输出](https://halo.run/archives/halo-and-webp)
-- [前端性能优化——使用webp来优化你的图片xx](https://vince.xin/2018/09/12/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8webp%E6%9D%A5%E4%BC%98%E5%8C%96%E4%BD%A0%E7%9A%84%E5%9B%BE%E7%89%87/)
-- [探究WebP一些事儿](https://aotu.io/notes/2016/06/23/explore-something-of-webp/index.html)
+- [前端性能优化——使用 webp 来优化你的图片 xx](https://vince.xin/2018/09/12/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8webp%E6%9D%A5%E4%BC%98%E5%8C%96%E4%BD%A0%E7%9A%84%E5%9B%BE%E7%89%87/)
+- [探究 WebP 一些事儿](https://aotu.io/notes/2016/06/23/explore-something-of-webp/index.html)
 - [A new image format for the Web](https://developers.google.com/speed/webp)

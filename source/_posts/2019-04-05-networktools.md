@@ -11,10 +11,9 @@ categories: 技术
 slug:
 date: 2019-04-05
 ---
-
 不久前在 twitter 上看到一张描述 45 个 Linux 网络工具的 [图片](https://wizardzines.com/networking-tools-poster/)，于是想整理一下它们常用功能
 
-----
+---
 
 1.`ping` "are these computers even connected"
 
@@ -54,7 +53,7 @@ date: 2019-04-05
 
 19.`arp` see your arp table
 
-20.`mitmproxy`spy on SSL connetcions your programs are making
+20.`mitmproxy` spy on SSL connetcions your programs are making
 
 21.`nmap` in network scanning port
 
@@ -104,4 +103,4 @@ date: 2019-04-05
 
 44.`ipcalc` easily see what
 
-45.`nsenter`enter a container process's network namespace
+45.`nsenter` enter a container process's network namespace

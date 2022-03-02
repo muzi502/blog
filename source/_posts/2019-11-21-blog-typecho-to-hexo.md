@@ -26,17 +26,17 @@ comment: true
 
 ## hugo
 
-期间也折腾了 hugo，但 hugo 的主题没有找到像 next 一样的，很僵硬。不过我平时写文档最后还是喜欢用  hugo 来生成。或者用 Typora 导出 PDF 然后上交给领导😂。在我看来 hugo 最大的优势就是精简和极速。就单单一个 hugo 二进制可执行文件即可创建站点，不像 hexo 那样要依赖上千的包和上万个文件。hugo 的这一点比 hexo 高到不知道哪里去了😂。
+期间也折腾了 hugo，但 hugo 的主题没有找到像 next 一样的，很僵硬。不过我平时写文档最后还是喜欢用  hugo 来生成。或者用 Typora 导出 PDF 然后上交给领导 😂。在我看来 hugo 最大的优势就是精简和极速。就单单一个 hugo 二进制可执行文件即可创建站点，不像 hexo 那样要依赖上千的包和上万个文件。hugo 的这一点比 hexo 高到不知道哪里去了 😂。
 
 ## hexo
 
-感觉 hexo 的主题无论是在数量还是质量抑或是美学上不知道比 hugo 高到不知到哪里去了😂
+感觉 hexo 的主题无论是在数量还是质量抑或是美学上不知道比 hugo 高到不知到哪里去了 😂
 
-无意间在发现了  [零の轨迹](https://www.elietio.xyz/)  的博客，使用的也是   [NexT.Gemini](https://theme-next.org/)  主题，主题很符合我的期望，遂采用了   [NexT.Gemini](https://theme-next.org/)  主题。克隆下来博主的 [Elietio.github.io](https://github.com/Elietio/Elietio.github.io) repo 就撸起袖子加油干。
+无意间在发现了  [零 の 轨迹](https://www.elietio.xyz/)  的博客，使用的也是   [NexT.Gemini](https://theme-next.org/)  主题，主题很符合我的期望，遂采用了   [NexT.Gemini](https://theme-next.org/)  主题。克隆下来博主的 [Elietio.github.io](https://github.com/Elietio/Elietio.github.io) repo 就撸起袖子加油干。
 
 ### 安装
 
- 网上类似的教程一搜一大把，写得其实很详细 。由于 hexo 是使用 nodejs 开发，所以需要装 nodejs 以及 nodejs 的包管理器 yarn，不推荐用 npm。我的环境是 Debian 10。debian 10 上已经有 nodejs 的包了，所以直接 apt 一把梭就 ok
+网上类似的教程一搜一大把，写得其实很详细 。由于 hexo 是使用 nodejs 开发，所以需要装 nodejs 以及 nodejs 的包管理器 yarn，不推荐用 npm。我的环境是 Debian 10。debian 10 上已经有 nodejs 的包了，所以直接 apt 一把梭就 ok
 
 > 官方是使用 npm 进行安装，个人推荐使用 [yarn](https://yarnpkg.com/zh-Hans/) 进行安装，关于 yarn 和 npm 优劣分析，可以参考这篇文章《[Yarn vs npm: 你需要知道的一切](http://web.jobbole.com/88459/)》
 
@@ -56,7 +56,7 @@ hexo g
 
 ### 精简
 
-使用 yarn 安装完依赖后，原项目太臃肿了，还是第一次见人把 models 放进 git repo 里的😂。咱就精简一下吧，去掉那些花里胡哨的东西，四博客更加轻量和精简。
+使用 yarn 安装完依赖后，原项目太臃肿了，还是第一次见人把 models 放进 git repo 里的 😂。咱就精简一下吧，去掉那些花里胡哨的东西，四博客更加轻量和精简。
 
 ```bash
 8.0K    _config.yml
@@ -138,7 +138,7 @@ baidusitemap:
 
 ![](https://p.k8s.li/20191121112401015.png)
 
-  [NexT.Gemini](https://theme-next.org/)  主题的引用部分背景色好评，用来提醒读者我是~~引用~~剽窃别人的还是不错滴😂，我倒是喜欢用 `剽窃`二字替代`引用`，用来自嘲自己知识水平不足只能靠剽窃😀。
+[NexT.Gemini](https://theme-next.org/)  主题的引用部分背景色好评，用来提醒读者我是~~引用~~剽窃别人的还是不错滴 😂，我倒是喜欢用 `剽窃` 二字替代 `引用`，用来自嘲自己知识水平不足只能靠剽窃 😀。
 
 ## 后续
 

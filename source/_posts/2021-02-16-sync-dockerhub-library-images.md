@@ -41,7 +41,7 @@ comment: true
 
 library 的镜像常见的特点就是当我们使用 docker 客户端去 pull 一个镜像时，无需指定该镜像的 repo ，比如 `ubuntu:latest`，其他非 library 的镜像需要指定镜像所属的 repo ，比如 `jenkins/slave:latest`。这部分代码是硬编码在 docker 的源码当中的。
 
-> 我们虽然日常访问的是 `https://hub.docker.com` ，但是我们在 https://github.com/docker/distribution/blob/master/reference/normalize.go#L13 中可以看到实际 `docker` 使用的地址是一个硬编码的 `docker.io`
+> 我们虽然日常访问的是 `https://hub.docker.com` ，但是我们在 [https://github.com/docker/distribution/blob/master/reference/normalize.go#L13](https://github.com/docker/distribution/blob/master/reference/normalize.go#L13) 中可以看到实际 `docker` 使用的地址是一个硬编码的 `docker.io`
 >
 > ```golang
 > var (
@@ -175,11 +175,11 @@ for image in ${ALL_IMAGES}; do
 done
 ```
 
-但，没我想象中的那么简单，在自己的机器上 pull 了不到 150 个镜像的时候就报错退出了，提示 `toomanyrequests: You have reached your pull rate limit.` 错误。心里 mmp，docker inc 啊，干啥啥不行（如今 Docker Machine，Docker Swarm，docker-compose 三驾马车哪儿去了？），**恰烂钱可还行**😡。
+但，没我想象中的那么简单，在自己的机器上 pull 了不到 150 个镜像的时候就报错退出了，提示 `toomanyrequests: You have reached your pull rate limit.` 错误。心里 mmp，docker inc 啊，干啥啥不行（如今 Docker Machine，Docker Swarm，docker-compose 三驾马车哪儿去了？），**恰烂钱可还行** 😡。
 
 > ime="2021-02-12T07:08:51Z" level=fatal msg="Error parsing image name \"docker://ubuntu:latest\":
 >
-> Error reading manifest latest in docker.io/library/ubuntu: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit"
+> Error reading manifest latest in docker.io/library/ubuntu: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: [https://www.docker.com/increase-rate-limit](https://www.docker.com/increase-rate-limit)"
 
 ## Dockerfile 里同步镜像？
 
@@ -201,7 +201,7 @@ RUN set -xue ;\
 
 ~~假如有一个多阶段构建的 Dockerfile，就有可能因为拉不到镜像而导致镜像构建失败。那么这种智障的设计没想到过？~~
 
-想到一种可能是 docker hub 内部是通过 token 来进行验证的，而不是根据客户端访问源 IP 。build 镜像的宿主机上会有 docker login 的 token 文件，但 build 镜像的容器里是没有这个 token 文件的，所以在 dockerfile 里 pull 镜像同样会被限制。看来 dockerfile 里同步镜像的方案也就不行了🙃，只能另寻他路啦。
+想到一种可能是 docker hub 内部是通过 token 来进行验证的，而不是根据客户端访问源 IP 。build 镜像的宿主机上会有 docker login 的 token 文件，但 build 镜像的容器里是没有这个 token 文件的，所以在 dockerfile 里 pull 镜像同样会被限制。看来 dockerfile 里同步镜像的方案也就不行了 🙃，只能另寻他路啦。
 
 ## GitHub Action 来同步镜像
 
@@ -249,7 +249,7 @@ curl --user 'githubactions:3d6472b9-3d49-4d17-9fc9-90d24258043' "https://auth.do
 
 但失败了，提示 `{"details":"incorrect username or password"}` ，估计这个账户是个 bot 账户，只能用于 pull 镜像，其他的 api 请求都没权限使用。至于这个账户有没有限制，还需要做下测试。
 
-另外意外地发现 runner 的机器里集成了很多工具，其中  skopeo 也包含在内，实在是太方便了。GitHub 牛皮，微软爸爸我爱你😘！那就方便了，我们就使用 skopeo inspect 去请求镜像的 manifests 文件。看看最多能请求多少会被限制。于是花了点时间搓了个脚本用于去获取 docker hub 上 library repo 中的所有镜像的 manifests 文件。
+另外意外地发现 runner 的机器里集成了很多工具，其中  skopeo 也包含在内，实在是太方便了。GitHub 牛皮，微软爸爸我爱你 😘！那就方便了，我们就使用 skopeo inspect 去请求镜像的 manifests 文件。看看最多能请求多少会被限制。于是花了点时间搓了个脚本用于去获取 docker hub 上 library repo 中的所有镜像的 manifests 文件。
 
 - `get-manifests.sh`
 
@@ -340,7 +340,7 @@ jobs:
 
 ```
 
-既然 GitHub runner 的机器里有 docker login 的配置文件，不如把它**偷**过来，复制粘贴到自家的机器上使用😜？不过我认为这种行为有点不厚道😂，还是别干了。在这里只提供一个思路，实际上可行性还待验证。
+既然 GitHub runner 的机器里有 docker login 的配置文件，不如把它**偷**过来，复制粘贴到自家的机器上使用 😜？不过我认为这种行为有点不厚道 😂，还是别干了。在这里只提供一个思路，实际上可行性还待验证。
 
 ### 增量同步
 
@@ -356,12 +356,12 @@ IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
 
 如果你也想将 docker hub 上 library repo 的镜像搞到本地镜像仓库，可以参考如下方法：
 
-### 劝退三连😂
+### 劝退三连 😂
 
 - 首先要本地部署好镜像仓库并配置好 SSL 证书。镜像仓库建议使用 docker registry 或者 harbor，具体的部署方法可以在互联网上找到。
 - 需要个大盘鸡（大硬盘机器），当前 docker hub 上还在维护的 tag 镜像总大小为 128 GB 左右。
 - 如果是长期使用，本地镜像仓库的存储空间至少 1TB 以上。
-- 由于是使用 GitHub action 的机器将镜像 push 到本地镜像仓库，因此本地镜像仓库需要有个公网IP以及域名 + SSL 证书
+- 由于是使用 GitHub action 的机器将镜像 push 到本地镜像仓库，因此本地镜像仓库需要有个公网 IP 以及域名 + SSL 证书
 
 ### 增加配置
 
@@ -385,5 +385,4 @@ IMAGES=$(git diff --name-only --ignore-space-at-eol --ignore-space-change \
 - [突破 DockerHub 限制，全镜像加速服务](https://moelove.info/2020/09/20/%E7%AA%81%E7%A0%B4-DockerHub-%E9%99%90%E5%88%B6%E5%85%A8%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E6%9C%8D%E5%8A%A1/)
 - [绕过从 Docker Hub pull 镜像时的 429 toomanyrequests](https://nova.moe/bypass-docker-hub-429/)
 - [如何绕过 DockerHub 拉取镜像限制](https://www.chenshaowen.com/blog/how-to-cross-the-limit-of-dockerhub.html)
-
--    [SSH 连接到 GitHub Actions 虚拟服务器](https://p3terx.com/archives/ssh-to-the-github-actions-virtual-server-environment.html)
+- [SSH 连接到 GitHub Actions 虚拟服务器](https://p3terx.com/archives/ssh-to-the-github-actions-virtual-server-environment.html)

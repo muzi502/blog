@@ -12,7 +12,7 @@ copyright: true
 comment: true
 ---
 
-偶然间看到了 [**Z.S.K.'s Records**](https://izsk.me/) 大佬的一篇博客 《[有趣的Shell Snippet](https://izsk.me/2021/03/21/shell-funny-snippet/)》，突发奇想也准备写篇文章来记录一下常用的一些 shell 代码。
+偶然间看到了 [**Z.S.K.'s Records**](https://izsk.me/) 大佬的一篇博客 《[有趣的 Shell Snippet](https://izsk.me/2021/03/21/shell-funny-snippet/)》，突发奇想也准备写篇文章来记录一下常用的一些 shell 代码。
 
 ## Bash
 
@@ -25,14 +25,14 @@ hack build
 
 ### 变量替换
 
-> http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other
+> [http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other](http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other)
 >
 > 我们将这部份作个总结说明一下：
 >
-> | 变量配置方式                                         | 说明                                                         |
-> | ---------------------------------------------------- | ------------------------------------------------------------ |
+> | 变量配置方式                                       | 说明                                                                                                                          |
+> | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 > | ${变量#关键词} ${变量##关键词}                       | 若变量内容从头开始的数据符合『关键词』，则将符合的最短数据删除 若变量内容从头开始的数据符合『关键词』，则将符合的最长数据删除 |
-> | ${变量%关键词} ${变量%%关键词}                       | 若变量内容从尾向前的数据符合『关键词』，则将符合的最短数据删除 若变量内容从尾向前的数据符合『关键词』，则将符合的最长数据删除 |
+> | ${变量%关键词} ${变量 %% 关键词}                   | 若变量内容从尾向前的数据符合『关键词』，则将符合的最短数据删除 若变量内容从尾向前的数据符合『关键词』，则将符合的最长数据删除 |
 > | ${变量/旧字符串/新字符串} ${变量//旧字符串/新字符串} | 若变量内容符合『旧字符串』则『第一个旧字符串会被新字符串取代』 若变量内容符合『旧字符串』则『全部的旧字符串会被新字符串取代』 |
 
 ```bash
@@ -123,7 +123,7 @@ $ sed -i "/kube-node/a ${ip}" test
 
 ### 输出两个匹配行之间的内容
 
-在不使用 yq 或者 jq 的情况下，需要输出 `downloads` 列表中的所有内容，即 `download:` 和 `download_defaults: `之间的内容
+在不使用 yq 或者 jq 的情况下，需要输出 `downloads` 列表中的所有内容，即 `download:` 和 `download_defaults: ` 之间的内容
 
 - [download.yml](https://github.com/kubernetes-sigs/kubespray/blob/master/roles/download/defaults/main.yml)
 
@@ -234,7 +234,7 @@ $ ss -nat | awk 'NR>1 {d[$1]++} END {for (i in d) print d[i],i}'
 
 ### 将镜像构建到本地目录
 
-和 `FROM scratch`搭配起来使用，就可以将构建产物 build 到本地
+和 `FROM scratch` 搭配起来使用，就可以将构建产物 build 到本地
 
 ```bash
 $ DOCKER_BUILDKIT=1 docker build -o type=local,dest=$PWD -f Dockerfile .
@@ -347,8 +347,6 @@ kubectl top pods --all-namespaces | sort --reverse --key 4 --numeric
 ```bash
 $ yq eval '.[]|select(.dest=="library/chartmuseum") | .src' images_origin.yaml
 ```
-
-
 
 ### 替换数组中的元素
 
@@ -549,7 +547,7 @@ host_architecture=$(dpkg --print-architecture)
 
 ### 替换系统 OS 源
 
- 使用华为云 yum 源
+使用华为云 yum 源
 
 - CentOS 7
 
@@ -672,4 +670,4 @@ done
 - [pure-bash-bible](https://github.com/dylanaraps/pure-bash-bible)
 - [鸟哥 Linux 私房菜](http://cn.linux.vbird.org/linux_basic/0320bash_2.php#variable_other)
 - [jq 常用操作](https://mozillazg.com/2018/01/jq-use-examples-cookbook.html)
-- [YAML处理工具yq之读写篇](https://lyyao09.github.io/2019/08/02/tools/The-usage-of-yq-read-write/)
+- [YAML 处理工具 yq 之读写篇](https://lyyao09.github.io/2019/08/02/tools/The-usage-of-yq-read-write/)

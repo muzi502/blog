@@ -16,198 +16,174 @@ comment: true
 
 在接触互联网之后深受自由软件基金会、电子前哨基金会、互联网之子--亚伦斯沃兹、万维网之父--提姆伯纳斯里。
 
-很早之前去年九月份的时候就一直想写一篇关于非https://liuyandong.com 营利性组织的一些内容。读过 [@leonson](https://twitter.com/leonson) 写的 [民间有高手——说说美国的501(c)(3)组织](https://leonson.me/2019/12/us-501c3) 篇博客
+很早之前去年九月份的时候就一直想写一篇关于非 [https://liuyandong.com](https://liuyandong.com) 营利性组织的一些内容。读过 [@leonson](https://twitter.com/leonson) 写的 [民间有高手——说说美国的 501(c)(3)组织](https://leonson.me/2019/12/us-501c3) 篇博客
 
-最近想写一系列的文章，来`考古挖掘`一些知名的开源软件/自由软件基金会和非营利性组织的发展、以及他们成功运作的方式。所以这篇文章大概是罗列出以后要写的文章，今天顺便统计了一些这些基金会的捐款收入和支出状况，对这些基金会有个大致的了解。
+最近想写一系列的文章，来 `考古挖掘` 一些知名的开源软件/自由软件基金会和非营利性组织的发展、以及他们成功运作的方式。所以这篇文章大概是罗列出以后要写的文章，今天顺便统计了一些这些基金会的捐款收入和支出状况，对这些基金会有个大致的了解。
 
 引用 NASA 的  purposes  致敬这些与互联网息息相关的组织   **For the Benefit of All**
 
 ## 基金会及维护的项目
 
-|  name |  wikipedia | hosts project / work / service |
-|---|---|---|
-| [Linux 基金会](https://www.linuxfoundation.org/) | [wikipedia](https://en.wikipedia.org/wiki/Linux_Foundation) | [kernel](https://kernel.org)  [NodeJs]([https://nodejs.org)  [Xen](https://xenproject.org/)   [DPDK](https://www.dpdk.org/)  [etcd]([https://etcd.io)  [Jenkins]([https://jenkins.io)  [kubernetes]([https://kubernetes.io) [Ceph](https://ceph.com/foundation/)  [CNI](https://github.com/containernetworking/cni)  [Fluentd](https://www.fluentd.org/)  [Let’s Encrypt](https://letsencrypt.org/)  [Prometheus](https://prometheus.io/)  [CoreDNS](https://coredns.io/) |
-| [FSF 自由软件基金会](https://www.gnu.org)  |  [wikipedia](https://en.wikipedia.org/wiki/Free_Software_Foundation)| [GNU](https://www.gnu.org/) [libc](https://www.gnu.org/software/libc/) [glib](https://www.gnu.org/software/glib/) [bash](https://www.gnu.org/software/bash/) [gzip](https://www.gnu.org/software/gzip/) [wget](https://www.gnu.org/software/wget/)  [gcc](https://www.gnu.org/software/gcc/) [grub](https://www.gnu.org/software/grub/) [sed](https://www.gnu.org/software/sed/)  [tar](https://www.gnu.org/software/tar/)  [grep](https://www.gnu.org/software/grep/)   |
-| [Mozilla 基金会](https://foundation.mozilla.org)  |  [wikipedia](https://en.wikipedia.org/wiki/Mozilla_Foundation)| [Firefox]([https://www.mozilla.org)  [Thunderbird]([https://www.thunderbird.net) |
-| [维基媒体基金会](https://wikimediafoundation.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Wikimedia_Foundation)| [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) |
-| [OpenSSL 基金会](https://www.openssl.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/OpenSSL) | [OpenSSL](https://www.openssl.org/source/) |
-| [SPI 组织](https://www.spi-inc.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Software_in_the_Public_Interest) | [Debian](https://www.debian.org/distrib/)  [FFmpeg](https://ffmpeg.org/)  [OpenWrt](https://openwrt.org/)  [PostgreSQL]([https://www.postgresql.org)  [LibreOffice](https://www.libreoffice.org/) [Jenkins]([https://jenkins.io)  [Arch Linux](https://www.archlinux.org/) [MinGW](https://www.spi-inc.org/projects/mingw) [X.Org](https://www.spi-inc.org/projects/x.org) [haskell.org](https://www.spi-inc.org/projects/haskell) [Gallery](https://www.spi-inc.org/projects/gallery) [OpenZFS](https://www.spi-inc.org/projects/openzfs) |
-| [EFF 电子前哨基金会](https://www.eff.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Electronic_Frontier_Foundation)| [HTTPS Everywhere](https://www.eff.org/https-everywhere)  [Privacy Badger](https://www.eff.org/privacybadger)  [Let's Encrypt](https://letsencrypt.org/about/) |
-| [OpenStack 基金会](https://www.openstack.org/foundation/)  |  [wikipedia](https://en.wikipedia.org/wiki/OpenStack)| [nova](https://www.openstack.org/software/releases/stein/components/nova)  [OpenStack ](https://www.openstack.org/software/project-navigator/openstack-components/#openstack-services) |
-| [CNCF 基金会](https://www.cncf.io/)  |  [wikipedia](https://en.wikipedia.org/wiki/CNCF)| [Kubernetes](http://kubernetes.io/)  |
-| [Cloud Foundry 基金会](https://www.cloudfoundry.org)  |  [wikipedia](https://en.wikipedia.org/wiki/Cloud_Foundry)|  |
-| [Apache 软件基金会](https://www.apache.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/The_Apache_Software_Foundation)| [Apache](https://www.apache.org/)  [Hadoop](https://hadoop.apache.org/)  [Kafka](http://kafka.apache.org/)  [Zookeeper](http://zookeeper.apache.org/)  [HBase](http://hbase.apache.org/)  [Maven](http://maven.apache.org/) |
-| [Python 基金会](https://www.python.org/psf/)  |  [wikipedia](https://en.wikipedia.org/wiki/Python_Software_Foundation)| [Python]([https://www.python.org) |
-| [GNOME 基金会](https://www.gnome.org/foundation/)  |  [wikipedia](https://en.wikipedia.org/wiki/GNOME_Foundation) | [GNOME]([https://www.gnome.org)  [systemd](http://www.freedesktop.org/wiki/Software/systemd/)  [GLib](https://developer.gnome.org/glib/)  [GTK+](http://www.gtk.org/)  [D-Bus](http://www.freedesktop.org/wiki/Software/dbus/)  [Linux Kernel](https://www.kernel.org/)  [GDM](https://wiki.gnome.org/Projects/GDM) |
-| [OWF 开放 web 基金会](http://openwebfoundation.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Open_Web_Foundation) | |
-| [ONF 开放网络基金会](https://www.opennetworking.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Open_Networking_Foundation) | [onos](https://www.opennetworking.org/onos/) [OMEC](https://www.opennetworking.org/omec/)  []() |
-| [FreeBSD 基金会](https://www.freebsdfoundation.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/FreeBSD_Foundation) | [FreeBSD](https://www.freebsd.org)|
-| [OpenBSD 基金会](http://www.openbsdfoundation.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/OpenBSD_Foundation) | [ OpenSSH](http://www.openssh.com/)  [LibreSSL](http://www.libressl.org/)  [OpenBSD](http://www.openbsd.org/) |
-| [Golang 基金会](http://golangfoundation.org/about/)  |  [wikipedia]() | |
-| [OSI 开放源代码组织](https://opensource.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Open_Source_Initiative) | |
-| [Linaro 非营利性组织](https://www.linaro.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Linaro) | [Linaro Toolchain](https://www.linaro.org/downloads/) |
-| [Tor 项目](https://www.torproject.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Tor_(anonymity_network)) | [Tor ](https://www.torproject.org/download/) |
-| [FPF 新闻自由基金会](https://freedom.press/)  |  [wikipedia](https://en.wikipedia.org/wiki/Freedom_of_the_Press_Foundation) | [SecureDrop](https://securedrop.org/)  [Secure the News](https://securethe.news/)  [Archive the News](https://freedom.press/news/archiving-alternative-press-threatened-wealthy-buyers/) [FOIAFeed](https://twitter.com/foiafeed) |
-| [OPJ 保护记者委员会](https://cpj.org)  |  [wikipedia](https://en.wikipedia.org/wiki/Committee_to_Protect_Journalists) | [Safety Kit](https://cpj.org/safety-kit/)  [Safety Advisories](https://cpj.org/safety-advisories/) |
-| [Web Foundation 万维网基金会](https://webfoundation.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/World_Wide_Web_Foundation) | [Alliance for Affordable Internet](https://webfoundation.org/our-work/projects/alliance-for-affordable-internet/)  [Open Data Barometer](https://webfoundation.org/our-work/projects/open-data-barometer/)  [Women’s Rights Online](https://webfoundation.org/our-work/projects/womens-rights-online/) [The Web Index](https://webfoundation.org/our-work/projects/the-web-index/) |
-| [EPIC 电子隐私信息中心](https://epic.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Electronic_Privacy_Information_Center) | [Litigation Docket](https://epic.org/privacy/litigation/ ) [Privacy Campaigns](https://epic.org/campaigns/) [Spotlight on Surveillance](https://epic.org/privacy/surveillance/spotlight/) |
-| [SFC 软件自由保护组织](https://sfconservancy.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Software_Freedom_Conservancy) | [BusyBox](https://busybox.net/)  [Git](https://git-scm.com/)  [phpMyAdmin](https://phpmyadmin.net/)  [QEMU](http://qemu.org/)  [Samba](https://www.samba.org/samba/)  [Wine](http://www.winehq.org/) []() |
-| [SFLC 软件自由法律中心](https://www.softwarefreedom.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Software_Freedom_Law_Center) | [services](https://www.softwarefreedom.org/services/) |
-| [Internet Archive 互联网档案馆](https://archive.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Internet_Archive) | [Building Libraries Together](https://archive.org/projects/)  [Open Library](https://openlibrary.org/)  [301Works.org](https://archive.org/details/301works)  [Open Community Networks](https://archive.org/web/sflan.php) |
-| [X.Org 基金会](https://www.x.org/wiki/)  |  [wikipedia](https://en.wikipedia.org/wiki/X.Org_Foundation) |[X.Org project](https://www.x.org) |
-| [RISC-V 基金会](https://riscv.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/RISC-V) | [RISC-V](https://riscv.org/) |
-| [Creative Commons](https://creativecommons.org/)  |  [wikipedia](https://en.wikipedia.org/wiki/Creative_Commons) | [about](https://creativecommons.org/about/) |
-| [Eclipse 基金会](https://www.eclipse.org/org/foundation/) |  [wikipedia](https://en.wikipedia.org/wiki/Eclipse_Foundation) | [Eclipse](https://projects.eclipse.org/) |
-| [TDF 文档基金会](https://www.documentfoundation.org/) | [wikipedia](https://en.wikipedia.org/wiki/The_Document_Foundation) | [LibreOffice](http://www.libreoffice.org/) |
-| [ISRG 互联网安全研究小组](https://www.abetterinternet.org/) | [wikipedia](https://en.wikipedia.org/wiki/Internet_Security_Research_Group) | [Let’s Encrypt](https://letsencrypt.org/) |
+| name                                                        | wikipedia                                                                        | hosts project / work / service                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Linux 基金会](https://www.linuxfoundation.org/)            | [wikipedia](https://en.wikipedia.org/wiki/Linux_Foundation)                      | [kernel](https://kernel.org)  [NodeJs](%5Bhttps://nodejs.org)  [Xen](https://xenproject.org/)   [DPDK](https://www.dpdk.org/)  [etcd](%5Bhttps://etcd.io)  [Jenkins](%5Bhttps://jenkins.io)  [kubernetes](%5Bhttps://kubernetes.io) [Ceph](https://ceph.com/foundation/)  [CNI](https://github.com/containernetworking/cni)  [Fluentd](https://www.fluentd.org/)  [Let’s Encrypt](https://letsencrypt.org/)  [Prometheus](https://prometheus.io/)  [CoreDNS](https://coredns.io/)                                                             |
+| [FSF 自由软件基金会](https://www.gnu.org)                   | [wikipedia](https://en.wikipedia.org/wiki/Free_Software_Foundation)              | [GNU](https://www.gnu.org/) [libc](https://www.gnu.org/software/libc/) [glib](https://www.gnu.org/software/glib/) [bash](https://www.gnu.org/software/bash/) [gzip](https://www.gnu.org/software/gzip/) [wget](https://www.gnu.org/software/wget/)  [gcc](https://www.gnu.org/software/gcc/) [grub](https://www.gnu.org/software/grub/) [sed](https://www.gnu.org/software/sed/)  [tar](https://www.gnu.org/software/tar/)  [grep](https://www.gnu.org/software/grep/)                                                                         |
+| [Mozilla 基金会](https://foundation.mozilla.org)            | [wikipedia](https://en.wikipedia.org/wiki/Mozilla_Foundation)                    | [Firefox](%5Bhttps://www.mozilla.org)  [Thunderbird](%5Bhttps://www.thunderbird.net)                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [维基媒体基金会](https://wikimediafoundation.org/)          | [wikipedia](https://en.wikipedia.org/wiki/Wikimedia_Foundation)                  | [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [OpenSSL 基金会](https://www.openssl.org/)                  | [wikipedia](https://en.wikipedia.org/wiki/OpenSSL)                               | [OpenSSL](https://www.openssl.org/source/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [SPI 组织](https://www.spi-inc.org/)                        | [wikipedia](https://en.wikipedia.org/wiki/Software_in_the_Public_Interest)       | [Debian](https://www.debian.org/distrib/)  [FFmpeg](https://ffmpeg.org/)  [OpenWrt](https://openwrt.org/)  [PostgreSQL](%5Bhttps://www.postgresql.org)  [LibreOffice](https://www.libreoffice.org/) [Jenkins](%5Bhttps://jenkins.io)  [Arch Linux](https://www.archlinux.org/) [MinGW](https://www.spi-inc.org/projects/mingw) [X.Org](https://www.spi-inc.org/projects/x.org) [haskell.org](https://www.spi-inc.org/projects/haskell) [Gallery](https://www.spi-inc.org/projects/gallery) [OpenZFS](https://www.spi-inc.org/projects/openzfs) |
+| [EFF 电子前哨基金会](https://www.eff.org/)                  | [wikipedia](https://en.wikipedia.org/wiki/Electronic_Frontier_Foundation)        | [HTTPS Everywhere](https://www.eff.org/https-everywhere)  [Privacy Badger](https://www.eff.org/privacybadger)  [Let's Encrypt](https://letsencrypt.org/about/)                                                                                                                                                                                                                                                                                                                                                                                 |
+| [OpenStack 基金会](https://www.openstack.org/foundation/)   | [wikipedia](https://en.wikipedia.org/wiki/OpenStack)                             | [nova](https://www.openstack.org/software/releases/stein/components/nova)  [OpenStack ](https://www.openstack.org/software/project-navigator/openstack-components/#openstack-services)                                                                                                                                                                                                                                                                                                                                                         |
+| [CNCF 基金会](https://www.cncf.io/)                         | [wikipedia](https://en.wikipedia.org/wiki/CNCF)                                  | [Kubernetes](http://kubernetes.io/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [Cloud Foundry 基金会](https://www.cloudfoundry.org)        | [wikipedia](https://en.wikipedia.org/wiki/Cloud_Foundry)                         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [Apache 软件基金会](https://www.apache.org/)                | [wikipedia](https://en.wikipedia.org/wiki/The_Apache_Software_Foundation)        | [Apache](https://www.apache.org/)  [Hadoop](https://hadoop.apache.org/)  [Kafka](http://kafka.apache.org/)  [Zookeeper](http://zookeeper.apache.org/)  [HBase](http://hbase.apache.org/)  [Maven](http://maven.apache.org/)                                                                                                                                                                                                                                                                                                                    |
+| [Python 基金会](https://www.python.org/psf/)                | [wikipedia](https://en.wikipedia.org/wiki/Python_Software_Foundation)            | [Python](%5Bhttps://www.python.org)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [GNOME 基金会](https://www.gnome.org/foundation/)           | [wikipedia](https://en.wikipedia.org/wiki/GNOME_Foundation)                      | [GNOME](%5Bhttps://www.gnome.org)  [systemd](http://www.freedesktop.org/wiki/Software/systemd/)  [GLib](https://developer.gnome.org/glib/)  [GTK+](http://www.gtk.org/)  [D-Bus](http://www.freedesktop.org/wiki/Software/dbus/)  [Linux Kernel](https://www.kernel.org/)  [GDM](https://wiki.gnome.org/Projects/GDM)                                                                                                                                                                                                                          |
+| [OWF 开放 web 基金会](http://openwebfoundation.org/)        | [wikipedia](https://en.wikipedia.org/wiki/Open_Web_Foundation)                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [ONF 开放网络基金会](https://www.opennetworking.org/)       | [wikipedia](https://en.wikipedia.org/wiki/Open_Networking_Foundation)            | [onos](https://www.opennetworking.org/onos/) [OMEC](https://www.opennetworking.org/omec/)  []()                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [FreeBSD 基金会](https://www.freebsdfoundation.org/)        | [wikipedia](https://en.wikipedia.org/wiki/FreeBSD_Foundation)                    | [FreeBSD](https://www.freebsd.org)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [OpenBSD 基金会](http://www.openbsdfoundation.org/)         | [wikipedia](https://en.wikipedia.org/wiki/OpenBSD_Foundation)                    | [ OpenSSH](http://www.openssh.com/)  [LibreSSL](http://www.libressl.org/)  [OpenBSD](http://www.openbsd.org/)                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [Golang 基金会](http://golangfoundation.org/about/)         | [wikipedia]()                                                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [OSI 开放源代码组织](https://opensource.org/)               | [wikipedia](https://en.wikipedia.org/wiki/Open_Source_Initiative)                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [Linaro 非营利性组织](https://www.linaro.org/)              | [wikipedia](https://en.wikipedia.org/wiki/Linaro)                                | [Linaro Toolchain](https://www.linaro.org/downloads/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [Tor 项目](https://www.torproject.org/)                     | [wikipedia](https://en.wikipedia.org/wiki/Tor_(anonymity_network))               | [Tor ](https://www.torproject.org/download/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [FPF 新闻自由基金会](https://freedom.press/)                | [wikipedia](https://en.wikipedia.org/wiki/Freedom_of_the_Press_Foundation)       | [SecureDrop](https://securedrop.org/)  [Secure the News](https://securethe.news/)  [Archive the News](https://freedom.press/news/archiving-alternative-press-threatened-wealthy-buyers/) [FOIAFeed](https://twitter.com/foiafeed)                                                                                                                                                                                                                                                                                                              |
+| [OPJ 保护记者委员会](https://cpj.org)                       | [wikipedia](https://en.wikipedia.org/wiki/Committee_to_Protect_Journalists)      | [Safety Kit](https://cpj.org/safety-kit/)  [Safety Advisories](https://cpj.org/safety-advisories/)                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [Web Foundation 万维网基金会](https://webfoundation.org/)   | [wikipedia](https://en.wikipedia.org/wiki/World_Wide_Web_Foundation)             | [Alliance for Affordable Internet](https://webfoundation.org/our-work/projects/alliance-for-affordable-internet/)  [Open Data Barometer](https://webfoundation.org/our-work/projects/open-data-barometer/)  [Women’s Rights Online](https://webfoundation.org/our-work/projects/womens-rights-online/) [The Web Index](https://webfoundation.org/our-work/projects/the-web-index/)                                                                                                                                                            |
+| [EPIC 电子隐私信息中心](https://epic.org/)                  | [wikipedia](https://en.wikipedia.org/wiki/Electronic_Privacy_Information_Center) | [Litigation Docket](https://epic.org/privacy/litigation/ ) [Privacy Campaigns](https://epic.org/campaigns/) [Spotlight on Surveillance](https://epic.org/privacy/surveillance/spotlight/)                                                                                                                                                                                                                                                                                                                                                      |
+| [SFC 软件自由保护组织](https://sfconservancy.org/)          | [wikipedia](https://en.wikipedia.org/wiki/Software_Freedom_Conservancy)          | [BusyBox](https://busybox.net/)  [Git](https://git-scm.com/)  [phpMyAdmin](https://phpmyadmin.net/)  [QEMU](http://qemu.org/)  [Samba](https://www.samba.org/samba/)  [Wine](http://www.winehq.org/) []()                                                                                                                                                                                                                                                                                                                                      |
+| [SFLC 软件自由法律中心](https://www.softwarefreedom.org/)   | [wikipedia](https://en.wikipedia.org/wiki/Software_Freedom_Law_Center)           | [services](https://www.softwarefreedom.org/services/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [Internet Archive 互联网档案馆](https://archive.org/)       | [wikipedia](https://en.wikipedia.org/wiki/Internet_Archive)                      | [Building Libraries Together](https://archive.org/projects/)  [Open Library](https://openlibrary.org/)  [301Works.org](https://archive.org/details/301works)  [Open Community Networks](https://archive.org/web/sflan.php)                                                                                                                                                                                                                                                                                                                     |
+| [X.Org 基金会](https://www.x.org/wiki/)                     | [wikipedia](https://en.wikipedia.org/wiki/X.Org_Foundation)                      | [X.Org project](https://www.x.org)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [RISC-V 基金会](https://riscv.org/)                         | [wikipedia](https://en.wikipedia.org/wiki/RISC-V)                                | [RISC-V](https://riscv.org/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [Creative Commons](https://creativecommons.org/)            | [wikipedia](https://en.wikipedia.org/wiki/Creative_Commons)                      | [about](https://creativecommons.org/about/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [Eclipse 基金会](https://www.eclipse.org/org/foundation/)   | [wikipedia](https://en.wikipedia.org/wiki/Eclipse_Foundation)                    | [Eclipse](https://projects.eclipse.org/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [TDF 文档基金会](https://www.documentfoundation.org/)       | [wikipedia](https://en.wikipedia.org/wiki/The_Document_Foundation)               | [LibreOffice](http://www.libreoffice.org/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [ISRG 互联网安全研究小组](https://www.abetterinternet.org/) | [wikipedia](https://en.wikipedia.org/wiki/Internet_Security_Research_Group)      | [Let’s Encrypt](https://letsencrypt.org/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ## 基金会 2017 年收入支出报告
 
 ### 按总收入排名
 
-| 基金会名称                                                   | 年总收入 $  | 年总支出 $  |  年净收入 $  |
-| ------------------------------------------------------------ | :---------: | :---------: | :----------: |
-| [维基媒体基金会](https://wikimediafoundation.org/)           | $89,973,967 | $69,076,192 | $20,897,775  |
-| [Linux   基金会](https://www.linuxfoundation.org/)           | $81,616,265 | $68,997,604 | $12,618,661  |
-| [OpenStack   基金会](https://www.openstack.org/foundation/)  | $22,829,442 | $29,047,402 | -$6,217,960) |
-| [Mozilla   基金会](https://foundation.mozilla.org/)          | $20,586,446 | $24,206,401 | -$3,619,955) |
-| [Internet   Archive 互联网档案馆](https://archive.org/)      | $17,811,981 | $18,468,621 |  -$656,640)  |
-| [EFF   电子前哨基金会](https://www.eff.org/)                 | $17,392,426 | $11,398,529 |  $5,993,897  |
-| [CPJ   保护记者委员会](https://cpj.org/)                     | $9,625,276  | $7,345,573  |  $2,279,703  |
-| [ONF   开放网络基金会](https://www.opennetworking.org/)      | $7,722,940  | $6,525,599  |  $1,197,341  |
-| [FPF   新闻自由基金会](https://freedom.press/)               | $5,949,008  | $2,960,503  |  $2,988,505  |
-| [Tor   项目](https://www.torproject.org/)                    | $4,130,882  | $4,078,419  |   $52,463    |
-| [Web   Foundation 万维网基金会](https://webfoundation.org/)  | $3,579,820  | $3,966,177  |  -$386,357   |
-| [Python   基金会](https://www.python.org/psf/)               | $2,870,521  | $2,475,335  |   $395,186   |
-| [ISRG   互联网安全研究小组](https://www.abetterinternet.org/) | $2,732,486  | $2,599,681  |   $132,805   |
-| [SFC   软件自由保护组织](https://sfconservancy.org/)         | $2,125,670  | $1,500,209  |   $625,461   |
-| [EPIC   电子隐私信息中心](https://epic.org/)                 | $1,715,419  | $1,523,199  |   $192,220   |
-| [Creative   Commons](https://creativecommons.org/)           | $1,639,408  | $3,600,414  | -$1,961,006  |
-| [FSF   自由软件基金会](https://www.gnu.org/)                 | $1,373,574  | $1,233,394  |   $140,180   |
-| [SFLC   软件自由法律中心](https://www.softwarefreedom.org/)  | $1,237,816  | $1,359,324  |  -$121,508   |
-| [FreeBSD   基金会](https://www.freebsdfoundation.org/)       | $1,101,562  |  $993,701   |   $107,861   |
-| [Apache   软件基金会](https://www.apache.org/)               |  $917,715   | $1,205,831  |  -$288,116   |
-| [RISC-V   基金会](https://riscv.org/)                        |  $636,438   |  $456,755   |   $179,683   |
-| [SPI   组织](https://www.spi-inc.org/)                       |  $635,312   |  $612,941   |   $22,371    |
-| [GNOME   基金会](https://www.gnome.org/foundation/)          |  $291,955   |  $329,955   |   -$38,000   |
-| [OSI   开放源代码组织](https://opensource.org/)              |  $209,500   |  $187,884   |   $21,616    |
+| 基金会名称                                                    | 年总收入 $ | 年总支出 $ |  年净收入 $  |
+| ------------------------------------------------------------- | :---------: | :---------: | :----------: |
+| [维基媒体基金会](https://wikimediafoundation.org/)            | $89,973,967 | $69,076,192 | $20,897,775 |
+| [Linux   基金会](https://www.linuxfoundation.org/)            | $81,616,265 | $68,997,604 | $12,618,661 |
+| [OpenStack   基金会](https://www.openstack.org/foundation/)   | $22,829,442 | $29,047,402 | -$6,217,960) |
+| [Mozilla   基金会](https://foundation.mozilla.org/)           | $20,586,446 | $24,206,401 | -$3,619,955) |
+| [Internet   Archive 互联网档案馆](https://archive.org/)       | $17,811,981 | $18,468,621 |  -$656,640)  |
+| [EFF   电子前哨基金会](https://www.eff.org/)                  | $17,392,426 | $11,398,529 |  $5,993,897  |
+| [CPJ   保护记者委员会](https://cpj.org/)                      | $9,625,276 | $7,345,573 |  $2,279,703  |
+| [ONF   开放网络基金会](https://www.opennetworking.org/)       | $7,722,940 | $6,525,599 |  $1,197,341  |
+| [FPF   新闻自由基金会](https://freedom.press/)                | $5,949,008 | $2,960,503 |  $2,988,505  |
+| [Tor   项目](https://www.torproject.org/)                     | $4,130,882 | $4,078,419 |   $52,463   |
+| [Web   Foundation 万维网基金会](https://webfoundation.org/)   | $3,579,820 | $3,966,177 |  -$386,357  |
+| [Python   基金会](https://www.python.org/psf/)                | $2,870,521 | $2,475,335 |   $395,186   |
+| [ISRG   互联网安全研究小组](https://www.abetterinternet.org/) | $2,732,486 | $2,599,681 |   $132,805   |
+| [SFC   软件自由保护组织](https://sfconservancy.org/)          | $2,125,670 | $1,500,209 |   $625,461   |
+| [EPIC   电子隐私信息中心](https://epic.org/)                  | $1,715,419 | $1,523,199 |   $192,220   |
+| [Creative   Commons](https://creativecommons.org/)            | $1,639,408 | $3,600,414 | -$1,961,006 |
+| [FSF   自由软件基金会](https://www.gnu.org/)                  | $1,373,574 | $1,233,394 |   $140,180   |
+| [SFLC   软件自由法律中心](https://www.softwarefreedom.org/)   | $1,237,816 | $1,359,324 |  -$121,508  |
+| [FreeBSD   基金会](https://www.freebsdfoundation.org/)        | $1,101,562 |  $993,701  |   $107,861   |
+| [Apache   软件基金会](https://www.apache.org/)                |  $917,715  | $1,205,831 |  -$288,116  |
+| [RISC-V   基金会](https://riscv.org/)                         |  $636,438  |  $456,755  |   $179,683   |
+| [SPI   组织](https://www.spi-inc.org/)                        |  $635,312  |  $612,941  |   $22,371   |
+| [GNOME   基金会](https://www.gnome.org/foundation/)           |  $291,955  |  $329,955  |   -$38,000   |
+| [OSI   开放源代码组织](https://opensource.org/)               |  $209,500  |  $187,884  |   $21,616   |
 
 ### 按净收入排名
 
-| 基金会名称                                                   | 年总收入 $  | 年总支出 $  | 年净收入 $  |
-| ------------------------------------------------------------ | :---------: | :---------: | :---------: |
-| [维基媒体基金会](https://wikimediafoundation.org/)           | $89,973,967 | $69,076,192 | $20,897,775 |
-| [Linux   基金会](https://www.linuxfoundation.org/)           | $81,616,265 | $68,997,604 | $12,618,661 |
-| [EFF   电子前哨基金会](https://www.eff.org/)                 | $17,392,426 | $11,398,529 | $5,993,897  |
-| [FPF   新闻自由基金会](https://freedom.press/)               | $5,949,008  | $2,960,503  | $2,988,505  |
-| [CPJ   保护记者委员会](https://cpj.org/)                     | $9,625,276  | $7,345,573  | $2,279,703  |
-| [ONF   开放网络基金会](https://www.opennetworking.org/)      | $7,722,940  | $6,525,599  | $1,197,341  |
-| [SFC   软件自由保护组织](https://sfconservancy.org/)         | $2,125,670  | $1,500,209  |  $625,461   |
-| [Python   基金会](https://www.python.org/psf/)               | $2,870,521  | $2,475,335  |  $395,186   |
-| [EPIC   电子隐私信息中心](https://epic.org/)                 | $1,715,419  | $1,523,199  |  $192,220   |
-| [RISC-V   基金会](https://riscv.org/)                        |  $636,438   |  $456,755   |  $179,683   |
-| [FSF   自由软件基金会](https://www.gnu.org/)                 | $1,373,574  | $1,233,394  |  $140,180   |
-| [ISRG   互联网安全研究小组](https://www.abetterinternet.org/) | $2,732,486  | $2,599,681  |  $132,805   |
-| [FreeBSD   基金会](https://www.freebsdfoundation.org/)       | $1,101,562  |  $993,701   |  $107,861   |
-| [Tor   项目](https://www.torproject.org/)                    | $4,130,882  | $4,078,419  |   $52,463   |
-| [SPI   组织](https://www.spi-inc.org/)                       |  $635,312   |  $612,941   |   $22,371   |
-| [OSI   开放源代码组织](https://opensource.org/)              |  $209,500   |  $187,884   |   $21,616   |
-| [GNOME   基金会](https://www.gnome.org/foundation/)          |  $291,955   |  $329,955   |  -$38,000   |
-| [SFLC   软件自由法律中心](https://www.softwarefreedom.org/)  | $1,237,816  | $1,359,324  |  -$121,508  |
-| [Apache   软件基金会](https://www.apache.org/)               |  $917,715   | $1,205,831  |  -$288,116  |
-| [Web   Foundation 万维网基金会](https://webfoundation.org/)  | $3,579,820  | $3,966,177  |  -$386,357  |
-| [Internet   Archive 互联网档案馆](https://archive.org/)      | $17,811,981 | $18,468,621 |  -$656,640  |
-| [Creative   Commons](https://creativecommons.org/)           | $1,639,408  | $3,600,414  | -$1,961,006 |
-| [Mozilla   基金会](https://foundation.mozilla.org/)          | $20,586,446 | $24,206,401 | -$3,619,955 |
-| [OpenStack   基金会](https://www.openstack.org/foundation/)  | $22,829,442 | $29,047,402 | -$6,217,960 |
+| 基金会名称                                                    | 年总收入 $ | 年总支出 $ | 年净收入 $ |
+| ------------------------------------------------------------- | :---------: | :---------: | :---------: |
+| [维基媒体基金会](https://wikimediafoundation.org/)            | $89,973,967 | $69,076,192 | $20,897,775 |
+| [Linux   基金会](https://www.linuxfoundation.org/)            | $81,616,265 | $68,997,604 | $12,618,661 |
+| [EFF   电子前哨基金会](https://www.eff.org/)                  | $17,392,426 | $11,398,529 | $5,993,897 |
+| [FPF   新闻自由基金会](https://freedom.press/)                | $5,949,008 | $2,960,503 | $2,988,505 |
+| [CPJ   保护记者委员会](https://cpj.org/)                      | $9,625,276 | $7,345,573 | $2,279,703 |
+| [ONF   开放网络基金会](https://www.opennetworking.org/)       | $7,722,940 | $6,525,599 | $1,197,341 |
+| [SFC   软件自由保护组织](https://sfconservancy.org/)          | $2,125,670 | $1,500,209 |  $625,461  |
+| [Python   基金会](https://www.python.org/psf/)                | $2,870,521 | $2,475,335 |  $395,186  |
+| [EPIC   电子隐私信息中心](https://epic.org/)                  | $1,715,419 | $1,523,199 |  $192,220  |
+| [RISC-V   基金会](https://riscv.org/)                         |  $636,438  |  $456,755  |  $179,683  |
+| [FSF   自由软件基金会](https://www.gnu.org/)                  | $1,373,574 | $1,233,394 |  $140,180  |
+| [ISRG   互联网安全研究小组](https://www.abetterinternet.org/) | $2,732,486 | $2,599,681 |  $132,805  |
+| [FreeBSD   基金会](https://www.freebsdfoundation.org/)        | $1,101,562 |  $993,701  |  $107,861  |
+| [Tor   项目](https://www.torproject.org/)                     | $4,130,882 | $4,078,419 |   $52,463   |
+| [SPI   组织](https://www.spi-inc.org/)                        |  $635,312  |  $612,941  |   $22,371   |
+| [OSI   开放源代码组织](https://opensource.org/)               |  $209,500  |  $187,884  |   $21,616   |
+| [GNOME   基金会](https://www.gnome.org/foundation/)           |  $291,955  |  $329,955  |  -$38,000  |
+| [SFLC   软件自由法律中心](https://www.softwarefreedom.org/)   | $1,237,816 | $1,359,324 |  -$121,508  |
+| [Apache   软件基金会](https://www.apache.org/)                |  $917,715  | $1,205,831 |  -$288,116  |
+| [Web   Foundation 万维网基金会](https://webfoundation.org/)   | $3,579,820 | $3,966,177 |  -$386,357  |
+| [Internet   Archive 互联网档案馆](https://archive.org/)       | $17,811,981 | $18,468,621 |  -$656,640  |
+| [Creative   Commons](https://creativecommons.org/)            | $1,639,408 | $3,600,414 | -$1,961,006 |
+| [Mozilla   基金会](https://foundation.mozilla.org/)           | $20,586,446 | $24,206,401 | -$3,619,955 |
+| [OpenStack   基金会](https://www.openstack.org/foundation/)   | $22,829,442 | $29,047,402 | -$6,217,960 |
 
 ### 无序
 
-|  name | 2017 年总收入 $ | 2017 年总支出 $ | 2017 年净收入 $ |
-|---|:-:|:-:|:-:|
-| [Linux 基金会](https://www.linuxfoundation.org/) | $81,616,265 | $68,997,604 | $12,618,661 |
-| [FSF 自由软件基金会](https://www.gnu.org)  | $1,373,574 | $1,233,394 | $140,180 |
-| [Mozilla 基金会](https://foundation.mozilla.org)  | $20,586,446 | $24,206,401 | -$3,619,955 |
-| [维基媒体基金会](https://wikimediafoundation.org/)  | $89,973,967 | $69,076,192 | $20,897,775 |
-| [OpenSSL 基金会](https://www.openssl.org/)  | - | - | - |
-| [SPI 组织](https://www.spi-inc.org/)  | $635,312 | $612,941 | $22,371 |
-| [EFF 电子前哨基金会](https://www.eff.org/)  | $17,392,426 |  $11,398,529  |  $5,993,897  |
-| [OpenStack 基金会](https://www.openstack.org/foundation/)  | $22,829,442 |  $29,047,402  |  -$6,217,960 (2016) |
-| [CNCF 基金会](https://www.cncf.io/)  | - | - | - |
-| [Cloud Foundry 基金会](https://www.cloudfoundry.org)  | - | - | - |
-| [Apache 软件基金会](https://www.apache.org/)  | $917,715 | $1,205,831 |  -$288,116  |
-| [Python 基金会](https://www.python.org/psf/)  | $2,870,521 |  $2,475,335  |  $395,186  |
-| [GNOME 基金会](https://www.gnome.org/foundation/)  | $291,955 | $329,955 |  -$38,000  |
-| [OWF 开放 web 基金会](http://openwebfoundation.org/)  | - | - | - |
-| [ONF 开放网络基金会](https://www.opennetworking.org/)  | $7,722,940 |  $6,525,599  |  $1,197,341  |
-| [FreeBSD 基金会](https://www.freebsdfoundation.org/)  | $1,101,562 |  $993,701  |  $107,861  |
-| [OpenBSD 基金会](http://www.openbsdfoundation.org/)  |   |   |   |
-| [Golang 基金会](http://golangfoundation.org/about/)  | - | - | - |
-| [OSI 开放源代码组织](https://opensource.org/)  | $209,500 |  $187,884  |  $21,616  |
-| [Linaro 非营利性组织](https://www.linaro.org/)  | UK | UK | UK |
-| [Tor 项目](https://www.torproject.org/)  | $4,130,882 |  $4,078,419  |  $52,463  |
-| [FPF 新闻自由基金会](https://freedom.press/)  | $5,949,008 | $2,960,503 |  $2,988,505  |
-| [CPJ 保护记者委员会](https://cpj.org) | $9,625,276 |  $7,345,573  |  $2,279,703  |
-| [Web Foundation 万维网基金会](https://webfoundation.org/)  | $3,579,820 | $3,966,177 |  -$386,357  |
-| [EPIC 电子隐私信息中心](https://epic.org/)  | $1,715,419 |  $1,523,199  |  $192,220  |
-| [SFC 软件自由保护组织](https://sfconservancy.org/)  | $2,125,670 |  $1,500,209  |  $625,461  |
-| [SFLC 软件自由法律中心](https://www.softwarefreedom.org/)  | $1,237,816 |  $1,359,324  |  -$121,508  |
-| [Internet Archive 互联网档案馆](https://archive.org/)  | $17,811,981 |  $18,468,621  |  -$656,640  |
-| [X.Org 基金会](https://www.x.org/wiki/)  | - | - | - |
-| [RISC-V 基金会](https://riscv.org/)  | $636,438 | $456,755 | $179,683 |
-| [Creative Commons](https://creativecommons.org/)  | $1,639,408 | $3,600,414 | -$1,961,006 |
-| [Eclipse 基金会](https://www.eclipse.org/org/foundation/) | - | - | - |
-| [TDF 文档基金会](https://www.documentfoundation.org/) | - | - | - |
-| [ISRG 互联网安全研究小组](https://www.abetterinternet.org/) | $2,732,486 | $2,599,681 |  $132,805  |
+| name                                                        | 2017 年总收入 $ | 2017 年总支出 $ |  2017 年净收入 $  |
+| ----------------------------------------------------------- | :-------------: | :-------------: | :----------------: |
+| [Linux 基金会](https://www.linuxfoundation.org/)            |   $81,616,265   |   $68,997,604   |    $12,618,661    |
+| [FSF 自由软件基金会](https://www.gnu.org)                   |   $1,373,574   |   $1,233,394   |      $140,180      |
+| [Mozilla 基金会](https://foundation.mozilla.org)            |   $20,586,446   |   $24,206,401   |    -$3,619,955    |
+| [维基媒体基金会](https://wikimediafoundation.org/)          |   $89,973,967   |   $69,076,192   |    $20,897,775    |
+| [OpenSSL 基金会](https://www.openssl.org/)                  |        -        |        -        |         -         |
+| [SPI 组织](https://www.spi-inc.org/)                        |    $635,312    |    $612,941    |      $22,371      |
+| [EFF 电子前哨基金会](https://www.eff.org/)                  |   $17,392,426   |   $11,398,529   |     $5,993,897     |
+| [OpenStack 基金会](https://www.openstack.org/foundation/)   |   $22,829,442   |   $29,047,402   | -$6,217,960 (2016) |
+| [CNCF 基金会](https://www.cncf.io/)                         |        -        |        -        |         -         |
+| [Cloud Foundry 基金会](https://www.cloudfoundry.org)        |        -        |        -        |         -         |
+| [Apache 软件基金会](https://www.apache.org/)                |    $917,715    |   $1,205,831   |     -$288,116     |
+| [Python 基金会](https://www.python.org/psf/)                |   $2,870,521   |   $2,475,335   |      $395,186      |
+| [GNOME 基金会](https://www.gnome.org/foundation/)           |    $291,955    |    $329,955    |      -$38,000      |
+| [OWF 开放 web 基金会](http://openwebfoundation.org/)        |        -        |        -        |         -         |
+| [ONF 开放网络基金会](https://www.opennetworking.org/)       |   $7,722,940   |   $6,525,599   |     $1,197,341     |
+| [FreeBSD 基金会](https://www.freebsdfoundation.org/)        |   $1,101,562   |    $993,701    |      $107,861      |
+| [OpenBSD 基金会](http://www.openbsdfoundation.org/)         |                |                |                    |
+| [Golang 基金会](http://golangfoundation.org/about/)         |        -        |        -        |         -         |
+| [OSI 开放源代码组织](https://opensource.org/)               |    $209,500    |    $187,884    |      $21,616      |
+| [Linaro 非营利性组织](https://www.linaro.org/)              |       UK       |       UK       |         UK         |
+| [Tor 项目](https://www.torproject.org/)                     |   $4,130,882   |   $4,078,419   |      $52,463      |
+| [FPF 新闻自由基金会](https://freedom.press/)                |   $5,949,008   |   $2,960,503   |     $2,988,505     |
+| [CPJ 保护记者委员会](https://cpj.org)                       |   $9,625,276   |   $7,345,573   |     $2,279,703     |
+| [Web Foundation 万维网基金会](https://webfoundation.org/)   |   $3,579,820   |   $3,966,177   |     -$386,357     |
+| [EPIC 电子隐私信息中心](https://epic.org/)                  |   $1,715,419   |   $1,523,199   |      $192,220      |
+| [SFC 软件自由保护组织](https://sfconservancy.org/)          |   $2,125,670   |   $1,500,209   |      $625,461      |
+| [SFLC 软件自由法律中心](https://www.softwarefreedom.org/)   |   $1,237,816   |   $1,359,324   |     -$121,508     |
+| [Internet Archive 互联网档案馆](https://archive.org/)       |   $17,811,981   |   $18,468,621   |     -$656,640     |
+| [X.Org 基金会](https://www.x.org/wiki/)                     |        -        |        -        |         -         |
+| [RISC-V 基金会](https://riscv.org/)                         |    $636,438    |    $456,755    |      $179,683      |
+| [Creative Commons](https://creativecommons.org/)            |   $1,639,408   |   $3,600,414   |    -$1,961,006    |
+| [Eclipse 基金会](https://www.eclipse.org/org/foundation/)   |        -        |        -        |         -         |
+| [TDF 文档基金会](https://www.documentfoundation.org/)       |        -        |        -        |         -         |
+| [ISRG 互联网安全研究小组](https://www.abetterinternet.org/) |   $2,732,486   |   $2,599,681   |      $132,805      |
 
 ## 数据来源
 
--  [The Linux Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/460503801)
-
+- [The Linux Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/460503801)
 - [Free Software Foundation Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/42888848)
-
 - [Mozilla Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/200097189)
-
 - [Wikimedia Foundation Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/200049703)
-
 - [Software In The Public Interest Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/113390208)
-
 - [Openstack Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/460618689)
-
 - [Apache Software Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/470825376)
-
 - [Python Software Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/43594598)
-
 - [Gnome Foundation Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/43572618)
-
 - [Open Networking Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/273327530)
-
 - [The Freebsd Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/841545163)
-
 - [Open Source Initiative - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/912037395)
-
 - [Tor Project Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/208096820)
-
 - [Freedom Of The Press Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/460967274)
-
 - [Committee To Protect Journalists Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/133081500)
-
 - [World Wide Web Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/262852431)
-
 - [Epic - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/370794792)
-
 - [Electronic Privacy Information Center - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/522225921)
-
 - [Epic Foundation Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/260707261)
-
 - [Software Freedom Conservancy Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/412203632)
-
 - [Software Freedom Law Center Inc - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/412165986)
-
 - [Internet Archive - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/943242767)
-
 - [Risc V Foundation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/474893089)
-
 - [Creative Commons Corporation - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/43585301)
-
 - [Internet Security Research Group - Nonprofit Explorer - ProPublica](https://projects.propublica.org/nonprofits/organizations/463344200)

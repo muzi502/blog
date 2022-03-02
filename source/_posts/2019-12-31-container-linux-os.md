@@ -15,14 +15,14 @@ comment: true
 
 ## 更新日志
 
-- 2019-12-31 初稿，可能完成不了，等到来年了😂
+- 2019-12-31 初稿，可能完成不了，等到来年了 😂
 - 2020-01-01
 
 ## 容器优化型操作系统？
 
 ### GKE 的  [Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs/)
 
-Google 家的  GKE  中的每个节点都是使用 [Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs/) 来运行工作负载，不过仅仅是针对 GCE 来进行优化的，可能在 OpenStack 或者 vSphere 上运行不起来，(瞎猜😂
+Google 家的  GKE  中的每个节点都是使用 [Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs/) 来运行工作负载，不过仅仅是针对 GCE 来进行优化的，可能在 OpenStack 或者 vSphere 上运行不起来，(瞎猜 😂
 
 > Container-Optimized OS 是适用于 [Compute Engine](https://cloud.google.com/compute) 虚拟机的操作系统映像，专为运行 Docker 容器而优化。借助 Container-Optimized OS，您可以快速、高效、安全地在  Google Cloud Platform 上启动 Docker 容器。Container-Optimized OS 由 Google  维护，基于 [Chromium OS](https://www.chromium.org/chromium-os) 开放源代码项目。
 
@@ -30,7 +30,7 @@ Google 家的  GKE  中的每个节点都是使用 [Container-Optimized OS](http
 
 个人认为 CoreOS 的 CoreOS Container Linux 要比 Container-Optimized OS 和 Photon OS 要更加专业，尤其是针对容器来讲， CoreOS 就是专门用来运行容器的，它没有像 yum 或 apt 这样的包管理器来安装软件，在 CoreOS 中你不需要安装软件，因为所有的应用程序都要使用 docker 来打包。
 
-> 额外提一句，CoreOS 是一个团队，现如今已经被 Red Hat® 收购了，而 Red Hat® 已经被 IBM 收购了，按照关系来讲而 CoreOS 应该是 IBM 的孙子吧🙃。而 CoreOS Container Linux 仅仅是他们维护项目的其中一个，CoreOS 开源的项目还有：
+> 额外提一句，CoreOS 是一个团队，现如今已经被 Red Hat® 收购了，而 Red Hat® 已经被 IBM 收购了，按照关系来讲而 CoreOS 应该是 IBM 的孙子吧 🙃。而 CoreOS Container Linux 仅仅是他们维护项目的其中一个，CoreOS 开源的项目还有：
 >
 > - etcd：
 > - Clair:
@@ -42,7 +42,7 @@ Google 家的  GKE  中的每个节点都是使用 [Container-Optimized OS](http
 
 #### 特点如下
 
-- 最小化的操作系统： 占用内存很少，比典型的服务器版本 Linux 少占 40%的内存。
+- 最小化的操作系统： 占用内存很少，比典型的服务器版本 Linux 少占 40% 的内存。
 - 易于升级： CoreOS 采用双系统分区（主动分区/被动分区）设计而不是采用传统的通过升级包来升级系统，这使得每次升级更加快速，可靠和易于回滚。
 - 集成 Docker： CoreOS 默认集成 Docker 并作了很好的支持和优化，省去用户安装，配置，优化 Docker 的时间，极大地方便了用户。
 - 易于集群化： CoreOS 本身提供了大型 Docker 容器集群的整体解决方案，通过内置的 fleet 工具在多台系统中部署容器并进行集群化管理。同时通过提供 Discovery Service，便于动态部署和管理集群，解决方案比较成熟。
@@ -53,7 +53,7 @@ Google 家的  GKE  中的每个节点都是使用 [Container-Optimized OS](http
 
 #### 官方宣传册
 
-PPT 做的不错呦😂
+PPT 做的不错呦 😂
 
 ![](https://p.k8s.li/20191231163325900.png)
 
@@ -100,15 +100,15 @@ RancherOS 是 Rancher 团队所维护的开源项目，也是对标 CoreOS 一�
 
 ## 安装体验
 
-咱的虚拟化平台是 VMware vSphere ，因为硬件服务器大多数都是 Dell 的，而  Dell  是 VMware 母公司，对于我司这种传统企业来讲使用 VMware vSphere 这种用户 UI 友好的虚拟化无疑是最好的选择，哈哈😂。其他虚拟化平台比如 OpenStack 安装步骤会有所不同。
+咱的虚拟化平台是 VMware vSphere ，因为硬件服务器大多数都是 Dell 的，而  Dell  是 VMware 母公司，对于我司这种传统企业来讲使用 VMware vSphere 这种用户 UI 友好的虚拟化无疑是最好的选择，哈哈 😂。其他虚拟化平台比如 OpenStack 安装步骤会有所不同。
 
 ### Container-Optimized OS
 
-因为仅仅是针对 GCE 进行优化的系统，传统的虚拟化比如 KVM 、 ESXi 可能用不了。另外还需要拿 [Chromium OS](https://www.chromium.org/chromium-os)  的源码来编译镜像，没有现成的  ISO 或者 OVA 虚拟机模板可用，咱就不折腾了。毕竟硬件资源有限，现场编译一个 [Chromium OS](https://www.chromium.org/chromium-os)  也需要十几个小时😥
+因为仅仅是针对 GCE 进行优化的系统，传统的虚拟化比如 KVM 、 ESXi 可能用不了。另外还需要拿 [Chromium OS](https://www.chromium.org/chromium-os)  的源码来编译镜像，没有现成的  ISO 或者 OVA 虚拟机模板可用，咱就不折腾了。毕竟硬件资源有限，现场编译一个 [Chromium OS](https://www.chromium.org/chromium-os)  也需要十几个小时 😥
 
 ## Photon OS
 
-可以现成编译一个 ISO 镜像，也可以使用官方已经编译好的 ISO 镜像或者 OVA 虚拟机模板。不过也支持常见的公有云，比如 Amazon AMI 、Google GCE Image、Azure VHD。甚至还有 Raspberry Pi3 Image 树莓派3😂
+可以现成编译一个 ISO 镜像，也可以使用官方已经编译好的 ISO 镜像或者 OVA 虚拟机模板。不过也支持常见的公有云，比如 Amazon AMI 、Google GCE Image、Azure VHD。甚至还有 Raspberry Pi3 Image 树莓派 3😂
 
 ### [官方文档](https://vmware.github.io/photon/assets/files/html/3.0/photon_installation/)
 
@@ -127,7 +127,6 @@ RancherOS 是 Rancher 团队所维护的开源项目，也是对标 CoreOS 一�
 根据官方文档所描述的 OVA 虚拟机模板是针对  VMware hypervisor  虚拟化环境进行优化定制的。
 
 - ##### 其他
-
 - [Amazon Machine Image](https://github.com/vmware/photon/wiki/Downloading-Photon-OS)
 - [Google Compute Engine image](https://github.com/vmware/photon/wiki/Downloading-Photon-OS)
 - [Azure VHD](https://github.com/vmware/photon/wiki/Downloading-Photon-OS)
@@ -300,7 +299,7 @@ tmpfs           200M     0  200M   0% /run/user/0
 
 ### 包管理工具
 
-Photon OS 默认的包管理工具是 tdnf ，不过也支持 yum ，两者使用方式有细微的差别，使用的也是相同的软件包源，而且对于国内用户来讲，软件包源在国外服务器上（https://dl.bintray.com/vmware/），速度感人，肉眼可见 KB/s 级别的速度。你懂的，操他奶奶的 GFW，尼玛死了😡，搞网络封锁耽误这人搬砖。安装速度慢得一批，单单下载 50 MB 的软件包就下不下来，不得不用上我那台透明代理的旁路网关。
+Photon OS 默认的包管理工具是 tdnf ，不过也支持 yum ，两者使用方式有细微的差别，使用的也是相同的软件包源，而且对于国内用户来讲，软件包源在国外服务器上（[https://dl.bintray.com/vmware/](https://dl.bintray.com/vmware/)），速度感人，肉眼可见 KB/s 级别的速度。你懂的，操他奶奶的 GFW，尼玛死了 😡，搞网络封锁耽误这人搬砖。安装速度慢得一批，单单下载 50 MB 的软件包就下不下来，不得不用上我那台透明代理的旁路网关。
 
 ```bash
 root@photon-OS [ ~ ]# tdnf upgrade
@@ -345,7 +344,7 @@ docker-engine                         23477360     84%
 docker-engine                         23477360     84%
 ```
 
-- 56.05M / 58776868B 大小的文件，下载了一上午都没搞完……气的我想掀桌子、砸键盘、摔鼠标😑
+- 56.05M / 58776868B 大小的文件，下载了一上午都没搞完……气的我想掀桌子、砸键盘、摔鼠标 😑
 
 不过可以根据官方的编译文档，把整个软件包源编译出来 ，放在本地使用，然后添加本的 yum 源码即可。
 
@@ -497,7 +496,7 @@ These [platforms and providers](http://coreos.com/os/docs/latest/community-platf
   "systemd": {}
 ```
 
-- `password_hash` 可以通过 openssl 命令来生成，把生成的一整串内容填写到上面，包括后面那个点`.`
+- `password_hash` 可以通过 openssl 命令来生成，把生成的一整串内容填写到上面，包括后面那个点 `.`
 
 ```bash
 ╭─@debian ~
@@ -517,13 +516,13 @@ $1$nCzW8953$un/JUMJDE2588l7Y6KkP.
 
 ### 系统启动
 
-可能是 coreos config 配置文件没有配好，而导致启动后输入设置的密码提示错误😥，僵硬，只能通过修改 grub 启动参数来跳过了。
+可能是 coreos config 配置文件没有配好，而导致启动后输入设置的密码提示错误 😥，僵硬，只能通过修改 grub 启动参数来跳过了。
 
 - 1.打开 CoreOS 虚拟机电源，并打开控制台。
 - 2.当 Boot Loader 提示出现的时候，按下 e 键来编辑 GRUB 菜单。选择第一个 coreos default 编辑。
 - 3.添加 `coreos.autologin` 作为启动参数，并 Ctrl-x 或 F10 重启。这将使控制台跳过登录提示并直接进入用户 core 的 shell。
 - ![](https://p.k8s.li/20191231133509428.png)
-- 启动进入系统之后输入 `sudo passwd` 来修改 root 密码。然后切换到 root 用户下 `passwd core` 修改 core 这个用户的密码。修改之后就可以通过 ssh 登录啦😂，比 Photon OS 要折腾一番呀。不过啊，使用 OVA 部署最好结合 could-init 来设置虚拟机的 ssh 密钥，网络，主机名等参数。
+- 启动进入系统之后输入 `sudo passwd` 来修改 root 密码。然后切换到 root 用户下 `passwd core` 修改 core 这个用户的密码。修改之后就可以通过 ssh 登录啦 😂，比 Photon OS 要折腾一番呀。不过啊，使用 OVA 部署最好结合 could-init 来设置虚拟机的 ssh 密钥，网络，主机名等参数。
 
 ### 资源占用情况
 
@@ -688,7 +687,7 @@ Live Restore Enabled: false
 
 ### 包管理工具
 
-**没得😂**，你没看错，确实如此，在 CoreOS 上没有你可以用的包管理器，不像 PhotonOS 那样有个 tdnf/yum 让你爽一把😂。在 CoreOS 一切皆容器。可以看一下 `stackexchange.com` 这个答案😂：
+**没得 😂**，你没看错，确实如此，在 CoreOS 上没有你可以用的包管理器，不像 PhotonOS 那样有个 tdnf/yum 让你爽一把 😂。在 CoreOS 一切皆容器。可以看一下 `stackexchange.com` 这个答案 😂：
 
 > To do this on a CoreOS box, following the hints from the [guide here](https://coreos.com/os/docs/latest/install-debugging-tools.html):
 >
@@ -760,7 +759,7 @@ RancherOS 将各个平台的安装镜像都放在了 GitHub [release](https://gi
 
 使用 ISO 启动之后进入得是一个 liveCD 型得系统，并没有安装虚拟机得磁盘当中，我们需要将 RancherOS 安装到磁盘上。提前准备好 cloud-init 的配置文件，只需要执行 `ros install -c cloud-config.yml -d /dev/sda` 命令就行啦。-d 参数后面跟着安装到的磁盘。
 
-不过需要像 CoreOS 那样准备给一个 `cloud-config.yml` 配置文件，将我们得 ssh 公钥和用户密码填写到里面，不过 `cloud-config` 能配置得选项非常多，在此就不赘述了，等抽空专门写一篇博客来讲讲 cloud-init 的使用。（又挖坑😂，不知何时能填上🙃
+不过需要像 CoreOS 那样准备给一个 `cloud-config.yml` 配置文件，将我们得 ssh 公钥和用户密码填写到里面，不过 `cloud-config` 能配置得选项非常多，在此就不赘述了，等抽空专门写一篇博客来讲讲 cloud-init 的使用。（又挖坑 😂，不知何时能填上 🙃
 
 ```bash
 [root@rancher rancher]# ros install -c cloud-config.yml -d /dev/sda
@@ -908,7 +907,7 @@ Server:
 
 #### 内存
 
-- 初始化启动后内存使用了 1224MB😂，要比 CoreOS 和 Photon OS 加起来还多😂
+- 初始化启动后内存使用了 1224MB😂，要比 CoreOS 和 Photon OS 加起来还多 😂
 
 ```bash
 [rancher@rancher ~]$ free -m
@@ -1171,10 +1170,10 @@ user-volumes            /usr/bin/ros entrypoint echo                            
 all-volumes             /usr/bin/ros entrypoint echo
 ```
 
-###  包管理器
+### 包管理器
 
-和 CoreOS 一样，RancherOS 也没得相应的包管理器😂，都是采用容器来运行所需的服务，使用 `ros` 命令来管理相应的服务。如果想要运行一个服务的话，需要使用 ros 来创建相应的容器来运行才可以。而使用 ros 来创建服务
+和 CoreOS 一样，RancherOS 也没得相应的包管理器 😂，都是采用容器来运行所需的服务，使用 `ros` 命令来管理相应的服务。如果想要运行一个服务的话，需要使用 ros 来创建相应的容器来运行才可以。而使用 ros 来创建服务
 
 ## 结束
 
-文章写的太仓促了，感觉这些容器优化行操作系统都值得玩一玩得，尤其是 RancherOS 这种将 systemc 取代掉使用 docker 来管理系统服务得牛皮技术，值得研究一哈。因为时间有限，所以就没有详细地展开来将，就等到 2020 年吧😂。祝大家 2020 年元旦快乐，新的一年里……省略千字祝福😝
+文章写的太仓促了，感觉这些容器优化行操作系统都值得玩一玩得，尤其是 RancherOS 这种将 systemc 取代掉使用 docker 来管理系统服务得牛皮技术，值得研究一哈。因为时间有限，所以就没有详细地展开来将，就等到 2020 年吧 😂。祝大家 2020 年元旦快乐，新的一年里……省略千字祝福 😝

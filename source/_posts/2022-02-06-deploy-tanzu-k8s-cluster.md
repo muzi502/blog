@@ -32,9 +32,7 @@ comment: true
 ### 劝退三连 😂
 
 - 需要有一个 [VMware 的账户](https://customerconnect.vmware.com/login) 用于下载一些 ISO 镜像和虚拟机模版;
-
 - 需要有一台物理服务器，推荐最低配置 8C 32G，至少 256GB 存储；
-
 - 需要一台 DHCP 服务器，由于默认是使用 DHCP 获取 IP 来分配给虚拟机的，因此 ESXi 所在的 VM Network  网络中必须有一台 DHCP 服务器用于给虚拟机分配 IP；
 
 ### 下载依赖文件
@@ -52,14 +50,14 @@ root@devbox:/root/tanzu # tree -sh
 └── [ 390M]  VMware-VMvisor-Installer-7.0U2a-17867351.x86_64.iso
 ```
 
-| 文件                                                         | 用途              | 下载方式       |
-| ------------------------------------------------------------ | ----------------- | -------------- |
+| 文件                                                                                                                                                         | 用途              | 下载方式       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- | -------------- |
 | [VMware-VMvisor-Installer-7.0U2a-17867351.x86_64.iso](https://customerconnect.vmware.com/downloads/details?downloadGroup=ESXI70U2A&productId=974&rPId=46384) | 安装 ESXi OS      | VMware 需账户  |
-| [VMware-VCSA-all-7.0.3-19234570.iso](https://customerconnect.vmware.com/downloads/details?downloadGroup=VC70U3C&productId=974&rPId=83853) | 安装 vCenter      | VMware 需账户  |
-| [photon-ova-4.0-c001795b80.ova](https://packages.vmware.com/photon/4.0/Rev2/ova/photon-ova-4.0-c001795b80.ova) | bootstrap 节点    | VMware         |
-| [photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090) | tanzu 集群节点    | VMware 需账户  |
-| [tce-linux-amd64-v0.9.1.tar.gz](https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-linux-amd64-v0.9.1.tar.gz) | tanzu 社区版      | GitHub release |
-| [govc_Linux_x86_64.tar.gz](https://github.com/vmware/govmomi/releases/download/v0.27.3/govc_Linux_x86_64.tar.gz) | 安装/配置 vCenter | GitHub release |
+| [VMware-VCSA-all-7.0.3-19234570.iso](https://customerconnect.vmware.com/downloads/details?downloadGroup=VC70U3C&productId=974&rPId=83853)                    | 安装 vCenter      | VMware 需账户  |
+| [photon-ova-4.0-c001795b80.ova](https://packages.vmware.com/photon/4.0/Rev2/ova/photon-ova-4.0-c001795b80.ova)                                               | bootstrap 节点    | VMware         |
+| [photon-3-kube-v1.21.2+vmware.1-tkg.2-12816990095845873721.ova](https://customerconnect.vmware.com/downloads/get-download?downloadGroup=TCE-090)             | tanzu 集群节点    | VMware 需账户  |
+| [tce-linux-amd64-v0.9.1.tar.gz](https://github.com/vmware-tanzu/community-edition/releases/download/v0.9.1/tce-linux-amd64-v0.9.1.tar.gz)                    | tanzu 社区版      | GitHub release |
+| [govc_Linux_x86_64.tar.gz](https://github.com/vmware/govmomi/releases/download/v0.27.3/govc_Linux_x86_64.tar.gz)                                             | 安装/配置 vCenter | GitHub release |
 
 注意 ESXi 和 vCenter 的版本最好是 7.0 及以上，我只在 ESXi 7.0.2 和 vCenter 7.0.3 上测试过，其他版本可能会有些差异；另外 ESXi 的版本不建议使用最新的 7.0.3，因为有比较严重的 bug，官方也建议用户生产环境不要使用该版本了 [vSphere 7.0 Update 3 Critical Known Issues - Workarounds & Fix (86287)](https://kb.vmware.com/s/article/86287) 。
 
@@ -286,15 +284,15 @@ $ govc vm.markastemplate photon-3-kube-v1.21.2
 
 bootstrap 节点节点是用于运行 tanzu 部署工具的节点，官方是支持 Linux/macOS/Windows 三种操作系统的，但有一些比较严格的要求：
 
-| Arch: x86; ARM is currently unsupported                      |
-| ------------------------------------------------------------ |
-| RAM: 6 GB                                                    |
-| CPU: 2                                                       |
+| Arch: x86; ARM is currently unsupported                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RAM: 6 GB                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| CPU: 2                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [Docker](https://docs.docker.com/engine/install/) Add your non-root user account to the docker user group. Create the group if it does not already exist. This lets the Tanzu CLI access the Docker socket, which is owned by the root user. For more information, see steps 1 to 4 in the [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) procedure in the Docker documentation. |
-| [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) |
-| Latest version of Chrome, Firefox, Safari, Internet Explorer, or Edge |
-| System time is synchronized with a Network Time Protocol (NTP) server. |
-| Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). For more information, see [Check and set the cgroup](https://tanzucommunityedition.io/docs/latest/support-matrix/#check-and-set-the-cgroup). |
+| [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)                                                                                                                                                                                                                                                                                                                                                                                         |
+| Latest version of Chrome, Firefox, Safari, Internet Explorer, or Edge                                                                                                                                                                                                                                                                                                                                                                                            |
+| System time is synchronized with a Network Time Protocol (NTP) server.                                                                                                                                                                                                                                                                                                                                                                                           |
+| Ensure your bootstrap machine is using [cgroup v1](https://man7.org/linux/man-pages/man7/cgroups.7.html). For more information, see [Check and set the cgroup](https://tanzucommunityedition.io/docs/latest/support-matrix/#check-and-set-the-cgroup).                                                                                                                                                                                                           |
 
 在这里为了避免这些麻烦的配置，我就直接使用的 VMware 官方的 [Photon OS 4.0 Rev2](https://github.com/vmware/photon/wiki/Downloading-Photon-OS#photon-os-40-rev2-binaries) ，下载 OVA 格式的镜像直接导入到 ESXi 主机启动一台虚拟机即可，能节省不少麻烦的配置；还有一个好处就是在一台单独的虚拟机上运行 tanzu 部署工具不会污染本地的开发环境。
 
@@ -699,7 +697,7 @@ var InitRegionSteps = []string{
 }
 ```
 
-- ConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom`镜像，用于检查环境的兼容性；
+- ConfigPrerequisite 准备阶段，会下载 `tkg-compatibility` 和 `tkg-bom` 镜像，用于检查环境的兼容性；
 
 ```bash
 Downloading TKG compatibility file from 'projects.registry.vmware.com/tkg/framework-zshippable/tkg-compatibility'

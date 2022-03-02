@@ -14,11 +14,11 @@ comment: true
 
 > 杀毒软件里有理财，听歌软件里有购物；聊天软件里有游戏，支付软件里有社交；天气软件里有新闻，地图软件里有外卖；搜索引擎里卖假药，浏览器里送会员；输入法里有热点，视频软件里有资讯……这就是国内互联网现状，每个毒瘤软件都想要整个互联网，把用户当成猪，争相圈到自家猪圈里给用户喂屎。我尽可能拒绝使用国内软件和服务，因为我不想吃屎。
 
-`此处引用 `[本人推文](https://twitter.com/muzi_ii/status/1189843290465529856)
+`此处引用 ` [本人推文](https://twitter.com/muzi_ii/status/1189843290465529856)
 
 ## 好人修电脑？
 
-俗话说**好人修电脑，坏人床上搞；电脑修得好，好人当到老。** 咱大学时也是标准的技术宅男，经常帮舍友、同学、老师、院领导等等修电脑，收获好人卡无数，遗憾的是当时只顾得修电脑，忘记了正事儿才导致单身至今😐。即便是毕业参加工作了，也会帮同事、帮领导修电脑。不过呐，在咱帮助人家修电脑的过程中也发现了很多天朝互联网公司的流氓特色。咱帮助的这些人大多都是些电脑小白，深受国产毒瘤软件毒害。打开电脑广告满天飞，花花绿绿的弹窗崩个不停。记得有一次帮女同学修电脑，当着她的面不小心点到了弹窗广告后，然后出现色情漏骨的小游戏，也让咱这单身🐕羞涩不已😣。哎，咱就是很气愤呐，不由得感叹，如今国内的互联网呐，真是令人悲哀，流氓软件肆意横行，普通人只能沦为这帮毒瘤软件的羔羊，割来割去，榨干广告价值。
+俗话说**好人修电脑，坏人床上搞；电脑修得好，好人当到老。** 咱大学时也是标准的技术宅男，经常帮舍友、同学、老师、院领导等等修电脑，收获好人卡无数，遗憾的是当时只顾得修电脑，忘记了正事儿才导致单身至今 😐。即便是毕业参加工作了，也会帮同事、帮领导修电脑。不过呐，在咱帮助人家修电脑的过程中也发现了很多天朝互联网公司的流氓特色。咱帮助的这些人大多都是些电脑小白，深受国产毒瘤软件毒害。打开电脑广告满天飞，花花绿绿的弹窗崩个不停。记得有一次帮女同学修电脑，当着她的面不小心点到了弹窗广告后，然后出现色情漏骨的小游戏，也让咱这单身 🐕 羞涩不已 😣。哎，咱就是很气愤呐，不由得感叹，如今国内的互联网呐，真是令人悲哀，流氓软件肆意横行，普通人只能沦为这帮毒瘤软件的羔羊，割来割去，榨干广告价值。
 
 所以呐，咱就总结一下和这群狗娘养的毒瘤软件斗智斗勇的**一点人生经验** (⓿_⓿) 咱之前也写过一篇 [浅谈保护隐私的几种方法](https://blog.k8s.li/privacy-protections.html) ，感兴趣的的去可以去读一下哈。
 
@@ -28,7 +28,7 @@ comment: true
 
 ## 国产软件 == 毒瘤软件
 
-在咱心中，国产（商业）软件是绝对的不信任，基本上他们总带有一股流氓的特性，不是偷看你隐私就是给你推送广告，更有甚者监控你的电脑等恶毒行为。咱虽然平时工作环境使用 Linux 居多，但由于办公不得不使用微信和 QQ ，所以也会频繁使用 Windows ，没办法饭碗最重要，不得不使用这些流氓软件。不过在咱自己家用的台式机和笔记本上，是不会将国产软件装在电脑上滴，这些国产软件统统放在沙盒 `sandboixe` 或者虚拟机里来运行，能使用 web 服务的就是用 web 服务而尽量不使用客户端 。iPhone 手机上能不用国产 app 就不用。而且咱的 Android 手机上是不会装任何一个国产软件的，国产软件都装在了 iPhone 手机上。咱在 Android 手机上和国产毒瘤都来都去也好几年，也是累了。对于咱这种精简主义者来讲， 在 Android 手机上使用国产毒瘤软件，这帮毒瘤软件的恶毒行为实在是气人，有的时候被他们气得就想把手机砸了😡。
+在咱心中，国产（商业）软件是绝对的不信任，基本上他们总带有一股流氓的特性，不是偷看你隐私就是给你推送广告，更有甚者监控你的电脑等恶毒行为。咱虽然平时工作环境使用 Linux 居多，但由于办公不得不使用微信和 QQ ，所以也会频繁使用 Windows ，没办法饭碗最重要，不得不使用这些流氓软件。不过在咱自己家用的台式机和笔记本上，是不会将国产软件装在电脑上滴，这些国产软件统统放在沙盒 `sandboixe` 或者虚拟机里来运行，能使用 web 服务的就是用 web 服务而尽量不使用客户端 。iPhone 手机上能不用国产 app 就不用。而且咱的 Android 手机上是不会装任何一个国产软件的，国产软件都装在了 iPhone 手机上。咱在 Android 手机上和国产毒瘤都来都去也好几年，也是累了。对于咱这种精简主义者来讲， 在 Android 手机上使用国产毒瘤软件，这帮毒瘤软件的恶毒行为实在是气人，有的时候被他们气得就想把手机砸了 😡。
 
 **Android 手机上国产毒瘤软件的一些特色：**
 
@@ -106,7 +106,7 @@ Google 家的 Chrome 它的性能和稳定性等业界大佬的地位无人能�
 
 #### 毒瘤
 
-某些国产毒瘤输入法会带一些广告推送、皮肤、新闻、天气等一堆杂七杂八的幺蛾子，让你很烦心。我就想安安静静地打字，你却给我推送一堆`一刀上海11000+`的网页游戏，你说气不气人。所以呢，咱也是不推荐使用国产输入法，当然你也可以去找一些所谓的去广告版输入法，那是破解修改后的版本，也不是很放心。所以对于 Windows 10 用户来讲，使用 Windows 默认的拼音/五笔输入法再好不过了。少安装一些软件也就少了一些维护的成本。
+某些国产毒瘤输入法会带一些广告推送、皮肤、新闻、天气等一堆杂七杂八的幺蛾子，让你很烦心。我就想安安静静地打字，你却给我推送一堆 `一刀上海11000+` 的网页游戏，你说气不气人。所以呢，咱也是不推荐使用国产输入法，当然你也可以去找一些所谓的去广告版输入法，那是破解修改后的版本，也不是很放心。所以对于 Windows 10 用户来讲，使用 Windows 默认的拼音/五笔输入法再好不过了。少安装一些软件也就少了一些维护的成本。
 
 #### 微软拼音
 
@@ -114,7 +114,7 @@ Google 家的 Chrome 它的性能和稳定性等业界大佬的地位无人能�
 
 #### QQ 输入法纯净版
 
-QQ 输入法纯净版曾经有过一些比较精简的版本，之前在中学的时候上使用的就是这个，使用起来没有弹窗广告等幺蛾子，用起来比较舒心。[QQ输入法纯净版5.0.2012.400下载：为Win10优化](https://www.ithome.com/html/soft/164616.htm) 。虽然是  2015 年的版本，但对于输入法来讲，万年不更新没啥大碍。有些工具类型的软件咱即便使用多年前的版本也是能用的，没有升级新版本的必要。
+QQ 输入法纯净版曾经有过一些比较精简的版本，之前在中学的时候上使用的就是这个，使用起来没有弹窗广告等幺蛾子，用起来比较舒心。[QQ 输入法纯净版 5.0.2012.400 下载：为 Win10 优化](https://www.ithome.com/html/soft/164616.htm) 。虽然是  2015 年的版本，但对于输入法来讲，万年不更新没啥大碍。有些工具类型的软件咱即便使用多年前的版本也是能用的，没有升级新版本的必要。
 
 ### 解压缩
 
@@ -126,7 +126,7 @@ QQ 输入法纯净版曾经有过一些比较精简的版本，之前在中学�
 
 免费开源的杀毒软件，只不过 UI 做的有点丑。
 
-PS：对于每个 ZIP 格式的压缩包，使用文本工具去打开的话，文件首行开头有的两个字母 `PK` ，这两个字母代表了 zip 发明者 [菲尔·卡茨（Phil Katz）](https://en.wikipedia.org/wiki/Phil_Katz) ，感兴趣的可以去读一下 [zip发明者的杯具人生](https://www.derekwei.com/2012/05/05/zip%E5%8F%91%E6%98%8E%E8%80%85%E7%9A%84%E6%9D%AF%E5%85%B7%E4%BA%BA%E7%94%9F/) 。
+PS：对于每个 ZIP 格式的压缩包，使用文本工具去打开的话，文件首行开头有的两个字母 `PK` ，这两个字母代表了 zip 发明者 [菲尔·卡茨（Phil Katz）](https://en.wikipedia.org/wiki/Phil_Katz) ，感兴趣的可以去读一下 [zip 发明者的杯具人生](https://www.derekwei.com/2012/05/05/zip%E5%8F%91%E6%98%8E%E8%80%85%E7%9A%84%E6%9D%AF%E5%85%B7%E4%BA%BA%E7%94%9F/) 。
 
 ```bash
 ╭─debian@debian ~
@@ -171,7 +171,7 @@ Internet Download Manager 是一个多线程下载管理器。虽然长得丑，
 > 什么是多线程下载？打个比方，现在要接满 1 桶水，浏览器下载时只能开 1 个水龙头，接满 1 桶水时间为 1 小时。多线程下载器可以 32 个水龙头同时接水，接满 1 桶水时间缩短到 2 分钟，足足快了 32 倍。by [网盘直链下载助手](https://www.baiduyun.wiki/zh-cn/)
 
 - [Internet Download Manager 下载地址](https://www.lanzous.com/b0ug2rrc)。
-- 配合 [网盘助手](https://greasyfork.org/zh-CN/scripts/378301-网盘助手) 这个 [油猴脚本](https://tingtalk.me/userscripts/) 可以 [解决百度网盘限速](https://www.runningcheese.com/baiduyun)。
+- 配合 [网盘助手](https://greasyfork.org/zh-CN/scripts/378301-%E7%BD%91%E7%9B%98%E5%8A%A9%E6%89%8B) 这个 [油猴脚本](https://tingtalk.me/userscripts/) 可以 [解决百度网盘限速](https://www.runningcheese.com/baiduyun)。
 - `下载` - `选项` - `连接`： `默认最大连接数` 修改为 `32`
 - 强制调用 IDM：点击时按住 `Insert` 键可以使 IDM 直接抢占浏览器的所有资源下载，从而避免二次请求带来的尴尬。
 - 暂停调用 IDM：按住 `Alt` 键则可以让 IDM 暂时停止接管浏览器的下载，让浏览器自行完成下载任务。
@@ -184,17 +184,12 @@ Internet Download Manager 是一个多线程下载管理器。虽然长得丑，
 
 这款是开源的 BT 下载软件，也是咱主力下载工具，对比那些限速充钱交智商税的国产下载工具实在是令人放心很多。没有杂七杂八的幺蛾子，轻量简洁。也可以使用它的 [增强版](https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases) 。
 
-> 1.  [qBittorrent](https://www.qbittorrent.org/download.php) (**Win**/**Linux**/**Mac**)
->
-> 2.  推荐: [3.3.16](https://sourceforge.net/projects/qbittorrent/files/) 及其 [增强版](https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases)
->
-> 3.  [BitTorrent](http://www.bittorrent.com/) (**Win**/Mac/Android)
->
-> 4.  [Deluge](http://deluge-torrent.org/) (**Linux**/**Mac**/Win)
->
-> 5.  [Transmission](https://transmissionbt.com/) (**Mac**/**Linux**/Win)
->
-> 6.  [rtorrent](https://github.com/rakshasa/rtorrent)+[RuTorrent](https://github.com/Novik/ruTorrent) (**Linux**)
+> 1. [qBittorrent](https://www.qbittorrent.org/download.php) (**Win**/**Linux**/**Mac**)
+> 2. 推荐: [3.3.16](https://sourceforge.net/projects/qbittorrent/files/) 及其 [增强版](https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases)
+> 3. [BitTorrent](http://www.bittorrent.com/) (**Win**/Mac/Android)
+> 4. [Deluge](http://deluge-torrent.org/) (**Linux**/**Mac**/Win)
+> 5. [Transmission](https://transmissionbt.com/) (**Mac**/**Linux**/Win)
+> 6. [rtorrent](https://github.com/rakshasa/rtorrent)+[RuTorrent](https://github.com/Novik/ruTorrent) (**Linux**)
 
 `此处引用` [从 BT 的基础说起——怎么解决 VCB-S 的资源没速度的问题](https://vcb-s.com/archives/2584)
 
@@ -210,9 +205,9 @@ aira2 是咱主力的下载方式，首先是下载到 VPS 上，然后再使用
 
 这也是咱使用多年的音乐播放软件，功能高度可自己定制，简洁而强大。
 
-> Foobar2000 是一个伟大的音乐播放器的怪胎谁想要一个轻型的球员，他们可以调整他们的喜好。 安装程序只有1.6 MB 的下载，但包装了很多的力量。 功能包括无缝播放，ReplayGain 支持，翻录CD，可定制的界面，开放组件架构等等。 它支持FLAC，MP3，MP4，OGG，WAV，WMA，AIFF和其他音乐格式。
+> Foobar2000 是一个伟大的音乐播放器的怪胎谁想要一个轻型的球员，他们可以调整他们的喜好。 安装程序只有 1.6 MB 的下载，但包装了很多的力量。 功能包括无缝播放，ReplayGain 支持，翻录 CD，可定制的界面，开放组件架构等等。 它支持 FLAC，MP3，MP4，OGG，WAV，WMA，AIFF 和其他音乐格式。
 
-`此处引用` [Foobar2000是一个完全可自定义的音乐播放器](http://www.howtoip.com/foobar2000-is-a-fully-customizable-music-player/) 。
+`此处引用` [Foobar2000 是一个完全可自定义的音乐播放器](http://www.howtoip.com/foobar2000-is-a-fully-customizable-music-player/) 。
 
 ### Office
 
@@ -224,7 +219,7 @@ aira2 是咱主力的下载方式，首先是下载到 VPS 上，然后再使用
 
 咱帮老师或者领导装系统的时候会要求俺帮他们装上 Office  ，俺一般不推荐装上一些破解版的 Office ，因为破解版和激活工具总会有奇奇怪怪的问题。所以就帮他们装党政机关版的 WPS ，里面没有杂七杂八的推送广告，比较适合电脑小白们使用这种 WPS 。自己去搜索一下 `党政机关版 WPS` ，找到可信任的资源下载即可。
 
-- [WPS多省市党政机关专版（WPS官网直链）](https://xiaoma.me/660.html)
+- [WPS 多省市党政机关专版（WPS 官网直链）](https://xiaoma.me/660.html)
 
 ### 聊天
 
@@ -277,7 +272,7 @@ aira2 是咱主力的下载方式，首先是下载到 VPS 上，然后再使用
 
 Windows 上最强大的系统工具，简洁好用。以前帮女同学修电脑的时候， C 盘快要满了，就会祭出这个杀器来清理一下系统盘。
 
-> 其实我们都是一些强迫症晚期患者，只想要找个轻巧、好使、透明、不流氓、不装可怜、不唠唠叨叨的实用工具。不过找了半天没找到，但是我们没有放弃治疗，用自己的双手初步实现了梦想，联手打造Dism++——一个不为利益、不跟风、不做作、单纯为执着与激情而生的小工具。安得广厦千万间，大庇天下寒士俱欢颜！
+> 其实我们都是一些强迫症晚期患者，只想要找个轻巧、好使、透明、不流氓、不装可怜、不唠唠叨叨的实用工具。不过找了半天没找到，但是我们没有放弃治疗，用自己的双手初步实现了梦想，联手打造 Dism++——一个不为利益、不跟风、不做作、单纯为执着与激情而生的小工具。安得广厦千万间，大庇天下寒士俱欢颜！
 >
 > ![](https://p.k8s.li/20200306192358533.png)
 
@@ -289,7 +284,7 @@ Windows 上最强大的系统工具，简洁好用。以前帮女同学修电脑
 
 #### 沙盒 [Sandboxie](https://www.sandboxie.com/)
 
-> Sandboxie 是一个沙盒计算机程序，原先由Ronen Tzur开发，后被Invincea收购。Sandboxie可以在32位及64位的、基于Windows NT的系统上运行。它创造了一个类似沙盒的独立作业环境，在其内部运行的程序并不能对硬盘产生永久性的影响。
+> Sandboxie 是一个沙盒计算机程序，原先由 Ronen Tzur 开发，后被 Invincea 收购。Sandboxie 可以在 32 位及 64 位的、基于 Windows NT 的系统上运行。它创造了一个类似沙盒的独立作业环境，在其内部运行的程序并不能对硬盘产生永久性的影响。
 
 这也是咱运行国产毒瘤软件的工具，运行一些破解版或者修改版的软件。之前是收费的，不过现在已经免费了。比较适合运行一些破解版或者来路不明的文件。
 
@@ -317,11 +312,11 @@ Windows 上最强大的系统工具，简洁好用。以前帮女同学修电脑
 
 #### [LineageOS](https://lineageos.org/)
 
-> **LineageOS**（也称**Lineage OS**、**Lineage OS Android Distribution**）是一个面向[智能手机](https://zh.wikipedia.org/wiki/智能手机)和[平板电脑](https://zh.wikipedia.org/wiki/平板電腦)的[自由](https://zh.wikipedia.org/wiki/自由软件)、[免费](https://zh.wikipedia.org/wiki/免费)、[开放源代码](https://zh.wikipedia.org/wiki/开源)的[Android](https://zh.wikipedia.org/wiki/Android)系统分支。它是深受欢迎的[定制ROM](https://zh.wikipedia.org/w/index.php?title=定制ROM&action=edit&redlink=1) [CyanogenMod](https://zh.wikipedia.org/wiki/CyanogenMod)的继任者。它在2016年12月Cyanogen公司突然宣布停止开发并关闭项目基础设施后[复刻](https://zh.wikipedia.org/wiki/复刻_(软件工程))而生。[[3\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-3)[[4\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-4)LineageOS于2016年12月24日正式启动，其源代码存放于[GitHub](https://zh.wikipedia.org/wiki/GitHub)。[[5\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-5)
+> **LineageOS**（也称 **Lineage OS**、**Lineage OS Android Distribution**）是一个面向[智能手机](https://zh.wikipedia.org/wiki/%E6%99%BA%E8%83%BD%E6%89%8B%E6%9C%BA)和[平板电脑](https://zh.wikipedia.org/wiki/%E5%B9%B3%E6%9D%BF%E9%9B%BB%E8%85%A6)的[自由](https://zh.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E8%BD%AF%E4%BB%B6)、[免费](https://zh.wikipedia.org/wiki/%E5%85%8D%E8%B4%B9)、[开放源代码](https://zh.wikipedia.org/wiki/%E5%BC%80%E6%BA%90)的 [Android](https://zh.wikipedia.org/wiki/Android) 系统分支。它是深受欢迎的[定制 ROM](https://zh.wikipedia.org/w/index.php?title=%E5%AE%9A%E5%88%B6ROM&action=edit&redlink=1) [CyanogenMod](https://zh.wikipedia.org/wiki/CyanogenMod) 的继任者。它在 2016 年 12 月 Cyanogen 公司突然宣布停止开发并关闭项目基础设施后[复刻](https://zh.wikipedia.org/wiki/%E5%A4%8D%E5%88%BB_(%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B))而生。[[3\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-3)[[4\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-4)LineageOS 于 2016 年 12 月 24 日正式启动，其源代码存放于 [GitHub](https://zh.wikipedia.org/wiki/GitHub)。[[5\]](https://zh.wikipedia.org/zh-cn/LineageOS#cite_note-5)
 >
-> 由于Cyanogen公司保留了使用Cyanogen名称的权利，因此项目复刻后更名为LineageOS。
+> 由于 Cyanogen 公司保留了使用 Cyanogen 名称的权利，因此项目复刻后更名为 LineageOS。
 
-提起 ROM ，我第一个会想到的是 CM ，可以说 CyanogenMod 代表了我整个中学时的刷机时代，一段瞎几把折腾的黑历史😂
+提起 ROM ，我第一个会想到的是 CM ，可以说 CyanogenMod 代表了我整个中学时的刷机时代，一段瞎几把折腾的黑历史 😂
 
 #### Resurrection Remix OS
 

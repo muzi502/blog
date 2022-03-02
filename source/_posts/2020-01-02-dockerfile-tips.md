@@ -12,10 +12,10 @@ comment: true
 
 ## Dockerfile 最佳实践
 
-关于 Dockerfile 最佳实践的博客，网上已经有很多很多啦，咱在这里就不赘述啦。在这里分享几个搓镜像的小技巧，尤其是针对于咱大陆的用户😂。
+关于 Dockerfile 最佳实践的博客，网上已经有很多很多啦，咱在这里就不赘述啦。在这里分享几个搓镜像的小技巧，尤其是针对于咱大陆的用户 😂。
 
 - [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/) 推荐看一下官方博客上写的
-- [Dockerfile 最佳实践](https://yeasy.gitbooks.io/docker_practice/appendix/best_practices.html#dockerfile-最佳实践)
+- [Dockerfile 最佳实践](https://yeasy.gitbooks.io/docker_practice/appendix/best_practices.html#dockerfile-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
 - [docker-library](https://github.com/docker-library)/**[docs](https://github.com/docker-library/docs)** 官方示例
 
 ## 几个搓镜像的小技巧
@@ -37,7 +37,7 @@ vi Dockerfile
 
 #### 基础镜像
 
-使用体积较小的基础镜像，比如 `alpine` 或者  `debian:buster-slim`，像 openjdk 可以选用`openjdk:xxx-slim` ，由于 openjdk 是基于 debian 的基础镜像构建的，所以向 debian 基础镜像一样，后面带个 `slim` 就是基于 `debian:xxx-slim` 镜像构建的。
+使用体积较小的基础镜像，比如 `alpine` 或者  `debian:buster-slim`，像 openjdk 可以选用 `openjdk:xxx-slim` ，由于 openjdk 是基于 debian 的基础镜像构建的，所以向 debian 基础镜像一样，后面带个 `slim` 就是基于 `debian:xxx-slim` 镜像构建的。
 
 ```bash
 REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
@@ -49,7 +49,7 @@ alpine                      latest              cc0abc535e36        8 days ago  
 
 #### 国内软件源
 
-使用默认的软件源安装构建时所需的依赖，对于绝大多数基础镜像来说，在国内网络环境构建时的速度较慢，可以通过修改软件源的方式更换为国内的软件源镜像站。目前国内稳定可靠的镜像站主要有，华为云、阿里云、腾讯云、163等。对于咱的网络环境，华为云的镜像站速度最快，平均 10MB/s，峰值可达到 20MB/s，极大的能加快构建镜像的速度。可以参考我曾经写过的一篇 [国内软件源镜像站伪评测](https://blog.k8s.li/archives/mirrors-test.html)
+使用默认的软件源安装构建时所需的依赖，对于绝大多数基础镜像来说，在国内网络环境构建时的速度较慢，可以通过修改软件源的方式更换为国内的软件源镜像站。目前国内稳定可靠的镜像站主要有，华为云、阿里云、腾讯云、163 等。对于咱的网络环境，华为云的镜像站速度最快，平均 10MB/s，峰值可达到 20MB/s，极大的能加快构建镜像的速度。可以参考我曾经写过的一篇 [国内软件源镜像站伪评测](https://blog.k8s.li/archives/mirrors-test.html)
 
 - 对于  alpine 基础镜像修改软件源
 
@@ -85,7 +85,7 @@ centos                      latest              0f3e07c0138f        3 months ago
 
 #### 时区设置
 
-由于绝大多数基础镜像都是默认采用 UTC 的时区，与北京时间相差 8 个小时，这将会导致容器内的时间与北京时间不一致，因而会对一些应用造成一些影响，还会影响容器内日志和监控的数据。因此对于东八区的用户，最好在构建镜像的时候设定一下容器内的时区，一以免以后因为时区遇到一些 bug😂。可以通过环境变量设置容器内的时区。在启动的时候可以通过设置环境变量`-e TZ=Asia/Shanghai` 来设定容器内的时区。
+由于绝大多数基础镜像都是默认采用 UTC 的时区，与北京时间相差 8 个小时，这将会导致容器内的时间与北京时间不一致，因而会对一些应用造成一些影响，还会影响容器内日志和监控的数据。因此对于东八区的用户，最好在构建镜像的时候设定一下容器内的时区，一以免以后因为时区遇到一些 bug😂。可以通过环境变量设置容器内的时区。在启动的时候可以通过设置环境变量 `-e TZ=Asia/Shanghai` 来设定容器内的时区。
 
 ##### alpine
 
@@ -160,7 +160,7 @@ echo "Asia/shanghai" > /etc/timezone ;\
 
 ##### ubuntu
 
-- 通过启动时设定环境变量指定时区，发射失败😂，只能通过时区文件来设定时区了。
+- 通过启动时设定环境变量指定时区，发射失败 😂，只能通过时区文件来设定时区了。
 
 ```bash
 root@ubuntu:~/docke/alpine# docker run --rm -it -e TZ=Asia/Shanghai debian date
@@ -171,7 +171,7 @@ docker run --rm -it -e TZ=Asia/Shanghai ubuntu date
 Thu Jan  2 03:44:13 Asia 2020
 ```
 
-> 在这里有个命令执行的小技巧，通过脱字符 `^` 来替换上一条命令中的 debian 为 ubuntu 然后执行相同的命令😂
+> 在这里有个命令执行的小技巧，通过脱字符 `^` 来替换上一条命令中的 debian 为 ubuntu 然后执行相同的命令 😂
 
 - 通过时区文件来设定时区
 
@@ -319,7 +319,7 @@ ADD source/fastdfs-nginx-module.tar.gz /usr/local/src/
 ADD source/nginx-1.15.4.tar.gz /usr/local/src/
 ```
 
-多个文件需要添加到容器中不同的路径，每个文件使用一条 ADD 指令的话就会增加一层镜像，这样戏曲就多了 12 层镜像😂。其实大可不必，我们可以将这些文件全部打包为一个文件为 `src.tar.gz` 然后通过 ADD 的方式把文件添加到当中去，然后在 RUN 指令后使用 `mv` 命令把文件移动到指定的位置。这样仅仅一条 ADD 和RUN 指令取代掉了 12 个 ADD 指令😂
+多个文件需要添加到容器中不同的路径，每个文件使用一条 ADD 指令的话就会增加一层镜像，这样戏曲就多了 12 层镜像 😂。其实大可不必，我们可以将这些文件全部打包为一个文件为 `src.tar.gz` 然后通过 ADD 的方式把文件添加到当中去，然后在 RUN 指令后使用 `mv` 命令把文件移动到指定的位置。这样仅仅一条 ADD 和 RUN 指令取代掉了 12 个 ADD 指令 😂
 
 ```dockerfile
 FROM alpine:3.10
@@ -339,4 +339,4 @@ VOLUME /var/fdfs
 
 ## docker 镜像分析工具
 
-推荐阅读 [Docker 镜像分析工具 Dive(附视频)](https://www.qikqiak.com/post/docker-image-explore-tool-dive/) ，我就不赘述啦，其实是懒😂
+推荐阅读 [Docker 镜像分析工具 Dive(附视频)](https://www.qikqiak.com/post/docker-image-explore-tool-dive/) ，我就不赘述啦，其实是懒 😂

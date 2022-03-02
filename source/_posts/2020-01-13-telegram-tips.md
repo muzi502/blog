@@ -18,7 +18,7 @@ comment: true
 
 自从大一时学会了自由地访问国际互联网就开始使用了 telegram 这个工具，大一时还太年轻，身边使用的人很少所以就没用起来。直到最近两三年，开始慢慢地摆脱国内的局域网，就慢慢将自己的社交逐渐迁移到 telegram 和 Twitter 上，还有最重要的博客，在那里收获了一大堆小伙伴。
 
-今天分享一下我使用 telegram 的`一点人生的经验` 🕶👓
+今天分享一下我使用 telegram 的 `一点人生的经验` 🕶👓
 
 {% raw %}
 
@@ -28,9 +28,9 @@ comment: true
 
 ## 碎碎念频道
 
-建立一个私有频道，将自己所有的想法和感想都整理到这个频道里，并且定期导出这些私有频道里得内容，以免哪天炸号没了😂。碎碎念的频道里基本上乱七八糟，有新闻、有图片、有文件、有链接等等。
+建立一个私有频道，将自己所有的想法和感想都整理到这个频道里，并且定期导出这些私有频道里得内容，以免哪天炸号没了 😂。碎碎念的频道里基本上乱七八糟，有新闻、有图片、有文件、有链接等等。
 
-十月份的时候，自己写过一篇三万多字[《毕业后的一点思考》](https://muzi502.github.io/archives/thinking.html) ，想必 twitter 上的小伙伴应该看过。在写这篇文章的时候，里面的感想和引用消息都来自我的私有频道。现在也养成了写周记的习惯，每周写周记的时候也会把碎碎念里的信息当作回顾的时间线，不然不知道这一周发声了些什么😂
+十月份的时候，自己写过一篇三万多字[《毕业后的一点思考》](https://muzi502.github.io/archives/thinking.html) ，想必 twitter 上的小伙伴应该看过。在写这篇文章的时候，里面的感想和引用消息都来自我的私有频道。现在也养成了写周记的习惯，每周写周记的时候也会把碎碎念里的信息当作回顾的时间线，不然不知道这一周发声了些什么 😂
 
 ## 运维笔记频道
 
@@ -48,13 +48,13 @@ comment: true
 
 ## Gmail
 
-这也是我第二使用最频繁得工具，绑定telegram 官方认证的 Gmail 机器人 `@GmailBot`就可以收到 Gmail 的邮件内容，而且还可以回复邮件。收到消息也比较准时，iOS 在锁屏没开梯子的情况下还能正常收到 telegram 通知推送的 Gmail 信息。不过我 Gmail 收到的邮件也绝大读书都是双因素验证个邮件，就是将 Google voice 的短信转发到 Google 账户的 Gmail下，就可以通过 email 来接受短信啦
+这也是我第二使用最频繁得工具，绑定 telegram 官方认证的 Gmail 机器人 `@GmailBot` 就可以收到 Gmail 的邮件内容，而且还可以回复邮件。收到消息也比较准时，iOS 在锁屏没开梯子的情况下还能正常收到 telegram 通知推送的 Gmail 信息。不过我 Gmail 收到的邮件也绝大读书都是双因素验证个邮件，就是将 Google voice 的短信转发到 Google 账户的 Gmail 下，就可以通过 email 来接受短信啦
 
 ![](https://p.k8s.li/20200114214229958.png)
 
 ## RSS
 
-使用 rssbot 开源机器人订阅了一些喜欢的个人独立博客，自己目前拥有一个 490 多人的 RSS 订阅频道[RSS_kubernetes](https://t.me/rss_kubernetes) 。不过里面都是一些和 kubernetes 、docker 容器技术相关的个人博客。自己私人的 RSS 私有频道也绝大多数是和运维相关的。
+使用 rssbot 开源机器人订阅了一些喜欢的个人独立博客，自己目前拥有一个 490 多人的 RSS 订阅频道 [RSS_kubernetes](https://t.me/rss_kubernetes) 。不过里面都是一些和 kubernetes 、docker 容器技术相关的个人博客。自己私人的 RSS 私有频道也绝大多数是和运维相关的。
 
 ![](https://p.k8s.li/20200114215007524.png)
 
@@ -66,7 +66,7 @@ comment: true
 
 ![](https://p.k8s.li/20200114212308552.png)
 
-其实除了 telegram 之外，我 OneDrive 网盘里还存了一千多张😂，咱只喜欢纸片人：）
+其实除了 telegram 之外，我 OneDrive 网盘里还存了一千多张 😂，咱只喜欢纸片人：）
 
 ```bash
 ╭─debian@debian /mnt/f/OneDrive/图片/Animal
@@ -76,7 +76,7 @@ comment: true
 
 ## 网盘
 
-网盘功能勉强算是，但使用的不算多，大多数都是往私有频道里存放一些讽刺老大哥的视频😂。据说是单个 1.5GB 文件大小限制，我是定期每周都会导出 telegram 上的数据，以免丢失。
+网盘功能勉强算是，但使用的不算多，大多数都是往私有频道里存放一些讽刺老大哥的视频 😂。据说是单个 1.5GB 文件大小限制，我是定期每周都会导出 telegram 上的数据，以免丢失。
 
 ## 音乐播放器
 
@@ -94,7 +94,7 @@ comment: true
 
 ## 短信转发
 
-自己有一部 Android 备用机，只有来接收短信和电话。电话通过无条件转移到主力机上。短信就通过 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 转发到 telegram 上，这样出门的时候就可以把 Android 备用机放在家里啦😂。之前我使用 [tasker]() 转发短信，但 tasker 太不稳定了，有时候短信触发器无法触发执行任务倒是很头疼。所以就一直使用了 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 来转发短信。默认是通过网络将短信转发到 telegram ，如果网络无法连接到 telegram 的话就使用短信转发到另一个手机号上。
+自己有一部 Android 备用机，只有来接收短信和电话。电话通过无条件转移到主力机上。短信就通过 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 转发到 telegram 上，这样出门的时候就可以把 Android 备用机放在家里啦 😂。之前我使用 [tasker]() 转发短信，但 tasker 太不稳定了，有时候短信触发器无法触发执行任务倒是很头疼。所以就一直使用了 [telegram-sms](https://github.com/telegram-sms/telegram-sms) 来转发短信。默认是通过网络将短信转发到 telegram ，如果网络无法连接到 telegram 的话就使用短信转发到另一个手机号上。
 
 ![](https://p.k8s.li/20200114214410801.png)
 
@@ -112,11 +112,11 @@ comment: true
 
 ## 视频下载器
 
-youtube 视频和音乐下载，很好用，不过好像有时候会推广告 https://t.me/utubebot
+youtube 视频和音乐下载，很好用，不过好像有时候会推广告 [https://t.me/utubebot](https://t.me/utubebot)
 
 ## 临时邮箱
 
-参照[推荐两个有意思的Telegram机器人Bot](https://www.xzymoe.com/telegram-bot/)
+参照[推荐两个有意思的 Telegram 机器人 Bot](https://www.xzymoe.com/telegram-bot/)
 
 ## 待补充
 

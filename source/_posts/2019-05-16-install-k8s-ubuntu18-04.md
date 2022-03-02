@@ -19,7 +19,7 @@ comment: true
 
 1.临时关闭 swap `swapoff -a`
 
-2.打开bridge-nf-call-iptables
+2.打开 bridge-nf-call-iptables
 
 ```bash
 cat > /etc/sysctl.d/99-kubernetes-cri.conf <<EOF
@@ -37,9 +37,9 @@ modprobe br_netfilter
 lsmod | grep br_netfilter
 ```
 
-4.临时关闭一下SELinux，怎么关闭的？？貌似我的 digital ocean Ubuntu18.04 没有安装SELinux🤔
+4.临时关闭一下 SELinux，怎么关闭的？？貌似我的 digital ocean Ubuntu18.04 没有安装 SELinux🤔
 
-在网上找了一篇文章临时关闭SELinux的[turn-off-selinux](https://www.revsys.com/writings/quicktips/turn-off-selinux.html)
+在网上找了一篇文章临时关闭 SELinux 的 [turn-off-selinux](https://www.revsys.com/writings/quicktips/turn-off-selinux.html)
 
 ```bash
 Test if SELinux is running
@@ -56,16 +56,16 @@ echo 1 > /sys/fs/selinux/enforce
 As you can see from these commands what you are doing is setting the file /selinux/enforce to either '1' or '0' to denote 'true' and 'false'.
 ```
 
-5.VPS需要在国外或代理，因为需要下载gcr上的镜像。国内用户可以考虑装个软路由然后设置为旁路网关，这样能透明代理，只需要修改部署机器的网关为软路由即可。也可以在部署机器上安装代理，不过比较麻烦和坑。还是软路由、旁路网关、透明代理三连方便😂。
+5.VPS 需要在国外或代理，因为需要下载 gcr 上的镜像。国内用户可以考虑装个软路由然后设置为旁路网关，这样能透明代理，只需要修改部署机器的网关为软路由即可。也可以在部署机器上安装代理，不过比较麻烦和坑。还是软路由、旁路网关、透明代理三连方便 😂。
 
-----
+---
 
-## 2.安装Docker或其他容器运行时
+## 2.安装 Docker 或其他容器运行时
 
-官方文档写了建议安装18.06.2，其他版本的docker支持的不太好
+官方文档写了建议安装 18.06.2，其他版本的 docker 支持的不太好
 On each of your machines, install Docker. Version 18.06.2 is recommended, but 1.11, 1.12, 1.13, 17.03 and 18.09 are known to work as well. Keep track of the latest verified Docker version in the Kubernetes release notes.
 
-### 1.使用kubernetes官方建议的安装方式😂
+### 1.使用 kubernetes 官方建议的安装方式 😂
 
 ```bash
 ## Set up the repository:
@@ -82,7 +82,7 @@ add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(
 apt-get update && apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
 ```
 
-### 2.修改一下Docker的daemon.json文件
+### 2.修改一下 Docker 的 daemon.json 文件
 
 在这里需要把 `native.cgroupdriver=` 修改为 systemd，默认的是 docker。
 
@@ -99,13 +99,13 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 ```
 
-不修改的话后面初始化的时候会warning😂
+不修改的话后面初始化的时候会 warning😂
 
 ```bash
 [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
 ```
 
-最后将docker加入开机自启，并重启一下docker
+最后将 docker 加入开机自启，并重启一下 docker
 
 ```bash
 mkdir -p /etc/systemd/system/docker.service.d
@@ -181,9 +181,9 @@ systemd
 To use the systemd cgroup driver, set plugins.cri.systemd_cgroup = true in /etc/containerd/config.toml. When using kubeadm, manually configure the cgroup driver for kubelet as well
 ```
 
-----
+---
 
-## 3.安装kubelet kubeadm kubectl
+## 3.安装 kubelet kubeadm kubectl
 
 官方推荐的安装方式
 
@@ -203,14 +203,14 @@ apt-mark hold kubelet kubeadm kubectl
 systemctl daemon-reload && systemctl restart kubelet
 ```
 
-----
+---
 
-## 4.初始化kubernetes集群
+## 4.初始化 kubernetes 集群
 
-可以先把所需要的镜像pull下来 `kubeadm config images pull`
+可以先把所需要的镜像 pull 下来 `kubeadm config images pull`
 
-执行期间不能中断shell，不然重新弄得话很头疼，最好先开个tmux
-使用kubeadm init初始化kubernetes集群，可以指定配置文件，把IP替换为这台机器的内网IP，要k8s-node节点能够访问得到
+执行期间不能中断 shell，不然重新弄得话很头疼，最好先开个 tmux
+使用 kubeadm init 初始化 kubernetes 集群，可以指定配置文件，把 IP 替换为这台机器的内网 IP，要 k8s-node 节点能够访问得到
 
 `kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=IP`
 
@@ -264,16 +264,16 @@ f6d2cd0b03cd        k8s.gcr.io/pause:3.1   "/pause"                 7 minutes ag
 ba61bed68ecc        k8s.gcr.io/pause:3.1   "/pause"                 9 minutes ago       Up 9 minutes                            k8s_POD_kube-proxy-g4nd4_kube-system_afc4ba92-7657-11e9-b684-2aabd22d242a_4
 ```
 
-----
+---
 
-我第一次初始化因为shell中断失败了😱报错
+我第一次初始化因为 shell 中断失败了 😱 报错
 
 ```bash
 [kubelet-check] Initial timeout of 40s passed.
 error execution phase upload-config/kubelet: Error writing Crisocket information for the control-plane node: timed out waiting for the condition
 ```
 
-第二次初始化还是失败😭
+第二次初始化还是失败 😭
 
 ```bash
 ╭─root@k8s-master ~
@@ -346,16 +346,16 @@ error execution phase wait-control-plane: couldn't initialize a Kubernetes clust
 
 ~~如果你初始化失败的话，那就删除所有的容器，删除/etc/kubernetes/* 删除 /var/lib/etcd/*~~
 
-其实进行kubeadm reset重置再执行kubeadm init也行，这样更方便些😂
+其实进行 kubeadm reset 重置再执行 kubeadm init 也行，这样更方便些 😂
 然后再重新初始化 `kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=157.220.164.247`
 
-加个参数`--ignore-preflight-errors=all`重新初始化
+加个参数 `--ignore-preflight-errors=all` 重新初始化
 
-----
+---
 
-## 5.将k8s-node节点加入到k8s-master
+## 5.将 k8s-node 节点加入到 k8s-master
 
-node节点也是和master节点一样，安装docker，kubelet kubeadm kubectl。不过最后不需要初始化集群，不用kubeadm init，而是直接加入到master当中来。如果master初始化后找不到kubeadm join所需要的token，可以使用以下命令重新生成一个token,注意 tty参数为0则这个token永久不会失效。可以自定义失效期限。
+node 节点也是和 master 节点一样，安装 docker，kubelet kubeadm kubectl。不过最后不需要初始化集群，不用 kubeadm init，而是直接加入到 master 当中来。如果 master 初始化后找不到 kubeadm join 所需要的 token，可以使用以下命令重新生成一个 token,注意 tty 参数为 0 则这个 token 永久不会失效。可以自定义失效期限。
 
 ```bash
 kubeadm token generate
@@ -367,7 +367,7 @@ kubeadm token create $(kubeadm token generate)  --print-join-command --ttl=0
 
 `kubeadm join IP:6443 --token ljfmu1.5kek1jy2xdb8sopv --discovery-token-ca-cert-hash sha256:3b18b4cc1debc63d57e03da52424a3b3bacf03cc290b94cbe5b6aaf9c152f0cf`
 
-加入成功后会提示以下内容😘
+加入成功后会提示以下内容 😘
 
 ```bash
 [preflight] Running pre-flight checks
@@ -386,7 +386,7 @@ This node has joined the cluster:
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 ```
 
-注意: 如果hostname如果是随机生成的带有`_`是不行的，那就使用 ```hostnamectl set-hostname k8s-node2 && bash```设置一下下😂
+注意: 如果 hostname 如果是随机生成的带有 `_` 是不行的，那就使用 ``hostnamectl set-hostname k8s-node2 && bash`` 设置一下下 😂
 
 ```bash
 name: Invalid value: "vm_158_35_centos": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')

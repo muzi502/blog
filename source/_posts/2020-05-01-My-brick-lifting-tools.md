@@ -15,7 +15,7 @@ comment: true
 
 ## 咕咕咕
 
-本来打算上上周就该更新完的这篇博文，但最近因为离职的事宜拖到今天晚上才捡起来，最终还是咕咕咕了😂。虽然文章还未补充完，等到以后再继续更新上吧。
+本来打算上上周就该更新完的这篇博文，但最近因为离职的事宜拖到今天晚上才捡起来，最终还是咕咕咕了 😂。虽然文章还未补充完，等到以后再继续更新上吧。
 
 ## Linux
 
@@ -23,7 +23,7 @@ comment: true
 
 ### 入门
 
-咱一直觉着学习技术吧，并不是看书看视频能学会的。对于一些底层的只是确实需要仔细研读书籍来吃透他，这趟会让我们对操作系统这个体系结构有更下透彻的认识。但是呢，光看不练还是不行滴，咱学习 Linux 纯靠瞎玩，瞎折腾。咱大学时学校没有开设 Linux 课程，只能靠自己自学。于是乎，和大家一样，搭建 WordPress ，一步步安装 LAMP 环境，配置 iptables，写 shell 脚本备份网站，搭建梯子等等。可谓是玩得不亦乐乎😂。
+咱一直觉着学习技术吧，并不是看书看视频能学会的。对于一些底层的只是确实需要仔细研读书籍来吃透他，这趟会让我们对操作系统这个体系结构有更下透彻的认识。但是呢，光看不练还是不行滴，咱学习 Linux 纯靠瞎玩，瞎折腾。咱大学时学校没有开设 Linux 课程，只能靠自己自学。于是乎，和大家一样，搭建 WordPress ，一步步安装 LAMP 环境，配置 iptables，写 shell 脚本备份网站，搭建梯子等等。可谓是玩得不亦乐乎 😂。
 
 所以说学习和入门 Linux 咱还是推荐鸟哥的《鸟哥 Linux 私房菜》这本书，结合着自己搭建网站一步步来就可以。
 
@@ -40,35 +40,35 @@ comment: true
 
 ### 发行版
 
-从运维这个搬砖行业来讲，企业内部使用的 Linux 发行版当属 RedHat 和 Debian 家族的最多，像其他的什么 archlinux 咱还真没见过有在生产环境使用的，毕竟滚动更新不小心就滚挂了不好说😂。国内企业和云计算厂商使用最多的当然是 CentOS 啦，我记得是在 2018 年年末的时候阿里云/腾讯云还没有 Ubuntu 1804 的云主机可用😑。国外使用 Ubuntu 的较多一些，咱是倾向于使用 Ubuntu 😝
+从运维这个搬砖行业来讲，企业内部使用的 Linux 发行版当属 RedHat 和 Debian 家族的最多，像其他的什么 archlinux 咱还真没见过有在生产环境使用的，毕竟滚动更新不小心就滚挂了不好说 😂。国内企业和云计算厂商使用最多的当然是 CentOS 啦，我记得是在 2018 年年末的时候阿里云/腾讯云还没有 Ubuntu 1804 的云主机可用 😑。国外使用 Ubuntu 的较多一些，咱是倾向于使用 Ubuntu 😝
 
 从 [datanyze](https://www.datanyze.com) 家偷来一张企业 Linux 市场占有率的统计表格 [Operating Systems](https://www.datanyze.com/market-share/operating-systems--443)😂
 
-| Ranking | Technology                                                   | Domains | Market Share |
-| :-----: | :----------------------------------------------------------- | ------: | -----------: |
-|    1    | [Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/ubuntu-market-share) | 278,611 |       29.30% |
-|    2    | [Unix](https://www.datanyze.com/market-share/operating-systems--443/unix-market-share) | 192,215 |       20.21% |
-|    3    | [CentOS](https://www.datanyze.com/market-share/operating-systems--443/centos-market-share) | 165,640 |       17.42% |
-|    4    | [Debian](https://www.datanyze.com/market-share/operating-systems--443/debian-market-share) | 108,373 |       11.40% |
-|    5    | [Linux](https://www.datanyze.com/market-share/operating-systems--443/linux-market-share) |  24,563 |        2.58% |
-|    6    | [Windows Server](https://www.datanyze.com/market-share/operating-systems--443/windows-server-market-share) |  23,872 |        2.51% |
-|    7    | [Gentoo](https://www.datanyze.com/market-share/operating-systems--443/gentoo-market-share) |  16,756 |        1.76% |
+| Ranking | Technology                                                                                                                     | Domains | Market Share |
+| :-----: | :----------------------------------------------------------------------------------------------------------------------------- | ------: | -----------: |
+|    1    | [Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/ubuntu-market-share)                                     | 278,611 |       29.30% |
+|    2    | [Unix](https://www.datanyze.com/market-share/operating-systems--443/unix-market-share)                                         | 192,215 |       20.21% |
+|    3    | [CentOS](https://www.datanyze.com/market-share/operating-systems--443/centos-market-share)                                     | 165,640 |       17.42% |
+|    4    | [Debian](https://www.datanyze.com/market-share/operating-systems--443/debian-market-share)                                     | 108,373 |       11.40% |
+|    5    | [Linux](https://www.datanyze.com/market-share/operating-systems--443/linux-market-share)                                       |  24,563 |        2.58% |
+|    6    | [Windows Server](https://www.datanyze.com/market-share/operating-systems--443/windows-server-market-share)                     |  23,872 |        2.51% |
+|    7    | [Gentoo](https://www.datanyze.com/market-share/operating-systems--443/gentoo-market-share)                                     |  16,756 |        1.76% |
 |    8    | [Red Hat Enterprise Linux](https://www.datanyze.com/market-share/operating-systems--443/red-hat-enterprise-linux-market-share) |  13,659 |        1.44% |
-|    9    | [Windows 7](https://www.datanyze.com/market-share/operating-systems--443/windows-7-market-share) |  11,843 |        1.25% |
-|   10    | [Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/microsoft-windows-os-market-share) |  10,986 |        1.16% |
+|    9    | [Windows 7](https://www.datanyze.com/market-share/operating-systems--443/windows-7-market-share)                               |  11,843 |        1.25% |
+|   10   | [Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/microsoft-windows-os-market-share)         |  10,986 |        1.16% |
 
-| op Competitors                                               | Websites | Market Share |                                                  Versus Page |
-| :----------------------------------------------------------- | -------: | -----------: | -----------------------------------------------------------: |
-| [Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/ubuntu-market-share) |  278,611 |       29.30% | [Linux vs. Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-ubuntu) |
-| [Unix](https://www.datanyze.com/market-share/operating-systems--443/unix-market-share) |  192,215 |       20.21% | [Linux vs. Unix](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-unix) |
-| [CentOS](https://www.datanyze.com/market-share/operating-systems--443/centos-market-share) |  165,640 |       17.42% | [Linux vs. CentOS](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-centos) |
-| [Debian](https://www.datanyze.com/market-share/operating-systems--443/debian-market-share) |  108,373 |       11.40% | [Linux vs. Debian](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-debian) |
-| [Windows Server](https://www.datanyze.com/market-share/operating-systems--443/windows-server-market-share) |   23,872 |        2.51% | [Linux vs. Windows Server](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-windows-server) |
-| [Gentoo](https://www.datanyze.com/market-share/operating-systems--443/gentoo-market-share) |   16,756 |        1.76% | [Linux vs. Gentoo](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-gentoo) |
+| op Competitors                                                                                                                 | Websites | Market Share |                                                                                                                          Versus Page |
+| :----------------------------------------------------------------------------------------------------------------------------- | -------: | -----------: | -----------------------------------------------------------------------------------------------------------------------------------: |
+| [Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/ubuntu-market-share)                                     |  278,611 |       29.30% |                                     [Linux vs. Ubuntu](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-ubuntu) |
+| [Unix](https://www.datanyze.com/market-share/operating-systems--443/unix-market-share)                                         |  192,215 |       20.21% |                                         [Linux vs. Unix](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-unix) |
+| [CentOS](https://www.datanyze.com/market-share/operating-systems--443/centos-market-share)                                     |  165,640 |       17.42% |                                     [Linux vs. CentOS](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-centos) |
+| [Debian](https://www.datanyze.com/market-share/operating-systems--443/debian-market-share)                                     |  108,373 |       11.40% |                                     [Linux vs. Debian](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-debian) |
+| [Windows Server](https://www.datanyze.com/market-share/operating-systems--443/windows-server-market-share)                     |   23,872 |        2.51% |                     [Linux vs. Windows Server](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-windows-server) |
+| [Gentoo](https://www.datanyze.com/market-share/operating-systems--443/gentoo-market-share)                                     |   16,756 |        1.76% |                                     [Linux vs. Gentoo](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-gentoo) |
 | [Red Hat Enterprise Linux](https://www.datanyze.com/market-share/operating-systems--443/red-hat-enterprise-linux-market-share) |   13,659 |        1.44% | [Linux vs. Red Hat Enterprise Linux](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-red-hat-enterprise-linux) |
-| [Windows 7](https://www.datanyze.com/market-share/operating-systems--443/windows-7-market-share) |   11,843 |        1.25% | [Linux vs. Windows 7](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-windows-7) |
-| [Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/microsoft-windows-os-market-share) |   10,986 |        1.16% | [Linux vs. Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-microsoft-windows-os) |
-| [FreeBSD](https://www.datanyze.com/market-share/operating-systems--443/freebsd-market-share) |    9,633 |        1.01% | [Linux vs. FreeBSD](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-freebsd) |
+| [Windows 7](https://www.datanyze.com/market-share/operating-systems--443/windows-7-market-share)                               |   11,843 |        1.25% |                               [Linux vs. Windows 7](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-windows-7) |
+| [Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/microsoft-windows-os-market-share)         |   10,986 |        1.16% |         [Linux vs. Microsoft Windows OS](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-microsoft-windows-os) |
+| [FreeBSD](https://www.datanyze.com/market-share/operating-systems--443/freebsd-market-share)                                   |    9,633 |        1.01% |                                   [Linux vs. FreeBSD](https://www.datanyze.com/market-share/operating-systems--443/linux-vs-freebsd) |
 
 #### RedHat/CentOS
 
@@ -80,7 +80,7 @@ comment: true
 
 ### 文本处理
 
-提到 Linux 上的文本处理工具当然是离不开三剑客（awk、grep、sed），这也是咱当初跟着《鸟哥 Linux 私房菜》学来的😂。
+提到 Linux 上的文本处理工具当然是离不开三剑客（awk、grep、sed），这也是咱当初跟着《鸟哥 Linux 私房菜》学来的 😂。
 
 #### sed
 
@@ -120,7 +120,7 @@ apt install htop
 
 ### [bashtop](https://github.com/aristocratos/bashtop)
 
-bashtop 相比于 htop 有种吊炸天的感觉，炫酷无比😄
+bashtop 相比于 htop 有种吊炸天的感觉，炫酷无比 😄
 
 - install
 
@@ -130,7 +130,7 @@ bashtop 相比于 htop 有种吊炸天的感觉，炫酷无比😄
 curl -fsSL https://raw.githubusercontent.com/aristocratos/bashtop/master/bashtop -o /usr/bin/bashtop && chmod +x /usr/bin/bashtop
 ```
 
-国内用户推荐使用 jsdelivr.net 的 CDN 来下载该脚本😑，（fuck GFW by jsdelivr😡
+国内用户推荐使用 jsdelivr.net 的 CDN 来下载该脚本 😑，（fuck GFW by jsdelivr😡
 
 ```shell
 curl -fsSL https://cdn.jsdelivr.net/gh/aristocratos/bashtop/bashtop  -o /usr/bin/bashtop ;chmod +x /usr/bin/bashtop
@@ -213,12 +213,11 @@ systemd─┬─agetty
 ```
 
 - 可以看到 init 进程 systemd 为系统的 PID 1 号进程，所有的进程都在 systemd 的管理之下。
-
-- 在运行 docker 的服务器上，容器进程的父进程并不是 dockerd 这个守护进程，而是一个名为　`containerd-shim-${container_name}`　而 containerd-shim 的父进程为容器运行时 [containerd](https://containerd.io/)，docker 是通过 gRPC 协议与 containerd 进程通信来，以此来进行管理所运行的容器。关于容器运行时的关系可以参考 [开放容器标准(OCI) 内部分享](https://xuanwo.io/2019/08/06/oci-intro/)，当时理解 dockerd 、containerd、containerd-shim 这些关系时感觉有点绕，不过用 pstree 命令看一下进程树结构就一目了然了😂，对理解进程之间的关系很有帮助。
+- 在运行 docker 的服务器上，容器进程的父进程并不是 dockerd 这个守护进程，而是一个名为　`containerd-shim-${container_name}`　而 containerd-shim 的父进程为容器运行时 [containerd](https://containerd.io/)，docker 是通过 gRPC 协议与 containerd 进程通信来，以此来进行管理所运行的容器。关于容器运行时的关系可以参考 [开放容器标准(OCI) 内部分享](https://xuanwo.io/2019/08/06/oci-intro/)，当时理解 dockerd 、containerd、containerd-shim 这些关系时感觉有点绕，不过用 pstree 命令看一下进程树结构就一目了然了 😂，对理解进程之间的关系很有帮助。
 
 #### ncdu
 
-面试的时候被问道过 `Linux 下如何查看文件见大小？`，当然是 `du -sh` 啦😂。不过咱还是喜欢用 ncdu
+面试的时候被问道过 `Linux 下如何查看文件见大小？`，当然是 `du -sh` 啦 😂。不过咱还是喜欢用 ncdu
 
 使用 `ncdu` 的好处就是可以通过交互式的方式查看目录占用空间的大小，要比 `du -sh` 命令方便很多，不过缺点也有，就是该命令为扫描目标目录下的所有文件，很耗时！如果想要立即查看一下目录占用的大小，还是用 `du -sh` 最方便，使用 ncdu 可以帮助我们分析文件夹下各个文件占用的情况。
 
@@ -234,7 +233,7 @@ apt install ncdu
 
 - output example
 
-使用反向键和回车键进行目录奇幻，很方便的说😂
+使用反向键和回车键进行目录奇幻，很方便的说 😂
 
 ```shell
 ncdu 1.13 ~ Use the arrow keys to navigate, press ? for help
@@ -438,7 +437,6 @@ apt install lshw
 
 - output example
 
-
 ```shell
 ╭─root@sg-02 /home/ubuntu
 ╰─# lshw
@@ -570,6 +568,7 @@ sg-02
 ╭─root@sg-02 /home/ubuntu
 ╰─#
 ```
+
 #### lsinitramfs
 
 > lsinitramfs - list content of an initramfs image
@@ -818,10 +817,10 @@ lsof 列出打开的文件。绝对是个排查故障的利器，在一切皆文
 - (函数)共享库
 - 管道、命名管道
 - 符号链接
-- 网络文件（例如：NFS file、网络socket，unix域名socket）
+- 网络文件（例如：NFS file、网络 socket，unix 域名 socket）
 - 还有其它类型的文件，等等
 
-另外 lsof 命令也是有着最多选项的Linux/Unix命令之一，另一个 nc 命令也是如此😂。
+另外 lsof 命令也是有着最多选项的 Linux/Unix 命令之一，另一个 nc 命令也是如此 😂。
 
 - 列出端口号占用的进程
 
@@ -835,9 +834,9 @@ systemd-r 538 systemd-resolve   13u  IPv4  13926      0t0  TCP localhost:domain 
 
 > PS：最近面试的时候被问到过
 >
->Q： Linux 下查看端口占用的命令？
+> Q： Linux 下查看端口占用的命令？
 >
->A：`netstat -tunlp` 、`ss -tua`、`lsof -i` 😂
+> A：`netstat -tunlp` 、`ss -tua`、`lsof -i` 😂
 
 #### lspci - list all PCI devices
 
@@ -950,11 +949,10 @@ DirectMap2M:     3987456 kB
 DirectMap1G:     2097152 kB
 ```
 
-- buffer：表示块设备(block device)所占用的缓存页，包括：直接读写块设备、以及文件系统元数据(metadata)比如SuperBlock所使用的缓存页；
-
+- buffer：表示块设备(block device)所占用的缓存页，包括：直接读写块设备、以及文件系统元数据(metadata)比如 SuperBlock 所使用的缓存页；
 - cache：表示普通文件数据所占用的缓存页。
 
-二者的区别推荐阅读 [FREE命令显示的BUFFERS与CACHED的区别](http://linuxperf.com/?p=32)，从 Linux 内核源码来区分。
+二者的区别推荐阅读 [FREE 命令显示的 BUFFERS 与 CACHED 的区别](http://linuxperf.com/?p=32)，从 Linux 内核源码来区分。
 
 #### net
 
@@ -1085,10 +1083,10 @@ ipv4     2 tcp      6 86366 ESTABLISHED src=10.20.172.211 dst=10.10.107.121 spor
 ipv4     2 tcp      6 62 SYN_SENT src=10.20.172.211 dst=10.10.107.214 sport=37531 dport=179 [UNREPLIED] src=10.10.107.214 dst=10.20.172.211 sport=179 dport=37531 mark=0 secctx=system_u:object_r:unlabeled_t:s0 zone=0 use=2
 ```
 
-- [连接跟踪nf_conntrack与NAT和状态防火墙](http://www.linvon.cn/post/%E8%BF%9E%E6%8E%A5%E8%B7%9F%E8%B8%AAnf_conntrack%E4%B8%8Enat%E5%92%8C%E7%8A%B6%E6%80%81iptables/)
-- [netfilter 链接跟踪机制与NAT原理](https://www.cnblogs.com/liushaodong/archive/2013/02/26/2933593.html)
-- [(五)洞悉linux下的Netfilter&iptables：如何理解连接跟踪机制？](http://blog.chinaunix.net/uid-23069658-id-3169450.html)
-- [Iptables之nf_conntrack模块](https://clodfisher.github.io/2018/09/nf_conntrack/)
+- [连接跟踪 nf_conntrack 与 NAT 和状态防火墙](http://www.linvon.cn/post/%E8%BF%9E%E6%8E%A5%E8%B7%9F%E8%B8%AAnf_conntrack%E4%B8%8Enat%E5%92%8C%E7%8A%B6%E6%80%81iptables/)
+- [netfilter 链接跟踪机制与 NAT 原理](https://www.cnblogs.com/liushaodong/archive/2013/02/26/2933593.html)
+- [(五)洞悉 linux 下的 Netfilter&iptables：如何理解连接跟踪机制？](http://blog.chinaunix.net/uid-23069658-id-3169450.html)
+- [Iptables 之 nf_conntrack 模块](https://clodfisher.github.io/2018/09/nf_conntrack/)
 
 #### kernel
 
@@ -1242,7 +1240,7 @@ zero_buffers         # 用 0 初始化系统 buffer
 nrfiles=8            # 每个进程生成文件的数量
 ```
 
-`注意：` 只要不是测试空盘，`filename` 参数千万不要使用类似 `/dev/sda` 这无异于删库跑路😂。所以推荐使用路径而不是设备。
+`注意：` 只要不是测试空盘，`filename` 参数千万不要使用类似 `/dev/sda` 这无异于删库跑路 😂。所以推荐使用路径而不是设备。
 
 - output example
 
@@ -1376,9 +1374,7 @@ conf:
 #### iperf
 
 - install
-
 - usage
-
 - output example
 
 #### [wrk](https://github.com/wg/wrk/)
@@ -1428,9 +1424,7 @@ Transfer/sec:     27.93MB
 #### httperf
 
 - install
-
 - usage
-
 - output example
 
 ```shell
@@ -1466,9 +1460,7 @@ Errors: fd-unavail 0 addrunavail 0 ftab-full 0 other 0
 #### [ab]()
 
 - install
-
 - usage
-
 - output example
 
 ```shell
@@ -1527,7 +1519,7 @@ Percentage of the requests served within a certain time (ms)
 
 #### stress
 
-> [Stress/Stress-NG](https://www.tecmint.com/linux-cpu-load-stress-test-with-stress-ng-tool/)是Linux下两个常用的系统级压力测试工具，**stress**命令简单易用，**stress-ng**是stress的升级版，支持**数百个参数定制各种压CPU、内存、IO、网络**的姿势。在系统过载的场景下，应用服务可能会出现意想不到的错误或异常，在测试**负载均衡和熔断降级**时非常有用。这里只列举了几个常用的命令，详细使用参考”stress-ng –help”或”man stress-ng”。另外，这些“烤机”命令来测试服务器性能也是不错的。
+> [Stress/Stress-NG](https://www.tecmint.com/linux-cpu-load-stress-test-with-stress-ng-tool/) 是 Linux 下两个常用的系统级压力测试工具，**stress** 命令简单易用，**stress-ng** 是 stress 的升级版，支持**数百个参数定制各种压 CPU、内存、IO、网络**的姿势。在系统过载的场景下，应用服务可能会出现意想不到的错误或异常，在测试**负载均衡和熔断降级**时非常有用。这里只列举了几个常用的命令，详细使用参考”stress-ng –help”或”man stress-ng”。另外，这些“烤机”命令来测试服务器性能也是不错的。
 
 - install
 
@@ -1577,18 +1569,15 @@ stress: info: [18174] successful run completed in 3s
 
 ![](https://p.k8s.li/20200506154459952.png)
 
-
 ### 小工具
 
 ### 镜像源
 
 ## 发行版
 
-
-
 ### pxder
 
-下班之后回到小窝之后就开始一天中最最愉悦的时刻，在 pixiv.net 上刷图。收藏喜欢的~~老婆~~插画。为了管理和下载自己收藏的插画作品，当然还是选择食用工具来下载啦😂。
+下班之后回到小窝之后就开始一天中最最愉悦的时刻，在 pixiv.net 上刷图。收藏喜欢的~~老婆~~插画。为了管理和下载自己收藏的插画作品，当然还是选择食用工具来下载啦 😂。
 
 在二月份的时候帮小土豆和 nova 同学测试 webp server go 的 benchmark ，这个 pxder 帮了咱很大的忙，下载了 3W 多张图片做测试样本，最终使用脚本筛选出合适的文件大小来进行 prefetc 测试。
 
@@ -1619,7 +1608,7 @@ ffmpeg 能干的事情太多了，咱使用最多的还是合并视频转码视�
 
 resilio sync ，是咱最重要的數據備份工具，比如咱使用 pxder 下載好收藏的老婆們，為了在手機上仔細欣賞老婆們，咱就用。resilio sync 將目錄同步到手機上，並且使用它來與 PC，iPhone ，Android ，Linux 三者無縫同步。簡直好用極了。
 
-需要注意的是，如果跨公網同步，在一些網絡環境下因為 GFW 的緣故，無法建立起鏈接，這時候需要使用到預定義主機。其中有兩種比較好的方案，一是在公網 VPS 機器上安裝 resilio sync 並且加入到同步主機當中。這點缺點也明顯，需要佔用磁盤空間，如果同步大量文件以及幾十幾百GB級別的話，小盤機是扛不住的，需要另外添加磁盤。方法二是咱想到的，屢試不爽，就是將本機的 resilio sync 監聽端口 11354 使用 frp 內網穿透到公網服務器，然後在另一台機器上添加上預定義主機，IP 就是 frp 服務器的 IP，端口就是 frp 內網穿透的 remote port。這樣添加好預訂與主機之後，不到一分鐘就能發現主機並建立起連接。
+需要注意的是，如果跨公網同步，在一些網絡環境下因為 GFW 的緣故，無法建立起鏈接，這時候需要使用到預定義主機。其中有兩種比較好的方案，一是在公網 VPS 機器上安裝 resilio sync 並且加入到同步主機當中。這點缺點也明顯，需要佔用磁盤空間，如果同步大量文件以及幾十幾百 GB 級別的話，小盤機是扛不住的，需要另外添加磁盤。方法二是咱想到的，屢試不爽，就是將本機的 resilio sync 監聽端口 11354 使用 frp 內網穿透到公網服務器，然後在另一台機器上添加上預定義主機，IP 就是 frp 服務器的 IP，端口就是 frp 內網穿透的 remote port。這樣添加好預訂與主機之後，不到一分鐘就能發現主機並建立起連接。
 
 #### curl
 
@@ -1833,4 +1822,4 @@ done
 
 ## 参考
 
-- [[DevOps] Linux操作系统层的故障注入](http://code2life.top/2019/05/02/0035-fault-injection/)
+- [[DevOps] Linux 操作系统层的故障注入](http://code2life.top/2019/05/02/0035-fault-injection/)

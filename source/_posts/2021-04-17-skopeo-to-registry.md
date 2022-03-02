@@ -11,10 +11,9 @@ copyright: true
 comment: true
 ---
 
+## 苦命打包工具人 😭
 
-## 苦命打包工具人😭
-
-目前在负责公司 PaaS toB 产品的打包发布工作（苦命发版+打包工具人😣）。日常的一项工作就是跑完自动化打包流水线，再将打出来的安装包更新到 QA 测试环境中。因为打包环境和测试环境分布在两个不同的机房，产品的安装包需要跨公网从打包机器上同步到 QA 环境中，因此产品安装包的大小就决定着两者间同步的耗时。优化和减少产品安装包的大小就成为了提升流水线效率的途径之一。最近做的一项工作就是将产品补丁包的大小减少 30%～60%，大大节省了补丁包上传下载和安装的耗时，提升了产品打包流水线的效率。因此今天就总结一下从中学到的一点人生经验 👓。
+目前在负责公司 PaaS toB 产品的打包发布工作（苦命发版 + 打包工具人 😣）。日常的一项工作就是跑完自动化打包流水线，再将打出来的安装包更新到 QA 测试环境中。因为打包环境和测试环境分布在两个不同的机房，产品的安装包需要跨公网从打包机器上同步到 QA 环境中，因此产品安装包的大小就决定着两者间同步的耗时。优化和减少产品安装包的大小就成为了提升流水线效率的途径之一。最近做的一项工作就是将产品补丁包的大小减少 30%～60%，大大节省了补丁包上传下载和安装的耗时，提升了产品打包流水线的效率。因此今天就总结一下从中学到的一点人生经验 👓。
 
 ## 再次优化
 
@@ -54,7 +53,7 @@ images
 
 从文件名和文件大小也可以大致推断出 `707K` 大小的 742efefc8a 就是 `go-runner` 镜像的根文件系统；`642K` 大小的 fefd47533 就是 go-runner 的二进制文件；`2.x` 左右大小的应该就是镜像的 image config 文件；剩下那个十几二十几 M 的就是  `kube-apiserver`  `kube-controller-manager` `kube-scheduler`  的二进制文件；manifest.json 文件就是镜像在 registry 存储中的 manifest 。
 
-- 使用 find 来统计这些文件的数量，经过去重之后可以发现镜像的 layer 文件和 config 文件总数量从原来的 12 个减少到 8 个。做一个简单的加法计算也就是：3 个 image config 文件 + 3 个二进制文件 + 1 个 base 镜像 layer 文件 + 1 个 go-runner 二进制文件，这不正好就是 8 嘛😂
+- 使用 find 来统计这些文件的数量，经过去重之后可以发现镜像的 layer 文件和 config 文件总数量从原来的 12 个减少到 8 个。做一个简单的加法计算也就是：3 个 image config 文件 + 3 个二进制文件 + 1 个 base 镜像 layer 文件 + 1 个 go-runner 二进制文件，这不正好就是 8 嘛 😂
 
 ```bash
 root@debian:/root/kube # find images -type f | grep -Eo "\b[a-f0-9]{64}\b" | wc
@@ -84,7 +83,7 @@ root@debian:/root $ $ find images2 -type f ! -name 'version' ! -name 'manifest.j
 
 ## 构建 skopeo dir 镜像存储
 
-- 为了方便演示，需要找个合适的镜像列表，看了一下 [ks-installer](https://github.com/kubesphere/ks-installer) 项目中有个镜像列表，看样子比较合适那就用它吧😃
+- 为了方便演示，需要找个合适的镜像列表，看了一下 [ks-installer](https://github.com/kubesphere/ks-installer) 项目中有个镜像列表，看样子比较合适那就用它吧 😃
 
 ```bash
 root@debian:/root # curl -L -O https://github.com/kubesphere/ks-installer/releases/download/v3.0.0/images-list.txt
@@ -137,7 +136,7 @@ root@debian:/root # find images -type f ! -name "version" | wc -l
 
 ## 转换成 registry 存储目录
 
-根据下图所示的 registry 存储结构，我们要将镜像的 layer、image config、manifests 这三种文件根据它们的 sha256 值存放到 blobs/sha256 目录下，然后再在 repositories 目录下创建相应link 文件，这样就可以将镜像转换成 registry 存储的格式了。
+根据下图所示的 registry 存储结构，我们要将镜像的 layer、image config、manifests 这三种文件根据它们的 sha256 值存放到 blobs/sha256 目录下，然后再在 repositories 目录下创建相应 link 文件，这样就可以将镜像转换成 registry 存储的格式了。
 
 ![](https://p.k8s.li/registry-storage.jpeg)
 
@@ -153,7 +152,7 @@ images/alpine:3.10.4
     └── [  33]  version
 ```
 
- 根据镜像文件大小我们可以得知： `2.7M` 大小的 `4167d3e1497……` 文件就是镜像的 layer 文件，由于 alpine 是一个 base 镜像，该 layer 就是 alpine 的根文件系统；`1.5K` 大小的 `af341ccd2……` 显而易见就是镜像的 images config 文件；`manifest.json` 文件则是镜像在 registry 存储中的 manifest.json 文件。
+根据镜像文件大小我们可以得知： `2.7M` 大小的 `4167d3e1497……` 文件就是镜像的 layer 文件，由于 alpine 是一个 base 镜像，该 layer 就是 alpine 的根文件系统；`1.5K` 大小的 `af341ccd2……` 显而易见就是镜像的 images config 文件；`manifest.json` 文件则是镜像在 registry 存储中的 manifest.json 文件。
 
 - 先创建该镜像在 registry 存储中的目录结构
 
@@ -243,7 +242,7 @@ docker
                                         └── link
 ```
 
-- 测试是否正常，本地 docker run 一个 registry 容器，将刚刚转换的 registry 存储目录挂载到容器的 /var/lib/registry，然后再使用 docker pull 的方式拉取镜像，在使用 docker run 测试一下能否正常使用。经过验证之后确实可以使用，那就说明这样的转换是没有问题的😊。
+- 测试是否正常，本地 docker run 一个 registry 容器，将刚刚转换的 registry 存储目录挂载到容器的 /var/lib/registry，然后再使用 docker pull 的方式拉取镜像，在使用 docker run 测试一下能否正常使用。经过验证之后确实可以使用，那就说明这样的转换是没有问题的 😊。
 
 ```bash
 root@debian:/root # docker pull localhost/alpine:3.10.4

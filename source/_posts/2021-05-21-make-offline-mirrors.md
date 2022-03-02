@@ -36,7 +36,7 @@ comment: true
 
 可以看出这种方式十分不灵活，假如我想要制作 Debian 9 的 apt 离线源，我就需要一台 Debian 9 的机器。如果要适配多个 Linux 发行版就需要多个相应的 OS 机器。要管理和使用这么多种类的 OS 不是一件容易的事儿，而如今已经十分普遍使用的容器技术恰恰能帮助我们解决这类问题。比如我想运行一个 Debian9 的操作系统，我只需要运行一个 Debian 9 镜像的容器即可，而且不需要额外的管理成本，使用起来也十分地轻量。
 
-日常工作中我们常使用容器来构建一些 Golang 写的后端组件，那么构建离线源是不是也可以这样做？实践证明确实可以，我们只需要为不同的 OS 和包管理器写一个相应的 Dockerfile 即可。使用 docker build 多阶段构建的特性，可以将多个 Dockerfile 合并成一个，然后最后使用 COPY --from 的方式将这个构建的产物复制到同一个镜像中，比如提供 HTTP 的 nginx 容器，或者使用 BuildKit 的特性将这些构建产物导出为 tar包 或者为本地目录。
+日常工作中我们常使用容器来构建一些 Golang 写的后端组件，那么构建离线源是不是也可以这样做？实践证明确实可以，我们只需要为不同的 OS 和包管理器写一个相应的 Dockerfile 即可。使用 docker build 多阶段构建的特性，可以将多个 Dockerfile 合并成一个，然后最后使用 COPY --from 的方式将这个构建的产物复制到同一个镜像中，比如提供 HTTP 的 nginx 容器，或者使用 BuildKit 的特性将这些构建产物导出为 tar 包 或者为本地目录。
 
 ## 适配 OS
 
@@ -70,11 +70,8 @@ build
 这个文件用来管理不同的包管理器或者 Linux 发行版需要安装的软件包。根据不同的包管理器和发行版我们可以将这些包大致划分为 4 类。
 
 - common：适用于一些所有包管理器中包名相同或者对版本无要求的包，比如 vim 、curl、wget 这类工具。一般情况下使用这些工具我们并不关心它的版本，并且这类包的包名在所有的包管理器中都是相同的，所以这类可以划分为公共包。
-
 - yum/apt/dnf：适用于不同的发行版使用相同的包管理器。比如 nfs 的包，在 yum 中包名为 nfs-utils 但在 apt 中为 nfs-common，这类软件包可以划分为一类。
-
 - OS：适用于一些该 OS 独有的包，比如安装一个 Ubuntu 中有但 Debian 中没有的包（比如 debian-builder 或 ubuntu-dev-tools）。
-
 - OS-发行版代号：这类包的版本和发行版代号绑定在一起，比如 `docker-ce=5:19.03.15~3-0~debian-stretch。`
 
 ```yaml
@@ -347,7 +344,7 @@ COPY --from=builder /debian /debian
 
 ### Ubuntu
 
-Ubuntu 离线源的制作步骤和 Debian 差不太多，只需要简单修改一下 Debian 的 Dockerfile 应该就 OK ，比如 `'s/debian/ubuntu/g'` ，毕竟 Debian 是 Ubuntu 的爸爸嘛～～，所以 apt 使用的方式和包名几乎一模一样，这里就不再赘述了。
+Ubuntu 离线源的制作步骤和 Debian 差不太多，只需要简单修改一下 Debian 的 Dockerfile 应该就 OK ，比如 `'s/debian/ubuntu/g'` ，毕竟 Debian 是 Ubuntu 的爸爸嘛 ～～，所以 apt 使用的方式和包名几乎一模一样，这里就不再赘述了。
 
 ### All-in-Oone
 
@@ -833,5 +830,5 @@ sed -i "s|__ID__|$(sed -n 's|^ID=||p' /etc/os-release)|;s|__VERSION_CODENAME__|$
 - [yq 之读写篇](https://lyyao09.github.io/2019/08/02/tools/The-usage-of-yq-read-write/)
 - [Build images with BuildKit](https://docs.docker.com/develop/develop-images/build_enhancements/)
 - [kubernetes-sigs/kubespray/pull/6766](https://github.com/kubernetes-sigs/kubespray/pull/6766)
-- [万字长文：彻底搞懂容器镜像构建](https://moelove.info/2021/03/14/万字长文彻底搞懂容器镜像构建/)
+- [万字长文：彻底搞懂容器镜像构建](https://moelove.info/2021/03/14/%E4%B8%87%E5%AD%97%E9%95%BF%E6%96%87%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA/)
 - [为 CentOS 与 Ubuntu 制作离线本地源](https://www.xiaocoder.com/2017/09/12/offline-local-source/)

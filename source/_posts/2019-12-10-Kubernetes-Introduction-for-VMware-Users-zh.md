@@ -9,7 +9,6 @@ tag:
   - 翻译
 copyright: true
 comment: true
-
 ---
 
 ## 更新日志
@@ -20,19 +19,19 @@ comment: true
 
 ## README
 
-本文翻译自 [Kubernetes Introduction for VMware Users – Part 1: The Theory]( https://blogs.vmware.com/cloudnative/2017/10/25/kubernetes-introduction-vmware-users/ )
+本文翻译自 [Kubernetes Introduction for VMware Users – Part 1: The Theory](https://blogs.vmware.com/cloudnative/2017/10/25/kubernetes-introduction-vmware-users/ )
 
 By Hany Michaels, Senior Staff Solutions Architect NSBU, VMware
 
 October 25, 2017
 
-四六级未过的工地英语翻译、希望各位读者雅正翻译不当的部分😁
+四六级未过的工地英语翻译、希望各位读者雅正翻译不当的部分 😁
 
 ## Kubernetes Introduction for VMware Users – Part 1: The Theory
 
 ## 给 VMware 用户的 Kubernetes 简介——第一部分：理论
 
->This is the second part of my “Kubernetes in the Enterprise” blog series. As I mentioned in my [last article](http://www.hanymichaels.com/2017/10/04/kubernetes-in-the-enterprise-a-vmware-guide-on-how-to-design-deploy-and-operate-k8saas-with-nsx-t-and-vra/), it is important to get everyone to the same level of understanding about Kubernetes ([K8s](https://kubernetes.io/)) before we can proceed to the design and implementation guides.
+> This is the second part of my “Kubernetes in the Enterprise” blog series. As I mentioned in my [last article](http://www.hanymichaels.com/2017/10/04/kubernetes-in-the-enterprise-a-vmware-guide-on-how-to-design-deploy-and-operate-k8saas-with-nsx-t-and-vra/), it is important to get everyone to the same level of understanding about Kubernetes ([K8s](https://kubernetes.io/)) before we can proceed to the design and implementation guides.
 
 这是我的“ kubernetes 在企业中应用” 博客系列的第二篇文章。正如我在上一篇文章提到的，在我们继续设计与实现指南之前，重要的是让每个人对 kubernetes 的理解都是相同水平的。
 
@@ -68,7 +67,7 @@ October 25, 2017
 
 > Fast forward 10 years, and along came a company called Docker. I was a VMware consultant in professional services (2013) when I heard about Docker, and let me tell you that I couldn’t make any sense of that technology back in those days. I kept saying things like: “Why would I run containers when I can do that with VMs?” “Why would I give up important features like vSphere HA, DRS or vMotion for those weird benefits of booting up a container instantly or skipping the “hypervisor” layer?” In short, I was looking at this from a pure infrastructure perspective.
 
-快进10年，随之而来的是一家名为 Docker 的公司。当我听说 Docker 时，我是一名 VMware 专业服务顾问（2013 年）。你有所不知，那时的我对这种技术一无所知。我总是这样说："为什么当我能够使用 VM 时非要运行容器呢？“，"我为什么要放弃重要特性，如 vSphere HA、DRS 或 vMotion，为了快速启动容器或跳过 `虚拟机管理程序`层所带来的好处？”。简而言之，我是从纯粹的基础架构角度来看待这个问题的。
+快进 10 年，随之而来的是一家名为 Docker 的公司。当我听说 Docker 时，我是一名 VMware 专业服务顾问（2013 年）。你有所不知，那时的我对这种技术一无所知。我总是这样说："为什么当我能够使用 VM 时非要运行容器呢？“，"我为什么要放弃重要特性，如 vSphere HA、DRS 或 vMotion，为了快速启动容器或跳过 `虚拟机管理程序` 层所带来的好处？”。简而言之，我是从纯粹的基础架构角度来看待这个问题的。
 
 > But then I started looking closer until it just hit me. Everything Docker is all about relates to developers. Only when I started thinking like one did it click. What if I had this technology back in 2003 and packaged my dependencies? My web apps would work no matter what server they run on. Better yet, I don’t have to keep uploading source code or setting up anything special. I can just “package” my app in an image and tell my customer to download that image and run it. That’s a web developer’s dream!
 
@@ -80,7 +79,7 @@ Docker 解决了交互和打包的一个大问题，但现在怎么办？作为�
 
 > But then along came Google to tell the world that it has been actually running containers for years (and in fact invented them – Google: cgroups), and that the proper way to do that is through a platform they called Kubernetes. They then open sourced it, gave it as gift to the community, and that changed everything again.
 
-但是后来 Google 告诉世界，他们实际上运行容器很多年了（其实是他们发明的 - Google: cgroups），而这样做的正确方法是通过一个称为 Kubernetes平台，然后他们把 Kubernetes 作为礼物开源给了社区 ，这再次改变了一切。
+但是后来 Google 告诉世界，他们实际上运行容器很多年了（其实是他们发明的 - Google: cgroups），而这样做的正确方法是通过一个称为 Kubernetes 平台，然后他们把 Kubernetes 作为礼物开源给了社区 ，这再次改变了一切。
 
 ## Understanding Kubernetes by comparing it to vSphere
 
@@ -94,7 +93,7 @@ Docker 解决了交互和打包的一个大问题，但现在怎么办？作为�
 
 > Figure: The VM evolution from Workstation to vSphere compared to the current evolution for containers to Kubernetes
 
-图片：从容器到 Kubernetes 的与VM 从 Workstation 到 vSphere 演进的对比
+图片：从容器到 Kubernetes 的与 VM 从 Workstation 到 vSphere 演进的对比
 
 ## System Overview
 
@@ -156,7 +155,7 @@ You can see also that K8s has a key-value store called “etcd.” It is similar
 
 > One of the very profound concepts in Kubernetes is the desired state of configurations. You declare what you want for almost any Kubernetes component through a YAML file, and you create that using your kubectl (or through dashboard) as your desired state. Kubernetes will always strive from this moment on to keep that as a running state in your environment. For example, if you want to have four replicas of one pod, K8s will keep monitoring those pods. If one dies or the nodes it’s running have issues, it will self-heal and automatically create that pod somewhere else.
 
-Kubernetes 中非常重要的概念之一是所描述的配置状态。通过 YAML 文件几乎可以声明任何 Kubernetes 组件所需的资源，并使用 kubectl 命令（或通过仪表盘）创建该对象作为所描述的状态。从创建后开始，在你的集群中Kubernetes 始终会努力将保持为所描述的运行状态。例如，如果要有一个 pod 的四个副本，K8s 将继续监视这些pod。如果一个 pod 挂掉或它正在运行的节点有问题，它将自我修复，并自动在其他节点创建该 pod 。
+Kubernetes 中非常重要的概念之一是所描述的配置状态。通过 YAML 文件几乎可以声明任何 Kubernetes 组件所需的资源，并使用 kubectl 命令（或通过仪表盘）创建该对象作为所描述的状态。从创建后开始，在你的集群中 Kubernetes 始终会努力将保持为所描述的运行状态。例如，如果要有一个 pod 的四个副本，K8s 将继续监视这些 pod。如果一个 pod 挂掉或它正在运行的节点有问题，它将自我修复，并自动在其他节点创建该 pod 。
 
 > Back to our YAML configuration files — you can think of them like a .VMX file for a VM, or a .OVF descriptor for a virtual appliance that you want to deploy in vSphere. Those files define the configuration of the workload/component you want to run. Unlike VMX/OVF files that are exclusive to VMs/Appliances, the YAML configuration files are used to define any K8s component like ReplicaSets, Services, Deployments, etc. as we will see in the coming sections.
 
@@ -214,7 +213,7 @@ In vSphere, we have physical ESXi hosts grouped logically to form clusters. We c
 
 > Similarly in Kubernetes, we have the concepts of “Services.” A K8s Service could also be used in different configuration modes, but let’s pick the “ClusterIP” configuration here to compare to the one-armed LB. In this case, our K8s Service will have a virtual IP (VIP) that is always static and does not change. This VIP will distribute the traffic across multiple pods. This is especially important in the Kubernetes world were pods are ephemeral by nature and where you lose the pod IP address the moment it dies or gets deleted. So you have to always be able to maintain a static VIP.
 
-同样，在 Kubernetes 中，我们有"服务"的概念。K8s 服务，但让我们在这里选择"ClusterIP"配置，以便与单臂 LB 进行比较。在这种情况下，我们的 K8s 服务将有一个始终静态且不会更改的虚拟 IP （VIP）。此 VIP 将在多个 Pod 上分配流量。这一点在 Kubernetes 世界尤其重要，因为吊舱本质上是短暂的，当你死或被删除的时候，你失去了 pod IP地址。因此，你必须始终能够维护静态 VIP。
+同样，在 Kubernetes 中，我们有"服务"的概念。K8s 服务，但让我们在这里选择"ClusterIP"配置，以便与单臂 LB 进行比较。在这种情况下，我们的 K8s 服务将有一个始终静态且不会更改的虚拟 IP （VIP）。此 VIP 将在多个 Pod 上分配流量。这一点在 Kubernetes 世界尤其重要，因为吊舱本质上是短暂的，当你死或被删除的时候，你失去了 pod IP 地址。因此，你必须始终能够维护静态 VIP。
 
 > As I mentioned, the Services have many other configurations like “NodePort,” where you basically assign a port on the node level and then do a port-address-translation down to the pods. There is also the “LoadBalancer,” where you spin up an LB instance from a 3rd-party or a cloud provider.
 
@@ -252,12 +251,12 @@ Kubernetes 具有不同的网络"插件"，你可以使用这些插件来设置�
 
 > Now you should be asking, how is traffic forwarded to the external world? You see that we have a standard Linux IP forwarding enabled here to forward the traffic from cbr0 to eth0. This is great, but then how does the L3 device know how to forward this to the destination? We do not have dynamic routing here to advertise this network in this particular example. And so, this is why we need to have some kind of “static route” on that L3 device to know that in order to reach subnet 10.40.1.0/24, your entry point is the external IP of node 1 (10.140.0.11), and in order to reach subnet 10.40.2.0/24, your next hope is node (m) with the IP address 10.140.0.12.
 
-现在你可能会问，流量是如何转发到集群外的呢？你看，我们在此启用了标准的 Linux IP 转发功能，将流量从 cbr0 转发到 eth0。这是非常棒的，但然后 L3 设备如何知道如何转发到目的地？在此特定示例中，我们没有动态路由来通告此网络。因此，这就是为什么我们需要有某种"静态路由"在 L3 设备上知道，为了达到子网10.40.1.0/24，你的入口点是节点1（10.140.0.11）的外部IP，并为了达到子网10.40.2.0/24，你的下一跳（m） 与 IP 地址 10.140.0.12。
+现在你可能会问，流量是如何转发到集群外的呢？你看，我们在此启用了标准的 Linux IP 转发功能，将流量从 cbr0 转发到 eth0。这是非常棒的，但然后 L3 设备如何知道如何转发到目的地？在此特定示例中，我们没有动态路由来通告此网络。因此，这就是为什么我们需要有某种"静态路由"在 L3 设备上知道，为了达到子网 10.40.1.0/24，你的入口点是节点 1（10.140.0.11）的外部 IP，并为了达到子网 10.40.2.0/24，你的下一跳（m） 与 IP 地址 10.140.0.12。
 
 > This is great, but you must be thinking that it’s a very unpractical way to manage your networks. This would be an absolute nightmare for network administrators to maintain all those routes as you scale with your cluster. And you’re right—this is why we need some kind of solution like the CNI (container network plugin) in Kubernetes to use a networking mechanism to manage this for you. NSX-T is one of those solutions with a powerful design for both the networking and security stacks.
 
-这太好了，但你一定认为，这是一个非常不实际的方式来管理你的网络。对于网络管理员来说，在与群集进行扩展时维护所有这些路由绝对是一场噩梦。你说得对，这就是为什么我们需要某种解决方案，如 Kubernetes 中的CNI（容器网络插件），以使用网络机制为你管理。NSX-T 是这些解决方案之一，具有强大的网络和安全堆栈设计。
+这太好了，但你一定认为，这是一个非常不实际的方式来管理你的网络。对于网络管理员来说，在与群集进行扩展时维护所有这些路由绝对是一场噩梦。你说得对，这就是为什么我们需要某种解决方案，如 Kubernetes 中的 CNI（容器网络插件），以使用网络机制为你管理。NSX-T 是这些解决方案之一，具有强大的网络和安全堆栈设计。
 
 > Remember, we are examining here the kubernetes plugin, not CNI. The former is what GKE uses, and the way they do this is quite fascinating as it’s completely programmable and automated on their cloud. Those subnet allocations and associated routes are taken care of by GCP for you, as we will see in the next part.
 
-请记住，我们正在测试 kubernetes 插件而不是CNI。前者是 GKE 使用的，他们这样做的方式是相当棒的，因为它是完全可编程和自动化的云。这些子网分配和相关路由由 GCP 为你负责，我们将在下一部分中看到。
+请记住，我们正在测试 kubernetes 插件而不是 CNI。前者是 GKE 使用的，他们这样做的方式是相当棒的，因为它是完全可编程和自动化的云。这些子网分配和相关路由由 GCP 为你负责，我们将在下一部分中看到。

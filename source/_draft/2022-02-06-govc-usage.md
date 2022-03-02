@@ -63,7 +63,8 @@ API version:  7.0.2.0
 Product ID:   embeddedEsx
 UUID:
 ```
-如果用户名和密码当中有特殊字符比如` \ @ /`，建议分别设置 `GOVC_URL`、`GOVC_USERNAME` 和 `GOVC_PASSWORD` 这样能避免特殊字符在 `GOVC_URL` 出现一些奇奇怪怪的问题。
+
+如果用户名和密码当中有特殊字符比如 ` \ @ /`，建议分别设置 `GOVC_URL`、`GOVC_USERNAME` 和 `GOVC_PASSWORD` 这样能避免特殊字符在 `GOVC_URL` 出现一些奇奇怪怪的问题。
 
 ## 获取主机信息
 
@@ -74,7 +75,7 @@ UUID:
 - Path: 当前主机在集群中的资源路径
 - Manufacturer: 硬件设备制造商
 - Logical CPUs: 逻辑 CPU 的数量，以及 CPU 的基础频率
-- Processor type: CPU 的具体型号，由于我的是 ES 版的 E-2126G，所以无法显示出具体的型号🤣
+- Processor type: CPU 的具体型号，由于我的是 ES 版的 E-2126G，所以无法显示出具体的型号 🤣
 - CPU usage:  CPU 使用的负载情况
 - Memory:  主机安装的内存大小
 - Memory usage:  内存使用的负载情况
@@ -163,7 +164,7 @@ mo.HostSystem{
         },
 ```
 
-在写单元测试的时候，我经常用它来 mock 一些特殊硬件设备的信息，这比自己手写这些结构体要方便很多。比如以`mpx.vmhba<Adapter>:C<Channel>:T<Target>:L<LUN> ` 命名的硬盘可以通过  `PlugStoreTopology` 这个结构体来获取该硬盘的 NAA 号：
+在写单元测试的时候，我经常用它来 mock 一些特殊硬件设备的信息，这比自己手写这些结构体要方便很多。比如以 `mpx.vmhba<Adapter>:C<Channel>:T<Target>:L<LUN> ` 命名的硬盘可以通过  `PlugStoreTopology` 这个结构体来获取该硬盘的 NAA 号：
 
 ```golang
 func getDiskIDByHostPlugStoreTopology(hpst *types.HostPlugStoreTopology, diskName string) string {
@@ -645,4 +646,4 @@ func main() {
 
 ## 参考
 
-- [vSphere go命令行管理工具govc](https://gitbook.curiouser.top/origin/vsphere-govc.html)
+- [vSphere go 命令行管理工具 govc](https://gitbook.curiouser.top/origin/vsphere-govc.html)

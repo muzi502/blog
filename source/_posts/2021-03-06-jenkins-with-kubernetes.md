@@ -75,9 +75,9 @@ jenkins   Ready    master   119s   v1.19.8
 kubectl taint nodes $(hostname) node-role.kubernetes.io/master:NoSchedule-
 ```
 
-##  Jenkins master
+## Jenkins master
 
-至于  Jenkins master 的部署方式，个人建议使用 docker-compose 来部署。运行在 kubernetes 集群集群中也没什么毛病，可以参考 [基于 Jenkins 的 CI/CD (一)](https://www.qikqiak.com/k8s-book/docs/36.Jenkins%20Slave.html) 这篇博客。但从个人运维踩的坑来讲，还是将  Jenkins master 独立于 kubernetes 集群部署比较方便😂。
+至于  Jenkins master 的部署方式，个人建议使用 docker-compose 来部署。运行在 kubernetes 集群集群中也没什么毛病，可以参考 [基于 Jenkins 的 CI/CD (一)](https://www.qikqiak.com/k8s-book/docs/36.Jenkins%20Slave.html) 这篇博客。但从个人运维踩的坑来讲，还是将  Jenkins master 独立于 kubernetes 集群部署比较方便 😂。
 
 - `docker-compose.yaml`
 
@@ -123,7 +123,7 @@ jenkins    | *************************************************************
 
 - 在 Jenkins 的插件管理那里安装上 kubernetes 插件
 - ![image-20210306103352837](https://p.k8s.li/image-20210306103352837.png)
-- 接下来开始配置 Jenkins 大叔如何与 kubernetes 船长手牵手🧑‍🤝‍🧑 :-)。配置 kubernets 的地方是在 `系统管理 > 节点管理 > Configure Clouds`。点击 `Add a new cloud`，来添加一个 kubernetes 集群。
+- 接下来开始配置 Jenkins 大叔如何与 kubernetes 船长手牵手 🧑‍🤝‍🧑 :-)。配置 kubernets 的地方是在 `系统管理 > 节点管理 > Configure Clouds`。点击 `Add a new cloud`，来添加一个 kubernetes 集群。
 
 ![image-20210306111626079](https://p.k8s.li/image-20210306111626079.png)
 
@@ -157,7 +157,7 @@ jenkins    | *************************************************************
 
 ![image-20210306111148462](https://p.k8s.li/image-20210306111148462.png)
 
--   关于 pod 模板
+- 关于 pod 模板
 
 其实就是配置 Jenkins Slave 运行的 Pod 模板，个人不太建议使用插件中的模板去配置，推荐将 pod 的模板放在 Jenkinsfile 中，因为这些配置与我们的流水线紧密相关，把 pod 的配置存储在 Jenkins 的插件里实在是不太方便；不方便后续的迁移备份之类的工作；后续插件升级后这些配置也可能会丢失。因此建议将 pod 模板的配置直接定义在 Jenkinsfile 中，灵活性更高一些，不会受 Jenkins 插件升级的影响。总之用代码去管理这些 pod 配置维护成本将会少很多。
 
@@ -306,17 +306,15 @@ Created Pod: kubernetes default/debian-35a11b49-087b-4a8c-abac-bd97d7eb5a1f-fkmz
 
 ## 结束
 
-到此为止，我们就完成了让 Jenkins 大叔与 kubernetes 船长手牵手🧑‍🤝‍🧑啦！上面使用了一个简单的例子来展示了如何将 Jenkins 的 Job 任务运行在 kubernetes 集群上，但在实际工作中遇到的情形可能比这要复杂一些，流水线需要配置的参数也要多一些。那么我将会在下一篇博客中再讲一下高级的用法：使用 Jenkins 完成 kubespray 离线安装包打包。
+到此为止，我们就完成了让 Jenkins 大叔与 kubernetes 船长手牵手 🧑‍🤝‍🧑 啦！上面使用了一个简单的例子来展示了如何将 Jenkins 的 Job 任务运行在 kubernetes 集群上，但在实际工作中遇到的情形可能比这要复杂一些，流水线需要配置的参数也要多一些。那么我将会在下一篇博客中再讲一下高级的用法：使用 Jenkins 完成 kubespray 离线安装包打包。
 
 ## 参考
 
--   [使用 Kubernetes 和 Jenkins 创建一个 CI/CD 流水线](https://jenkins-zh.cn/wechat/articles/2020/03/2020-03-10-create-a-ci-cd-pipeline-with-kubernetes-and-jenkins/)
--   [基于 Jenkins 的 CI/CD (一)](https://www.qikqiak.com/k8s-book/docs/36.Jenkins%20Slave.html)
-
--   [PingCAP 面试：Jenkins 和 Kubernetes](https://a-wing.top/kubernetes/2021/01/27/jenkins_and_kubernetes.html)
--   [基于 Kubernetes 的 Jenkins 服务也可以去 Docker 了](https://www.chenshaowen.com/blog/using-podman-to-build-images-under-kubernetes-and-jenkins.html)
-
--   [Jenkins Pipeline 使用及调试](https://www.chenshaowen.com/blog/jenkins-pipeline-usging-and-debug.html)
--   [在 Kubernetes 上动态创建 Jenkins Slave](https://www.chenshaowen.com/blog/creating-jenkins-slave-dynamically-on-kubernetes.html)
--   [Jenkins X 不是 Jenkins ，而是一个技术栈](https://www.chenshaowen.com/blog/jenkins-x-is-not-jenkins-but-stack.html)
--   [Jenkins CI/CD (一) 基于角色的授权策略](https://atbug.com/using-role-based-authorization-strategy-in-jenkins/)
+- [使用 Kubernetes 和 Jenkins 创建一个 CI/CD 流水线](https://jenkins-zh.cn/wechat/articles/2020/03/2020-03-10-create-a-ci-cd-pipeline-with-kubernetes-and-jenkins/)
+- [基于 Jenkins 的 CI/CD (一)](https://www.qikqiak.com/k8s-book/docs/36.Jenkins%20Slave.html)
+- [PingCAP 面试：Jenkins 和 Kubernetes](https://a-wing.top/kubernetes/2021/01/27/jenkins_and_kubernetes.html)
+- [基于 Kubernetes 的 Jenkins 服务也可以去 Docker 了](https://www.chenshaowen.com/blog/using-podman-to-build-images-under-kubernetes-and-jenkins.html)
+- [Jenkins Pipeline 使用及调试](https://www.chenshaowen.com/blog/jenkins-pipeline-usging-and-debug.html)
+- [在 Kubernetes 上动态创建 Jenkins Slave](https://www.chenshaowen.com/blog/creating-jenkins-slave-dynamically-on-kubernetes.html)
+- [Jenkins X 不是 Jenkins ，而是一个技术栈](https://www.chenshaowen.com/blog/jenkins-x-is-not-jenkins-but-stack.html)
+- [Jenkins CI/CD (一) 基于角色的授权策略](https://atbug.com/using-role-based-authorization-strategy-in-jenkins/)

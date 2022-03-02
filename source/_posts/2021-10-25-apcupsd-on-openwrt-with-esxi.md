@@ -44,7 +44,7 @@ comment: true
 [  268.621010] usb 1-2.1: USB disconnect, device number 6
 ```
 
-不幸 USB 直通给虚拟机的方案翻车了，于是想着要不将 USB 线缆连接到我的 R4S 软路由上🤔️。连接到软路由上要比在 ESXi 主机上好一些，这样在来电之后写的监控脚本也能检测到 UPS 已经通电了，这样就可以自动启动 NAS 主机以及上面的一些 VM。于是就琢磨了以下的方案，线路图如下：
+不幸 USB 直通给虚拟机的方案翻车了，于是想着要不将 USB 线缆连接到我的 R4S 软路由上 🤔️。连接到软路由上要比在 ESXi 主机上好一些，这样在来电之后写的监控脚本也能检测到 UPS 已经通电了，这样就可以自动启动 NAS 主机以及上面的一些 VM。于是就琢磨了以下的方案，线路图如下：
 
 ![image-20211025224325577](https://p.k8s.li/2021-10-25-apcupsd-on-openwrt-with-esxi.png)
 
@@ -56,7 +56,7 @@ comment: true
 
 ## apcupsd on openwrt
 
-首先就是在 R4S openwrt 上安装和配置 apcupsd，安装和配置的详细内容可参考几万字的官方手册 [apcupsd.org/manual](http://www.apcupsd.org/manual/) （劝退😂。
+首先就是在 R4S openwrt 上安装和配置 apcupsd，安装和配置的详细内容可参考几万字的官方手册 [apcupsd.org/manual](http://www.apcupsd.org/manual/) （劝退 😂。
 
 ### 安装配置
 
@@ -370,7 +370,7 @@ $ govc host.esxcli system shutdown
 govc: no argument
 ```
 
-- 关机脚本`shutdown_esxi.sh`
+- 关机脚本 `shutdown_esxi.sh`
 
 ```bash
 #!/bin/bash
@@ -397,7 +397,7 @@ done
 govc host.esxcli system shutdown
 ```
 
-- 修改` /etc/apcupsd/apccontrol`
+- 修改 ` /etc/apcupsd/apccontrol`
 
 ```bash
     doshutdown)
@@ -407,11 +407,11 @@ govc host.esxcli system shutdown
 	;;
 ```
 
-##  vim-cmd
+## vim-cmd
 
 由于 vim-cmd 命令只能在 ESXi 主机上运行，因此我们需要将该关机脚本保存到 ESXI 主机上，或者通过 scp 的方式将该脚本传输到 ESXi 主机上，然后执行该脚本完成关机操作。
 
-- 修改` /etc/apcupsd/apccontrol`
+- 修改 ` /etc/apcupsd/apccontrol`
 
 ```bash
     doshutdown)
@@ -462,5 +462,4 @@ echo "Poweroff at $(TZ=UTC-8 date +%Y-%m-%d" "%H:%M:%S)" >> ${LOG_PATH}
 - [apcupsd debian wiki](https://wiki.debian.org/apcupsd)
 - [使用 apcupsd 实现 UPS 断电自动关机](https://linuxtoy.org/archives/howto-use-apcupsd-to-automatically-shutdown-system-during-outrage.html)
 - [govc usage](https://github.com/vmware/govmomi/blob/master/govc/USAGE.md)
-- [vSphere go命令行管理工具govc](https://gitbook.curiouser.top/origin/vsphere-govc.html)
-
+- [vSphere go 命令行管理工具 govc](https://gitbook.curiouser.top/origin/vsphere-govc.html)

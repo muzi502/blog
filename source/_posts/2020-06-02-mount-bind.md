@@ -14,11 +14,11 @@ comment: true
 
 ## 翻车（：
 
-由于我的 VPS 不是大盘鸡(就是大容量磁盘机器啦😂)， docker 存储目录 `/var/lib/docker` 所在的分区严重不足，于是就想着在不改变 docker 配置的下将 `/opt` 目录下的分区分配给 `/var/lib/docker` 目录。首先想到的是把 `/var/lib/docker` 复制到 `/opt/docker`，然后再将 `/opt/docker` 软链接到 `/var/lib/docker` 。
+由于我的 VPS 不是大盘鸡(就是大容量磁盘机器啦 😂)， docker 存储目录 `/var/lib/docker` 所在的分区严重不足，于是就想着在不改变 docker 配置的下将 `/opt` 目录下的分区分配给 `/var/lib/docker` 目录。首先想到的是把 `/var/lib/docker` 复制到 `/opt/docker`，然后再将 `/opt/docker` 软链接到 `/var/lib/docker` 。
 
-于是我就一顿操作猛如虎，`mv /var/lib/docker /opt/docker && ln -s /opt/docker /var/lib/docker` 一把梭，然后我启动一个容器的时候当场就翻车了🤣。
+于是我就一顿操作猛如虎，`mv /var/lib/docker /opt/docker && ln -s /opt/docker /var/lib/docker` 一把梭，然后我启动一个容器的时候当场就翻车了 🤣。
 
-原来有些程序是不支持软链接目录的，还有一点就是软链接的路径也有点坑。比如我将 `/opt/docker -> /var/lib/docker/` ，在 `/var/lib/docker` 目录下执行 `ls ../` 即它的上一级目录是 `/opt` 而不是 `/var/lib` ，对于一些依赖相对路径的应用（尤其是 shell 脚本）来讲这样使用软链接的方式也容易翻车😂。
+原来有些程序是不支持软链接目录的，还有一点就是软链接的路径也有点坑。比如我将 `/opt/docker -> /var/lib/docker/` ，在 `/var/lib/docker` 目录下执行 `ls ../` 即它的上一级目录是 `/opt` 而不是 `/var/lib` ，对于一些依赖相对路径的应用（尤其是 shell 脚本）来讲这样使用软链接的方式也容易翻车 😂。
 
 那么有没有一种更好的办法将两个目录进行“硬链接”呢，注意我在此用的是双引号，并非是真正的”硬链接“，搜了一圈发现 mount --bind 这种骚操作。无论我们对文件使用软链接/硬链接/bind，还是对目录使用软链接，其实都是希望操作的 `src` 和 `dest` 他们二者都能保持一致。通过 bind 挂载的方式具有着挂载点的一些特性，这是链接是不具有的，对一些不支持链接的应用来讲，bind 的方式要友好一些。
 
@@ -26,9 +26,9 @@ comment: true
 
 其实 bind 这个挂载选项我们在使用 docker 或者 kubernetes 多少都会用到的，尤其是当使用 kubernetes  时 kubelet 在启动容器挂载存储的时候底层是将 node 节点本机的 `/var/lib/kubelet/pods/<Pod的ID>/volumes/kubernetes.io~<Volume类型>/<Volume名字>` 目录通过 bind 的方式挂载到容器中的，详细的分析可以参考之前我写的一篇博客 [kubelet 挂载 volume 原理分析](https://blog.k8s.li/kubelet-mount-volumes-analysis.html) 。
 
->   -   **Volumes** are stored in a part of the host filesystem which is *managed by Docker* (`/var/lib/docker/volumes/` on Linux). Non-Docker processes should not modify this part of the filesystem. Volumes are the best way to persist data in Docker.
->   -   **Bind mounts** may be stored *anywhere* on the host system. They may even be important system files or directories. Non-Docker processes on the Docker host or a Docker container can modify them at any time.
->   -   **`tmpfs` mounts** are stored in the host system’s memory only, and are never written to the host system’s filesystem.
+> - **Volumes** are stored in a part of the host filesystem which is *managed by Docker* (`/var/lib/docker/volumes/` on Linux). Non-Docker processes should not modify this part of the filesystem. Volumes are the best way to persist data in Docker.
+> - **Bind mounts** may be stored *anywhere* on the host system. They may even be important system files or directories. Non-Docker processes on the Docker host or a Docker container can modify them at any time.
+> - **`tmpfs` mounts** are stored in the host system’s memory only, and are never written to the host system’s filesystem.
 
 不过那时候并没有详细地去了解 bind 的原理，直到最近翻了一次车才想起来 bind ，于是接下来就详细地分析以下 mount --bind 挂载参数。
 
@@ -103,32 +103,32 @@ LICENSE             config              hosts               nginx               
 cache  empty  lib    local  lock   log    mail   opt    run    spool  tmp
 ```
 
-## 其他用处🤔
+## 其他用处 🤔
 
 ### 无缝更新 Webp Server Go
 
 在 [小土豆]()、[Nona]() 大佬讨论 [Webp Server Go]() 无缝更新的时候我们提出了一个思路：
 
->   -   在更新之前先对 nginx 配置文件进行修改，去掉 webp server 的 location 字段：
+> - 在更新之前先对 nginx 配置文件进行修改，去掉 webp server 的 location 字段：
 >
->   ```nginx
->           location ~* \.(png|jpg|jpeg)$ {
->               proxy_pass http://127.0.0.1:3333;
->               proxy_set_header HOST $http_host;
->               add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
->           }
->   ```
+> ```nginx
+>         location ~* \.(png|jpg|jpeg)$ {
+>             proxy_pass http://127.0.0.1:3333;
+>             proxy_set_header HOST $http_host;
+>             add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+>         }
+> ```
 >
->   -   然后再 nginx -s reload 不中断 reload 一
->   -   接着停掉 webp server 服务 `systemctl stop webps`
->   -   mv webp-server{.bak,}
->   -   mv ./upload/webp-server-linux-amd64 webp-server
->   -   接着启动 webp server 服务 `systemctl start webps`
->   -   然后开倒车把 nginx 配置文件再改回去🍞
+> - 然后再 nginx -s reload 不中断 reload 一
+> - 接着停掉 webp server 服务 `systemctl stop webps`
+> - mv webp-server{.bak,}
+> - mv ./upload/webp-server-linux-amd64 webp-server
+> - 接着启动 webp server 服务 `systemctl start webps`
+> - 然后开倒车把 nginx 配置文件再改回去 🍞
 
-在此需要提几点，我们希望**无缝更新**，即在更新的过程中不会导致用户请求图片资源失败，那怕 `+1s`都不行，所以我们需要暂时性地在 nginx 配置文件里去掉 webp server ，使它去请求原图片，等更新完 webp server 之后再添加上去。
+在此需要提几点，我们希望**无缝更新**，即在更新的过程中不会导致用户请求图片资源失败，那怕 `+1s` 都不行，所以我们需要暂时性地在 nginx 配置文件里去掉 webp server ，使它去请求原图片，等更新完 webp server 之后再添加上去。
 
-对于木子这种经常删库跑路的手残菜鸟来讲，对一个配置文件改来改去不是好方法，万一 nginx 配置文件改来改去没改好， nginx -s reload 一下 nginx 服务就炸了😂。那么使用 cp 和 mv 怎么样。
+对于木子这种经常删库跑路的手残菜鸟来讲，对一个配置文件改来改去不是好方法，万一 nginx 配置文件改来改去没改好， nginx -s reload 一下 nginx 服务就炸了 😂。那么使用 cp 和 mv 怎么样。
 
 ```shell
 cp blog.conf{,.bak}
@@ -154,4 +154,3 @@ nginx -s reload
 ### VPS 搬家助手
 
 其实还有很多用途啦，这里就不罗列了
-

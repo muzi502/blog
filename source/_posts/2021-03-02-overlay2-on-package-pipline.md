@@ -21,7 +21,7 @@ comment: true
 
 ![img](https://p.k8s.li/2021-03-01-001.jpeg)
 
-第一次是从CI/CD 流水线镜像仓库（cicd.registry.local）中拉取镜像并 push 到发布归档的镜像仓库(archive.registry.local)中，其目的是归档并备份我们已经发布的镜像，这一步称其为保存备份同步（save sync）。
+第一次是从 CI/CD 流水线镜像仓库（cicd.registry.local）中拉取镜像并 push 到发布归档的镜像仓库(archive.registry.local)中，其目的是归档并备份我们已经发布的镜像，这一步称其为保存备份同步（save sync）。
 
 第二次将镜像从发布归档的镜像仓库 (archive.registry.local) 同步镜像到打包镜像仓库（package.registry.local）中。不同于第一次的镜像同步，这次同步镜像的时候会对镜像仓库做清理的操作，首先清理打包镜像仓库的存储目录，然后容器 registry 容器让 registry 重新提取镜像的元数据信息到内存中。其目的是清理旧数据，防止历史的镜像带入本次发布版本的安装包中。
 
@@ -72,11 +72,8 @@ comment: true
 虽然在上文中提到了使用 overlay2 的方案，但到目前为止还是没有一个成熟的解决方案。需要解决的问题如下：
 
 - 如何清理旧数据
-
 - 如何复用历史的镜像？
-
 - 如何区分出历史的镜像和本次的镜像？
-
 - 如何保障本次镜像同步的结果只包含本次需要的镜像？
 
 ### registry 存储结构
@@ -258,9 +255,9 @@ tar -cf docker.tar docker
 
 ### registry gc 问题 ？
 
-在使用的过程中遇到过 registry GC 清理不干净的问题：在进行 GC 之后，一些镜像 layer 和 config 文件已经在 blobs 存储目录下删除了，但指向它的 link 文件依旧保存在 repositories 目录下🙄。GitHub 上有个 PR [Remove the layer’s link by garbage-collect #2288](https://github.com/docker/distribution/issues/2288) 就是专门来清理这些无用的 layer link 文件的，最早的一个是三年前的，但是还没有合并😂。
+在使用的过程中遇到过 registry GC 清理不干净的问题：在进行 GC 之后，一些镜像 layer 和 config 文件已经在 blobs 存储目录下删除了，但指向它的 link 文件依旧保存在 repositories 目录下 🙄。GitHub 上有个 PR [Remove the layer’s link by garbage-collect #2288](https://github.com/docker/distribution/issues/2288) 就是专门来清理这些无用的 layer link 文件的，最早的一个是三年前的，但是还没有合并 😂。
 
-解决办法就是使用我在 [docker registry GC 原理分析](https://blog.k8s.li/registry-gc.html) 文章中提到的方案：自制 registry GC 脚本🙃。
+解决办法就是使用我在 [docker registry GC 原理分析](https://blog.k8s.li/registry-gc.html) 文章中提到的方案：自制 registry GC 脚本 🙃。
 
 ```bash
 #!/bin/bash
@@ -332,7 +329,7 @@ cat images.list | xargs -L1 -I {} skopeo copy --insecure-policy --src-tls-verify
 
 虽然比之前的流程复杂了很多，但优化的结果是十分明显，比以往快了 5 到 15 倍，并在我们的生产环境中已经稳稳地使用了大半年。
 
-读完这篇文章可能你会觉得一头雾水，不知道究竟在讲什么。什么镜像同步、镜像 blob、layer、overlay2、联合挂载、写时复制等等，被这一堆复杂的背景和概念搞混了😂。本文确实不太好理解，因为背景可能较特殊和复杂，很少人会遇到这样的场景。为了很好地理解本文所讲到的内容和背后的原理，过段时间我会单独写一篇博客，通过最佳实践来理解本文提到的技术原理。敬请期待😝
+读完这篇文章可能你会觉得一头雾水，不知道究竟在讲什么。什么镜像同步、镜像 blob、layer、overlay2、联合挂载、写时复制等等，被这一堆复杂的背景和概念搞混了 😂。本文确实不太好理解，因为背景可能较特殊和复杂，很少人会遇到这样的场景。为了很好地理解本文所讲到的内容和背后的原理，过段时间我会单独写一篇博客，通过最佳实践来理解本文提到的技术原理。敬请期待 😝
 
 ## 参考
 
@@ -348,11 +345,11 @@ cat images.list | xargs -L1 -I {} skopeo copy --insecure-policy --src-tls-verify
 
 - [看尽 docker 容器文件系统](http://open.daocloud.io/allen-tan-docker-xi-lie-zhi-tu-kan-jin-docker-rong-qi-wen-jian-xi-tong/)
 - [镜像仓库中镜像存储的原理解析](https://supereagle.github.io/2018/04/24/docker-registry/)
-- [Docker镜像的存储机制](https://segmentfault.com/a/1190000014284289)
+- [Docker 镜像的存储机制](https://segmentfault.com/a/1190000014284289)
 
 ## 推荐阅读
 
-- [深入浅出容器镜像的一生🤔](https://blog.k8s.li/Exploring-container-image.html)
+- [深入浅出容器镜像的一生 🤔](https://blog.k8s.li/Exploring-container-image.html)
 - [镜像搬运工 skopeo 初体验](https://blog.k8s.li/skopeo.html)
 - [mount 命令之 --bind 挂载参数](https://blog.k8s.li/mount-bind.html)
 - [docker registry GC 原理分析](https://blog.k8s.li/registry-gc.html)

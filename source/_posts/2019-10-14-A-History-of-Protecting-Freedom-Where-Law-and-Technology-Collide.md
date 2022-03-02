@@ -18,11 +18,11 @@ comment: true
 
 ## 题记
 
-本篇文章翻译自 [eff.org](https://eff.org) 官网上的 [A History of Protecting Freedom Where Law and Technology Collide]( https://www.eff.org/about/history )
+本篇文章翻译自 [eff.org](https://eff.org) 官网上的 [A History of Protecting Freedom Where Law and Technology Collide](https://www.eff.org/about/history )
 
 由于是第一次独立翻译整篇文章，肯请读者们能够指出翻译不当的部分，让这篇翻译文章更加完善
 
-----
+---
 
 > # A History of Protecting Freedom Where Law and Technology Collide
 
@@ -34,7 +34,7 @@ comment: true
 
 > The United States Secret Service conducted a series of raids tracking the distribution of a document illegally copied from a BellSouth computer that described how the emergency 911 system worked, referred to as the E911 document.
 
-美国特勤局进行了一系列的突击搜查，追踪一份来自南方贝尔公司电脑非法复制文档的分发情况。这份文档描述了紧急 911系统的工作原理，称之为E911文档。
+美国特勤局进行了一系列的突击搜查，追踪一份来自南方贝尔公司电脑非法复制文档的分发情况。这份文档描述了紧急 911 系统的工作原理，称之为 E911 文档。
 
 > The Secret Service believed that if "hackers" knew how to use the telephone lines set aside for receiving emergency phone calls, the lines would become overloaded and people facing true emergencies would be unable to get through.
 
@@ -82,7 +82,7 @@ E911 文档的嫌疑接收者之一，是德克萨斯州奥斯汀市史蒂夫·�
 
 > In an electronic community called the Whole Earth 'Lectronic Link (now WELL.com) several informed technologists understood exactly what civil liberties issues were involved.
 
-在一个名为“全球电子链接”的电子社区（现为WELL.com）中，几位见多识广的技术专家确切地知晓涉及的公民自由问题。
+在一个名为“全球电子链接”的电子社区（现为 WELL.com）中，几位见多识广的技术专家确切地知晓涉及的公民自由问题。
 
 > Mitch Kapor, former president of Lotus Development Corporation, John Perry Barlow, Wyoming cattle rancher and lyricist for the Grateful Dead, and John Gilmore, an early employee of Sun Microsystems, decided to do something about it.
 

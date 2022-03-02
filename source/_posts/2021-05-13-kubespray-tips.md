@@ -435,7 +435,7 @@ logo
 
 ## docker registry 禁止 push 镜像
 
-默认直接使用 docker registry 来部署镜像仓库的话，比如我的 hub.k8s.li ，因为没有权限限制会导致任何可访问该镜像仓库的客户端可以 push 镜像，这有点不安全，需要安全加固一下。因为 pull 镜像的时候客户端走的都是 HTTP GET 请求，可以通过 nginx 禁止 POST、PUT 这种请求方法，这样就可以禁止 push 镜像。在 nginx 的server 字段中添加如下内容：
+默认直接使用 docker registry 来部署镜像仓库的话，比如我的 hub.k8s.li ，因为没有权限限制会导致任何可访问该镜像仓库的客户端可以 push 镜像，这有点不安全，需要安全加固一下。因为 pull 镜像的时候客户端走的都是 HTTP GET 请求，可以通过 nginx 禁止 POST、PUT 这种请求方法，这样就可以禁止 push 镜像。在 nginx 的 server 字段中添加如下内容：
 
 ```nginx
 server {
@@ -857,4 +857,3 @@ playbooks
     - { role: kubespray-defaults }
     - { role: win_nodes/kubernetes_patch, tags: ["master", "win_nodes"] }
 ```
-
