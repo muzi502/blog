@@ -17,9 +17,9 @@ comment: true
 
 ## govc
 
-[govc](https://github.com/vmware/govmomi/tree/master/govc) 是 VMware 官方 [govmomi](https://github.com/vmware/govmom) 库的一个封装实现。使用它可以完成对 ESXi 主机或 vCenter 的一些操作。比如创建虚拟机、管理快照等。基本上能在 ESXi 或 vCenter 上的操作，在 govmomi 中都有对应的实现。支持的 ESXi / vCenter 版本：ESXi / vCenter 7.0, 6.7, 6.5 , 6.0 (5.5和5.1版本功能部分支持, 但官方不再支持)
+[govc](https://github.com/vmware/govmomi/tree/master/govc) 是 VMware 官方 [govmomi](https://github.com/vmware/govmom) 库的一个封装实现。使用它可以完成对 ESXi 主机或 vCenter 的一些操作。比如创建虚拟机、管理快照等。基本上能在 ESXi 或 vCenter 上的操作，在 govmomi 中都有对应的实现。目前 govc 支持的 ESXi / vCenter 版本有 7.0, 6.7, 6.5 , 6.0 (5.x 版本太老了，干脆放弃吧)。
 
-使用 govc 连接 ESXi 主机或 vCenter 可以通过设置环境变量或者命令行参数。
+使用 govc 连接 ESXi 主机或 vCenter 可以通过设置环境变量或者命令行参数，建议使用环境变量，如果通过命令行 flag 的话，将明文规定用户名和密码输出来有一定的安全风险。
 
 ```shell
 Options:
@@ -46,7 +46,7 @@ Options:
   -xml=false                       Enable XML output
 ```
 
-通过 `GOVC_URL` 环境变量指定 ESXi 主机或 vCenter 的 URL，登录的用户名和密码可设置在 GOVC_URL 中或者单独设置 `GOVC_USERNAME` 和 `GOVC_PASSWORD`。如果 https 证书是自签的域名或者 IP 可以通过设置 `GOVC_INSECURE=true` 证书的校验。
+通过 `GOVC_URL` 环境变量指定 ESXi 主机或 vCenter 的 URL，登录的用户名和密码可设置在 GOVC_URL 中或者单独设置 `GOVC_USERNAME` 和 `GOVC_PASSWORD`。如果 https 证书是自签的域名或者 IP 需要通过设置 `GOVC_INSECURE=true` 参数来允许不安全的 https 连接。
 
 ```shell
 $ export GOVC_URL="https://root:password@esxi.k8s.li"
@@ -63,6 +63,8 @@ API version:  7.0.2.0
 Product ID:   embeddedEsx
 UUID:
 ```
+如果用户名和密码当中有特殊字符比如` \ @ /`，建议分别设置 `GOVC_URL`、`GOVC_USERNAME` 和 `GOVC_PASSWORD` 这样能避免特殊字符在 `GOVC_URL` 出现一些奇奇怪怪的问题。
+
 ## 获取主机信息
 
 ### `govc host.info`
@@ -107,64 +109,6 @@ Name:              hp-esxi.lan
   "Vendor": "HPE",
   "Model": "ProLiant MicroServer Gen10 Plus",
   "Uuid": "30363150",
-  "OtherIdentifyingInfo": [
-    {
-      "IdentifierValue": "                                ",
-      "IdentifierType": {
-        "Label": "Asset Tag",
-        "Summary": "Asset tag of the system",
-        "Key": "AssetTag"
-      }
-    },
-    {
-      "IdentifierValue": "",
-      "IdentifierType": {
-        "Label": "Service tag",
-        "Summary": "Service tag of the system",
-        "Key": "ServiceTag"
-      }
-    },
-    {
-      "IdentifierValue": "",
-      "IdentifierType": {
-        "Label": "Enclosure serial number tag",
-        "Summary": "Enclosure serial number tag of the system",
-        "Key": "EnclosureSerialNumberTag"
-      }
-    },
-    {
-      "IdentifierValue": "",
-      "IdentifierType": {
-        "Label": "Serial number tag",
-        "Summary": "Serial number tag of the system",
-        "Key": "SerialNumberTag"
-      }
-    },
-    {
-      "IdentifierValue": "PSF:                                                           ",
-      "IdentifierType": {
-        "Label": "OEM specific string",
-        "Summary": "OEM specific string",
-        "Key": "OemSpecificString"
-      }
-    },
-    {
-      "IdentifierValue": "Product ID: ",
-      "IdentifierType": {
-        "Label": "OEM specific string",
-        "Summary": "OEM specific string",
-        "Key": "OemSpecificString"
-      }
-    },
-    {
-      "IdentifierValue": "OEM String: ",
-      "IdentifierType": {
-        "Label": "OEM specific string",
-        "Summary": "OEM specific string",
-        "Key": "OemSpecificString"
-      }
-    }
-  ],
   "MemorySize": 34197471232,
   "CpuModel": "Genuine Intel(R) CPU 0000 @ 3.00GHz",
   "CpuMhz": 3000,
@@ -176,7 +120,7 @@ Name:              hp-esxi.lan
 }
 ```
 
-如果加上 -dump 参数，则会以 Golang 结构体的格式来输出，输出的内容也是包含了 ESXi 主机的所有信息，用它可以比较方便地定位某个信息的结构体，这一点对基于 govmomi 来开发其他的功能来说十分方便。需要注意的是，并不是所有的子命令都支持 json 格式的输出。
+如果加上 -dump 参数，则会以 Golang 结构体的格式来输出，输出的内容也是包含了 ESXi 主机的所有信息，用它可以比较方便地定位某个信息的结构体，这一点对基于 govmomi 来开发其他的功能来说十分方便。尤其是在写单元测试的时候，可以从这里 dump 出一些数据来进行 mock。需要注意的是，并不是所有的子命令都支持 json 格式的输出。
 
 ```golang
 mo.HostSystem{
@@ -217,6 +161,174 @@ mo.HostSystem{
                 },
             },
         },
+```
+
+在写单元测试的时候，我经常用它来 mock 一些特殊硬件设备的信息，这比自己手写这些结构体要方便很多。比如以`mpx.vmhba<Adapter>:C<Channel>:T<Target>:L<LUN> ` 命名的硬盘可以通过  `PlugStoreTopology` 这个结构体来获取该硬盘的 NAA 号：
+
+```golang
+func getDiskIDByHostPlugStoreTopology(hpst *types.HostPlugStoreTopology, diskName string) string {
+	for _, path := range hpst.Path {
+		if path.Name == diskName {
+			s := strings.Split(path.Target, "-sas.")
+			return s[len(s)-1]
+		}
+	}
+	return ""
+}
+
+// 单元测试代码如下：
+var plugStoreTopology = &types.HostPlugStoreTopology{
+	Path: []types.HostPlugStoreTopologyPath{
+		{
+			Key:           "key-vim.host.PlugStoreTopology.Path-vmhba0:C0:T1:L0",
+			Name:          "vmhba0:C0:T1:L0",
+			ChannelNumber: 0,
+			TargetNumber:  1,
+			LunNumber:     0,
+			Adapter:       "key-vim.host.PlugStoreTopology.Adapter-vmhba0",
+			Target:        "key-vim.host.PlugStoreTopology.Target-sas.500056b3d93828c0",
+			Device:        "key-vim.host.PlugStoreTopology.Device-020000000055cd2e414dc39d4e494e54454c20",
+		},
+	},
+}
+
+
+func TestGetDiskIDByHostPlugStoreTopology(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "vmhba0:C0:T1:L0",
+			want: "500056b3d93828c0",
+		},
+		{
+			name: "vmhba0:C0:T2:L0",
+			want: "",
+		},
+		{
+			name: "",
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getDiskIDByHostPlugStoreTopology(plugStoreTopology, tt.name); got != tt.want {
+				t.Errorf("getDiskIDByHostPlugStoreTopology() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+```
+
+再比如 NVMe 硬盘可以通过 `NvmeTopology` 这个数据对象获取它的序列号
+
+```golang
+func getNVMeIDByHostNvmeTopology(hnt *types.HostNvmeTopology, diskName string) string {
+	for _, adapter := range hnt.Adapter {
+		for _, controller := range adapter.ConnectedController {
+			for _, ns := range controller.AttachedNamespace {
+				if ns.Name == diskName {
+					return strings.TrimSpace(controller.SerialNumber)
+				}
+			}
+		}
+	}
+	return ""
+}
+
+// 单元测试代码如下：
+var nvmeTopology = &types.HostNvmeTopology{
+	Adapter: []types.HostNvmeTopologyInterface{
+		{
+			Key:     "key-vim.host.NvmeTopology.Interface-vmhba0",
+			Adapter: "key-vim.host.PcieHba-vmhba0",
+			ConnectedController: []types.HostNvmeController{
+				{
+					Key:                     "key-vim.host.NvmeController-256",
+					ControllerNumber:        256,
+					Subnqn:                  "nqn.2021-06.com.intel:PHAB123502CU1P9SGN  ",
+					Name:                    "nqn.2021-06.com.intel:PHAB123502CU1P9SGN",
+					AssociatedAdapter:       "key-vim.host.PcieHba-vmhba0",
+					TransportType:           "pcie",
+					FusedOperationSupported: false,
+					NumberOfQueues:          2,
+					QueueSize:               1024,
+					AttachedNamespace: []types.HostNvmeNamespace{
+						{
+							Key:              "key-vim.host.NvmeNamespace-t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB________00035CB406E4D25C@256",
+							Name:             "t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB________00035CB406E4D25C",
+							Id:               1,
+							BlockSize:        512,
+							CapacityInBlocks: 3125627568,
+						},
+					},
+					VendorId:        "0x8086",
+					Model:           "Dell Ent NVMe P5600 MU U.2 1.6TB        ",
+					SerialNumber:    "PHAB123502CU1P9SGN  ",
+					FirmwareVersion: "1.0.0   PCIe",
+				},
+			},
+		},
+		{
+			Key:     "key-vim.host.NvmeTopology.Interface-vmhba1",
+			Adapter: "key-vim.host.PcieHba-vmhba1",
+			ConnectedController: []types.HostNvmeController{
+				{
+					Key:                     "key-vim.host.NvmeController-257",
+					ControllerNumber:        257,
+					Subnqn:                  "nqn.2021-06.com.intel:PHAB123602H81P9SGN  ",
+					Name:                    "nqn.2021-06.com.intel:PHAB123602H81P9SGN",
+					AssociatedAdapter:       "key-vim.host.PcieHba-vmhba1",
+					TransportType:           "pcie",
+					FusedOperationSupported: false,
+					NumberOfQueues:          2,
+					QueueSize:               1024,
+					AttachedNamespace: []types.HostNvmeNamespace{
+						{
+							Key:              "key-vim.host.NvmeNamespace-t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB________00035CEE23E4D25C@257",
+							Name:             "t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB________00035CEE23E4D25C",
+							Id:               1,
+							BlockSize:        512,
+							CapacityInBlocks: 3125627568,
+						},
+					},
+					VendorId:        "0x8086",
+					Model:           "Dell Ent NVMe P5600 MU U.2 1.6TB        ",
+					SerialNumber:    "PHAB123602H81P9SGN  ",
+					FirmwareVersion: "1.0.0   PCIe",
+				},
+			},
+		},
+	},
+}
+
+func TestGetNVMeIDByHostNvmeTopology(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB________00035CEE23E4D25C",
+			want: "PHAB123602H81P9SGN",
+		},
+		{
+			name: "t10.NVMe____Dell_Ent_NVMe_P5600_MU_U.2_1.6TB",
+			want: "",
+		},
+		{
+			name: "",
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getNVMeIDByHostNvmeTopology(nvmeTopology, tt.name); got != tt.want {
+				t.Errorf("getNVMeIDByHostNvmeTopology() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 ```
 
 ## 配置 ESXi 主机参数
