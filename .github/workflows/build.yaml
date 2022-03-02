@@ -26,12 +26,11 @@ jobs:
         run: |
           sudo apt install rename -y -qq
           sudo yarn global add hexo-cli
-          sudo go install github.com/elliotxx/mdfmt/cmd/mdfmt@latest
           cd ${GITHUB_WORKSPACE}/hexo && yarn install
 
       - name: Hexo build
         run: |
-          cd ${GITHUB_WORKSPACE}/hexo/source && mdfmt -w .
+          cd ${GITHUB_WORKSPACE}/hexo/source && docker run -v $PWD:$PWD --rm elliotxx/mdfmt:v0.4.1 mdfmt -l -w $PWD
           cd ${GITHUB_WORKSPACE}/hexo/source/_posts && rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
           cd ${GITHUB_WORKSPACE}/hexo && hexo clean && hexo g
           cd ${GITHUB_WORKSPACE}/hexo && git checkout .
