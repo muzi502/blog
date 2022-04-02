@@ -1,7 +1,7 @@
 ---
 title: 搬砖工具 govc 使用记录
-date: 2022-02-06
-updated: 2022-02-06
+date: 2022-03-31
+updated: 2022-03-31
 slug:
 categories: 技术
 tag:
@@ -386,19 +386,11 @@ $ VM_NAME="centos-test"
 $ govc vm.create -ds='datastore*' -net='VM Network' -net.adapter=vmxnet3 -disk 1G -on=false ${VM_NAME}
 $ govc vm.change -cpu.reservation=%d -memory-pin=true -vm ${VM_NAME}
 $ govc vm.change -g centos7_64Guest -c %d -m 16384 -latency high -vm ${VM_NAME}
-$ govc device.pci.add -vm ${VM_NAME}
 $ govc device.cdrom.add -vm ${VM_NAME}
 $ govc device.cdrom.insert -vm ${VM_NAME} -device cdrom-3000
 $ govc device.connect -vm ${VM_NAME} cdrom-3000
 $ govc vm.power -on=true ${VM_NAME}
 ```
-
-## 导入 ova 虚拟机
-
-主流的 Linux 发行版提供 ova 模版的并不多，虽然 ova 作为一种开发的虚拟机模版标准，但是大家好像都不怎么使用。比如基本上都会提供 qcow2 或者 raw 格式的景象。但 ESXi 上只能使用 VMDK 的镜像，二者需要一定的转换才行。
-
-- [bionic-server-cloudimg-amd64.ova](https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.ova)
-- [focal-server-cloudimg-amd64.ova ](https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.ova)
 
 ## 参考
 
