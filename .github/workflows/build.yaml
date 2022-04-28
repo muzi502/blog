@@ -26,6 +26,7 @@ jobs:
         run: |
           sudo apt install rename -y -qq
           sudo yarn global add hexo-cli
+          cd ${GITHUB_WORKSPACE}/hexo && rm -f README.md
           cd ${GITHUB_WORKSPACE}/hexo && yarn install
 
       - name: Hexo build
