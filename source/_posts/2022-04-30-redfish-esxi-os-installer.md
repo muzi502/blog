@@ -1,5 +1,5 @@
 ---
-title: 使用 redfish 自动化安装 ESXi OS
+title: 使用 Redfish 自动化安装 ESXi OS
 date: 2022-04-30
 updated: 2022-04-30
 slug: redfish-esxi-os-installer
@@ -37,7 +37,7 @@ comment: true
 
 ### PXE
 
-虽然内部也有 PXE 服务可用，但重启服务器和设置服务器的引导项为 PXE 启动仍然需要手动登录 IPMI 管理页面进行操作，无法做到自动重启和自动重装，仍有一定的工作量。而且 PXE 安装 OS 法解决为每台服务器配置各自的安装盘和管理网络网卡及静态 IP 地址的问题，遂放弃。
+虽然内部也有 PXE 服务可用，但重启服务器和设置服务器的引导项为 PXE 启动仍然需要手动登录 IPMI 管理页面进行操作，无法做到自动重启和自动重装，仍有一定的工作量。而且 PXE 安装 OS 无法解决为每台服务器配置各自的安装盘和管理网络网卡及静态 IP 地址的问题，遂放弃。
 
 ### IPMI/Redfish
 
@@ -57,7 +57,7 @@ comment: true
 >
 > 在定义 `Redfish` 标准时，协议与数据模型可分开并允许独立地修改。以模式为基础的数据模型是可伸缩和可扩展的，并且随着行业的发展，它将越来越具有人类可读性定义。
 
-通过 Redfish 我们可以进行挂载/卸载 ISO、设置 BIOS 启动项、开机/关机/重启等操作，只需要使用一些特定的 ansible 模块，将它们缝合起来就能将整个流程跑通。
+通过 Redfish 我们可以对服务器进行挂载/卸载 ISO、设置 BIOS 启动项、开机/关机/重启等操作。只需要使用一些特定的 ansible 模块，将它们缝合起来就能将整个流程跑通。
 
 内部的服务器戴尔、联想、HPE 的较多，这三家厂商对 Redfish 支持的也比较完善。于是这个 ESXi OS 自动化安装工具 [redfish-esxi-os-installer](https://github.com/muzi502/redfish-esxi-os-installer) 就基于 Redfish 并结合 Jenkins 实现了一套自动化安装 ESXi OS 的方案，下面就详细介绍一下这套方案的安装流程和技术实现细节。
 
@@ -72,12 +72,13 @@ comment: true
 7. 通过 redfish 弹出已有的 ISO 镜像
 8. 通过 redfish 插入远程的 ISO 镜像
 9. 设置 one-boot 启动引导项为虚拟光驱
-10. 重启服务器到 ESXI ISO，ESXI installer 调用 Kickstarter 脚本安装 OS
-11. 等待 ESXi OS 安装完成
+10. 重启服务器到 ESXI ISO
+11. ESXi installer 调用 Kickstart 脚本安装 OS
+12. 等待 ESXi OS 安装完成
 
 ### 获取硬件信息
 
-该步骤主要是获取 ESXi OS 安装的硬盘和管理网络网卡设备信息。
+该步骤主要是获取 ESXi OS 所要安装的硬盘和管理网络网卡设备信息。
 
 #### 获取硬盘型号/序列号
 
@@ -107,7 +108,7 @@ LU WWN Device Id: 5 000cca 291e10521
 
 ![img](https://p.k8s.li/2022-04-30-redfish-auto-install-esxi-os-04.png)
 
-如果有多块型号相同的硬盘，ESXi 则会默认选择第一块，如果要指定某一块硬盘则使用 WWN 号的方式，获取 WWN ID 的命令如下：
+如果有多块型号相同的硬盘，ESXi 会默认选择第一块，如果要指定某一块硬盘则使用 WWN 号的方式，获取 WWN ID 的命令如下：
 
 ```bash
 ╭─root@esxi-debian-nas ~
@@ -251,7 +252,6 @@ lenovo
 最后再开启 SSH 服务并开启 sshServer 的防火墙，方便后续测试使用；
 
 ```bash
-
 function gen_iso_ks(){
     local ISO_KS=$1
     local ESXI_DISK=${os_disk}
@@ -289,7 +289,6 @@ vim-cmd hostsvc/enable_ssh
 vim-cmd hostsvc/start_ssh
 esxcli network firewall ruleset set --enabled=false --ruleset-id=sshServer
 EOF
-
 }
 ```
 
@@ -302,7 +301,7 @@ sed -i -e 's#cdromBoot#ks=cdrom:/KS.CFG systemMediaSize=small#g' boot.cfg
 sed -i -e 's#cdromBoot#ks=cdrom:/KS.CFG systemMediaSize=small#g' efi/boot/boot.cfg
 ```
 
-另外在 VMware 的 KB [Boot option to configure the size of ESXi system partitions (81166)](https://kb.vmware.com/s/article/81166) 中，提到过可以设置 `systemMediaSize=small` 可以调整 VMFS-L 分区的大小。ESXi 7.0 版本之后会默认创建一个 VMFS-L 分区，如果 SATA DOM 盘比较小的话比如只有 128G，建议设置此参数。不然可能会导致安装完 ESXi OS 之后磁盘剩余的空间都被 VMFS-L 分区给占用，导致没有一个本地的数据存储可以使用。
+另外在 VMware 的 KB [Boot option to configure the size of ESXi system partitions (81166)](https://kb.vmware.com/s/article/81166) 中，提到过可以设置 `systemMediaSize=small` 来调整 VMFS-L 分区的大小。ESXi 7.0 版本之后会默认创建一个 VMFS-L 分区，如果 SATA DOM 盘比较小的话比如只有 128G，建议设置此参数。不然可能会导致安装完 ESXi OS 之后磁盘剩余的空间都被 VMFS-L 分区给占用，导致没有一个本地的数据存储可以使用。
 
 修改好 ESXi 的启动配置之后，我们再使用 genisoimage 命令重新构建一个 ESXi ISO 文件，将构建好的 ISO 文件放到一个 http 文件服务的目录下，如 nginx 的 `/usr/share/nginx/html/iso`。后面将会通过 http 的方式将 ISO 挂载到服务器的虚拟光驱上。
 
@@ -591,7 +590,7 @@ make install-os # 运行 pre-check, mount-iso, reboot, post-check
 
 虽然在 Makefile 里封装了比较方便的命令操作，但是对于不太熟悉这套流程的使用人员来讲还是不够便捷。对于使用人员来讲不需要知道具体的流程是什么，因此还需要提供一个更为便捷的入口来使用这套工具，对外屏蔽掉技术实现的细节。
 
-在我们内部，Jenkins 大叔，使用的比较普遍，之前同事也曾调侃过：`我们内部的 Jenkins 虽然达不到人手一个的数量，但每个团队有两三个自己的 Jenkins 再正常不过了`🤣。因此如果提供了一个 Jenkins Job 来运行这套安装工具再完美不过了。这样使用人员就不用再 clone repo 代码，傻乎乎地运行一些 make 命令了，毕竟一个 Jenkins build 的按钮比 make 命令好好用得太多。
+在我们内部，老牌 CI 工具 Jenkins 大叔十分受欢迎，使用的十分普遍。之前同事也常调侃：`我们内部的 Jenkins 虽然达不到人手一个的数量，但每个团队有两三个自己的 Jenkins 再正常不过了`🤣。因此提供了一个 Jenkins Job 来运行这套安装工具再完美不过了。这样使用人员就不用再 clone repo 代码，傻乎乎地运行一些 make 命令了，毕竟一个 Jenkins build 的按钮比 make 命令好好用得太多。
 
 我们组的 Jenkins 比较特殊，是使用 kubernetes Pod 作为动态 Jenkins slave 节点，即每运行一个 Jenkins Job 就会根据定义的 Pod 模版创建一个 Pod 到指定的 Kubernetes 集群中，然后 Jenkinsfile 中定义的 stage 都会运行在这个 Pod 容器内。这些内容可以参考一下我之前写的 [Jenkins 大叔与 kubernetes 船长手牵手 🧑‍🤝‍🧑](https://blog.k8s.li/jenkins-with-kubernetes.html)。
 
