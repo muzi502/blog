@@ -58,7 +58,7 @@ rss: https://blog.k8s.li/atom.xml
 | [绿帽子大学](https://lmzdx.com/)                                      | Ruby、软件那些事儿电台的官方网站                      | 油腻大叔                                        |
 | [编程随想](https://program-think.blogspot.com/)                       | 反洗脑、社会工程学、读书思考                          | 枪毙名单榜首                                    |
 | [酷 壳 – CoolShell](https://coolshell.cn/)                           | 综合、Linux、开源                                     | 资深开发者                                      |
-| [老钱文集](http://lao-qian.hxwk.org/)                                 | 历史、美国                                            | 各种 `考古`                                      |
+| [老钱文集](http://lao-qian.hxwk.org/)                                 | 历史、美国                                            | 各种 `考古`                                     |
 | [Laisky](https://blog.laisky.com/)                                    | Docker、后端、Python、读书笔记                        | 一只高语速大存储的复读机                        |
 | [yu 小 ba-CloudNative](http://www.yuxiaoba.xyz/)                      | 智能运维 • 云计算研发                                | 论文总结、学术                                  |
 | [未知的世界](http://lulalap.com/)                                     | PAT、算法、读书思考                                   | 奇思异想                                        |
@@ -107,7 +107,7 @@ rss: https://blog.k8s.li/atom.xml
 | [WRFLY'S BLOG](http://wrfly.kfd.me/)                                  | Golang、Docker 、[内涵图的网站](http://10pic.kfd.me/) |                                                 |
 | [ZGQ's Blog](https://blog.izgq.net/)                                  | 算法、Linux                                           | 目前在 Tencent 搬水                             |
 | [Cheson Blog](http://chendongqi.me/)                                  | Android 开发内容丰富                                  | 非典型程序员                                    |
-| [VOID001'S WOWO](https://void-shana.moe/)                             | Linux kernel 、shell                                  | **萝莉控** 😂                                    |
+| [VOID001'S WOWO](https://void-shana.moe/)                             | Linux kernel 、shell                                  | **萝莉控** 😂                                   |
 | [Alex Wu's blog](https://blog.yaodataking.com/)                       | 机器学习、Kafka、OpenStack                            |                                                 |
 | [CNCF Cloud Native Interactive Landscape](https://landscape.cncf.io/) | 云原生图谱                                            |                                                 |
 | [佐仔志](www.jinbo123.com)                                            | 软路由、电子评测、Linux                               | 中年大叔 😂                                     |

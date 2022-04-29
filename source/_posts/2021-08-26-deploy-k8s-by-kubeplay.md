@@ -140,13 +140,13 @@ kubespray:
 
 inventory 为 kubernetes 集群节点的 ssh 登录配置，支持 yaml, json, ini 三种格式。
 
-| 参数                         | 说明                      | 示例                             |
-| ---------------------------- | ------------------------- | -------------------------------- |
-| ansible_port                 | 主机 ssh 登录端口号       | 22                               |
-| ansible_user                 | 主机 ssh 登录用户名       |                                  |
-| ansible_ssh_pass             | 主机 ssh 登录密码         |                                  |
+| 参数                         | 说明                      | 示例                              |
+| ---------------------------- | ------------------------- | --------------------------------- |
+| ansible_port                 | 主机 ssh 登录端口号       | 22                                |
+| ansible_user                 | 主机 ssh 登录用户名       |                                   |
+| ansible_ssh_pass             | 主机 ssh 登录密码         |                                   |
 | ansible_ssh_private_key_file | 如果使用 private key 登录 | 必须为 `/kubespray/config/id_rsa` |
-| ansible_host                 | 节点 IP                   |                                  |
+| ansible_host                 | 节点 IP                   |                                   |
 
 - yaml 格式
 

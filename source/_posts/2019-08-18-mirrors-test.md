@@ -13,8 +13,8 @@ comment: true
 
 ## 国内知名镜像源
 
-|  所属  |                                    官网                                    |   评价   |
-| :----: | :------------------------------------------------------------------------: | :-------: |
+|  所属  |                                      官网                                      |   评价   |
+| :----: | :----------------------------------------------------------------------------: | :-------: |
 |  清华  | [https://mirrors.tuna.tsinghua.edu.cn/](https://mirrors.tuna.tsinghua.edu.cn/) | 速度 NO.1 |
 | 中科大 |          [https://mirrors.ustc.edu.cn/](https://mirrors.ustc.edu.cn/)          | 速度最差 |
 |  163  |              [https://mirrors.163.com/](https://mirrors.163.com/)              | 速度 NO.3 |
