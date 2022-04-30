@@ -26,9 +26,9 @@ jobs:
         run: |
           sudo apt install rename -y -qq
           sudo yarn global add hexo-cli
-          cd ${GITHUB_WORKSPACE}/hexo && rm -f README.md
-          cd ${GITHUB_WORKSPACE}/hexo && yarn install
-
+          cd ${GITHUB_WORKSPACE}/hexo
+          yarn install
+          rm README.md
       - name: Hexo build
         run: |
           cd ${GITHUB_WORKSPACE}/hexo/source && docker run -v $PWD:$PWD --rm elliotxx/mdfmt:v0.4.1 mdfmt -l -w $PWD
