@@ -56,7 +56,7 @@ jobs:
     runs-on: [self-hosted, Linux]
     steps:
       - name: Update website
-        working-directory: /var/www/blog.k8s.li
         run: |
+          cd /var/www/blog.k8s.li
           git fetch --all
           git reset --hard origin/master
