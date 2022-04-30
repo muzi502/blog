@@ -1,5 +1,8 @@
 name: Build hexo website
-on: push
+on:
+  push:
+    branches:
+      - master
 jobs:
   hexo-build:
     runs-on: ubuntu-20.04
@@ -18,35 +21,42 @@ jobs:
           path: site
 
       - name: Config git user and user.email
+        working-directory: site
         run: |
-          cd ${GITHUB_WORKSPACE}/site && git config user.name github-actions
-          cd ${GITHUB_WORKSPACE}/site && git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name github-actions
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
-      - name: Init hexo env
+      - name: Init hexo build env
+        working-directory: hexo
         run: |
           sudo apt install rename -y -qq
           sudo yarn global add hexo-cli
-          cd ${GITHUB_WORKSPACE}/hexo
           yarn install
           rm README.md
+
       - name: Hexo build
+        working-directory: hexo
         run: |
-          cd ${GITHUB_WORKSPACE}/hexo/source && docker run -v $PWD:$PWD --rm elliotxx/mdfmt:v0.4.1 mdfmt -l -w $PWD
-          cd ${GITHUB_WORKSPACE}/hexo/source/_posts && rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' *.md
-          cd ${GITHUB_WORKSPACE}/hexo && hexo clean && hexo g
-          cd ${GITHUB_WORKSPACE}/hexo && git checkout .
-          sed -i '/muzi.disqus.com/d' ${GITHUB_WORKSPACE}/hexo/public/index.html
+          docker run -v $PWD:$PWD --rm elliotxx/mdfmt:v0.4.1 mdfmt -l -w $PWD/source
+          rename 's/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-)//' source/_posts/*.md
+          hexo clean
+          hexo g
+          sed -i '/muzi.disqus.com/d' public/index.html
 
       - name: Update repo
+        working-directory: site
         run: |
-          cp -rf ${GITHUB_WORKSPACE}/hexo/public/* ${GITHUB_WORKSPACE}/site
-          cd ${GITHUB_WORKSPACE}/site && git add . && git commit -am "Auto build by GitHub Actions $(date)"
-          cd ${GITHUB_WORKSPACE}/site && git push origin -f
+          cp -rf ${GITHUB_WORKSPACE}/hexo/public/* .
+          git add .
+          git commit -am "Auto build by GitHub Actions $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git push origin -f
 
   update-site:
     needs: hexo-build
     runs-on: [self-hosted, Linux]
     steps:
       - name: Update website
+        working-directory: /var/www/blog.k8s.li
         run: |
-          cd /var/www/blog.k8s.li && sudo git fetch --all && sudo git reset --hard origin/master
+          git fetch --all
+          git reset --hard origin/master
