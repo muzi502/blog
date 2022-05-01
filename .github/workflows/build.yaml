@@ -2,6 +2,7 @@ name: Build hexo website
 on:
   push:
     branches:
+      - dev
       - master
 jobs:
   hexo-build:
@@ -10,6 +11,7 @@ jobs:
       - name: Clone blog source repository
         uses: actions/checkout@v2
         with:
+          submodules: 'true'
           path: hexo
 
       - name: Checkout blog web site repo
