@@ -6,19 +6,23 @@
 title: Reimu's blog
 subtitle:
 description:
-author: 木子
+author: Reimu
 language: zh-CN
 timezone: Asia/Shanghai
 keywords:
-  - CI/CD
-  - Docker
-  - Linux
-  - Registry
-  - Kubernetes
-  - PaaS toB
-  - 运维开发
-  - 容器镜像
-  - 发布流水线
+- CI/CD
+- Docker
+- Linux
+- Registry
+- Kubernetes
+- PaaS toB
+- IaaS toB
+- 超融合
+- 虚拟化
+- 裸金属服务器
+- 运维开发
+- 容器镜像
+- 发布流水线
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -54,12 +58,11 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
+  enable: false
+prismjs:
   enable: true
+  preprocess: true
   line_number: true
-  auto_detect: false
-  tab_replace: ''
-  wrap: true
-  hljs: false
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
