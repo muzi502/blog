@@ -98,7 +98,7 @@ open_graph:
 menu:
   Home: / || fa fa-home
   Books: https://reading.k8s.li || fa fa-book
-  Kindle: https://kindle.502.li || fa fa-swatchbook
+  Kindle: https://kindle.k8s.li || fa fa-swatchbook
   Friend: /friends.html || fa fa-link
   About: /about.html || fa fa-user
 
@@ -153,9 +153,9 @@ site_state: true
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   GitHub: https://github.com/muzi502 || fab fa-github
-  E-Mail: mailto:blog@502.li || fa fa-envelope
+  E-Mail: mailto:muzi502.li@gmail.com || fa fa-envelope
   Twitter: https://twitter.com/muzi_ii || fab fa-twitter
-  Telegram: https://t.me/muzi_ii || fa-brands fa-telegram
+  Telegram: https://t.me/muzi502 || fa-brands fa-telegram
   RSS: /atom.xml || fa-solid fa-square-rss
 
 social_icons:
@@ -204,7 +204,7 @@ footer:
     # Icon name in Font Awesome. See: https://fontawesome.com/icons
     name: fa fa-heart
     # If you want to animate the icon, set it to true.
-    animated: false
+    animated: true
     # Change the color of icon, using Hex Code.
     color: "#ff0000"
 
@@ -281,7 +281,7 @@ follow_me:
 # Related popular posts
 # Dependencies: https://github.com/sergeyzwezdin/hexo-related-posts
 related_posts:
-  enable: false
+  enable: true
   title: # Custom header, leave empty to use the default one
   display_in_home: false
 
@@ -331,7 +331,7 @@ calendar:
 
 # Preconnect CDN for fonts and plugins.
 # For more information: https://www.w3.org/TR/resource-hints/#preconnect
-preconnect: false
+preconnect: true
 
 # Set the text alignment in posts / pages.
 text_align:
@@ -519,7 +519,7 @@ pjax: false
 
 # FancyBox is a tool that offers a nice and elegant way to add zooming functionality for images.
 # For more information: https://fancyapps.com/fancybox/
-fancybox: true
+fancybox: false
 
 # A JavaScript library for zooming images like Medium.
 # Warning: Do not enable both `fancybox` and `mediumzoom`.
@@ -735,7 +735,7 @@ algolia_search:
 # Local Search
 # Dependencies: https://github.com/next-theme/hexo-generator-searchdb
 local_search:
-  enable: false
+  enable: true
   # If auto, trigger search by changing input.
   # If manual, trigger search by pressing enter key or search button.
   trigger: auto
@@ -847,14 +847,14 @@ motion:
 # Progress bar in the top during page loading.
 # For more information: https://github.com/CodeByZach/pace
 pace:
-  enable: false
+  enable: true
   # All available colors:
   # black | blue | green | orange | pink | purple | red | silver | white | yellow
   color: blue
   # All available themes:
   # big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple
   # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
-  theme: minimal
+  theme: center-atom
 
 # Canvas ribbon
 # For more information: https://github.com/hustcc/ribbon.js

@@ -10,19 +10,19 @@ author: Reimu
 language: zh-CN
 timezone: Asia/Shanghai
 keywords:
-- CI/CD
-- Docker
-- Linux
-- Registry
-- Kubernetes
-- PaaS toB
-- IaaS toB
-- 超融合
-- 虚拟化
-- 裸金属服务器
-- 运维开发
-- 容器镜像
-- 发布流水线
+  - CI/CD
+  - Docker
+  - Linux
+  - Registry
+  - Kubernetes
+  - PaaS toB
+  - IaaS toB
+  - 超融合
+  - 虚拟化
+  - 裸金属服务器
+  - 运维开发
+  - 容器镜像
+  - 发布流水线
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -51,7 +51,7 @@ titlecase: false # Transform title into titlecase
 external_link:
   enable: true # Open external links in new tab
   field: site # Apply to the whole site
-  exclude: ''
+  exclude: ""
 filename_case: 0
 render_drafts: false
 post_asset_folder: false
@@ -69,7 +69,7 @@ prismjs:
 # per_page: Posts displayed per page. (0 = disable pagination)
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
-  path: ''
+  path: ""
   per_page: 128
   order_by: -date
 
@@ -114,19 +114,19 @@ feed:
   hub:
   content: true
   content_limit: 32
-  content_limit_delim: ' '
+  content_limit_delim: " "
   order_by: -date
   icon: icon.png
 
 search:
-    path: search.xml
-    field: post
-    format: html
-    limit: 10000
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
 
 sitemap:
   path: sitemap.xml
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: ''
+  type: ""
