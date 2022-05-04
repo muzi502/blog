@@ -1,3 +1,8 @@
-## blog
+# blog
 
-[blog.k8s.li](https://blog.k8s.li) source code
+source code of [blog.k8s.li](https://blog.k8s.li)
+
+## Usage
+
+- fork this repo to your 
+- 

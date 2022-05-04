@@ -8,7 +8,6 @@ tag:
 copyright: true
 comment: true
 ---
-
 ## OCI spec？
 
 谈到容器镜像就不得不提一下 OCI 规范
