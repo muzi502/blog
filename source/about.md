@@ -22,7 +22,8 @@ EFF 电子前哨基金会成员、二刺螈、素食者、低端人口、搬砖�
 
 ## license
 
-- 文章内容使用 WTFPL 许可证书，请任意放心使用，转载墙内请去掉本站信息，谢谢
+- 博客源码 [github.com/muzi502/blog](https://github.com/muzi502/blog)，文章 [Markdown 源码](https://github.com/muzi502/blog/tree/master/source/_posts)
+- 文章内容使用 WTFPL 许可证书，请任意放心使用，署名与否你随意
 - WTFPL © Do What the Fuck You Want to Public License
 
 ## other
