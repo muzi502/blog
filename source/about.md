@@ -6,7 +6,6 @@ tag:
 copyright: false
 comment: true
 ---
-
 ## bio
 
 EFF 电子前哨基金会成员、二刺螈、素食者、低端人口、搬砖社畜、屁民韭菜、最后一代、垃圾佬、SRE
