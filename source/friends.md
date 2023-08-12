@@ -48,7 +48,9 @@ rss: https://blog.k8s.li/atom.xml
 | [rxliuli](https://blog.rxliuli.com/)                     | 前端、算法                          |                                                                |
 | [Cyris](https://cyris.moe)                               | 美工 & 前端                         | 花如解笑还多事，石不能言最可人(o゜▽゜)o☆x                    |
 | [雾雨霜星](http://www.shuangxing.top)                    | Java、前端                          | 雾间觉雨，霜空望星                                             |
-| [一大加贝](https://www.yidajiabei.xyz/)                  | 前端、阅读、观影                    | 社会人，永远年轻！                                             |
+| [一大加贝](https://tianheg.co/)                          | 前端、阅读、观影                    | 社会人，永远年轻！                                             |
+| [Thrive Blog](https://liuyuyang.net/)                    | 前端、大学生活                      | 记录一个架构师的崛起                                           |
+| [Les'blog](https://lesx.top/)                            | 刷机                                | 独立思考，保持清醒                                             |
 
 ### 单~~恋~~链 😂/有趣的人
 
