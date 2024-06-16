@@ -22,36 +22,37 @@ rss: https://blog.k8s.li/atom.xml
 
 ### 永远 の 好朋友
 
-| 站点                                                     | 主要内容                             | 印象 😋                                                        |
-| -------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------- |
-| [土豆不好吃](https://www.bennythink.com/)                | Linux、VPS、Python、Golang           | 有脾气的小土豆                                                 |
+| 站点                                                     | 主要内容                             | 印象 😋                                                       |
+| -------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------ |
+| [土豆不好吃](https://www.bennythink.com/)                | Linux、VPS、Python、Golang           | 有脾气的小土豆                                               |
 | [蝉時雨](https://chanshiyu.com/)                         | 前端、Java、Vue、博客、东方          | [Aurora](https://github.com/chanshiyucx/aurora) 作者、诗意少年 |
-| [Steven's Blog](https://blog.hly0928.com/)               | 技术、消费电子、评测                 | 大学萌新的普通 Blog                                            |
-| [觉论](https://blog.ryouissei.com/)                      | 用户体验、交互设计                   | 多摩美术大学高材生 😂                                          |
-| [Present Day, Present Time](https://gobomb.github.io/)   | Go 、Shell、Docker、Kubernetes       | Server Reboot Engineer 😂                                      |
-| [小竹's blog](https://blog.justforlxz.com/)              | deepin linux、C++、Web 前端          | 正在使用 C++ 拯救世界                                          |
-| [瓠樽](https://blog.dylanwu.space/)                      | 前端、艺术、阅读                     | 目测是位硬核博主 😂                                            |
-| [Himself65 Blog](https://www.himself65.com/)             | Rust、Node、前端                     | 扩散性百万甜面包 🍞                                            |
-| [Cocoa](https://blog.0xbbc.com/)                         | C/C++、Rust 、算法、iOS 安全、Linux  | 少女心满满 😂                                                  |
-| [CrownDaisy](https://crowndaisy.com/)                    | Python、数据分析                     | 极简主义者                                                     |
-| [F4n9X's Blog](https://fanqxu.github.io/)                | InfoSec、PenTesting、CTF、Hacking    | 社工大佬                                                       |
-| [ChrAlpha](https://ichr.me)                              | hexo、Cloudflare、加密、博客、写作   | Keep foolish and<br> write some stupid codes                   |
-| [Nova Kwok's Awesome Blog](https://nova.moe/)            | Linux、Python、network、摄影         | LUNA 创始人                                                    |
-| [纯白](https://jpacg.me/)                                | NAS                                  |                                                                |
-| [TOTORO625](https://totoro.ink/)                         | Ingress、Linux                       | 日常搬砖、画图、数钢筋（大雾                                   |
-| [idealclover](https://idealclover.top)                   | 技术、测评、随想、生活               | 是只可爱的男孩子 😝                                            |
-| [阁子](http://dfine.tech)                                | Linux 、hexo、                       | 诗意少年 😂                                                    |
-| [探索子](https://beyondstars.xyz/)                       | Linux、math、devops                  | 数学大佬（逃                                                   |
+| [Steven's Blog](https://blog.hly0928.com/)               | 技术、消费电子、评测                 | 大学萌新的普通 Blog                                          |
+| [觉论](https://blog.ryouissei.com/)                      | 用户体验、交互设计                   | 多摩美术大学高材生 😂                                         |
+| [Present Day, Present Time](https://gobomb.github.io/)   | Go 、Shell、Docker、Kubernetes       | Server Reboot Engineer 😂                                     |
+| [小竹's blog](https://blog.justforlxz.com/)              | deepin linux、C++、Web 前端          | 正在使用 C++ 拯救世界                                        |
+| [瓠樽](https://blog.dylanwu.space/)                      | 前端、艺术、阅读                     | 目测是位硬核博主 😂                                           |
+| [Himself65 Blog](https://www.himself65.com/)             | Rust、Node、前端                     | 扩散性百万甜面包 🍞                                           |
+| [Cocoa](https://blog.0xbbc.com/)                         | C/C++、Rust 、算法、iOS 安全、Linux  | 少女心满满 😂                                                 |
+| [CrownDaisy](https://crowndaisy.com/)                    | Python、数据分析                     | 极简主义者                                                   |
+| [F4n9X's Blog](https://fanqxu.github.io/)                | InfoSec、PenTesting、CTF、Hacking    | 社工大佬                                                     |
+| [ChrAlpha](https://ichr.me)                              | hexo、Cloudflare、加密、博客、写作   | Keep foolish and<br> write some stupid codes                 |
+| [Nova Kwok's Awesome Blog](https://nova.moe/)            | Linux、Python、network、摄影         | LUNA 创始人                                                  |
+| [纯白](https://jpacg.me/)                                | NAS                                  |                                                              |
+| [TOTORO625](https://totoro.ink/)                         | Ingress、Linux                       | 日常搬砖、画图、数钢筋（大雾                                 |
+| [idealclover](https://idealclover.top)                   | 技术、测评、随想、生活               | 是只可爱的男孩子 😝                                           |
+| [阁子](http://dfine.tech)                                | Linux 、hexo、                       | 诗意少年 😂                                                   |
+| [探索子](https://beyondstars.xyz/)                       | Linux、math、devops                  | 数学大佬（逃                                                 |
 | [云游君的小站](https://www.yunyoujun.cn/about/site.html) | 前端、博客                           | 希望能成为一个有趣的人(o゜▽゜)o☆x                            |
-| [BobMaster's Blog](https://blog.hibobmaster.com/)        | 博客                                 | 一个准通信工程专业学生（＞ 人 ＜；）                           |
-| [Ryan4Yin's Space](https://ryan4yin.space/)              | DevOps                               | 赞美快乐~                                                      |
-| [rxliuli](https://blog.rxliuli.com/)                     | 前端、算法                           |                                                                |
+| [BobMaster's Blog](https://blog.hibobmaster.com/)        | 博客                                 | 一个准通信工程专业学生（＞ 人 ＜；）                         |
+| [Ryan4Yin's Space](https://ryan4yin.space/)              | DevOps                               | 赞美快乐~                                                    |
+| [rxliuli](https://blog.rxliuli.com/)                     | 前端、算法                           |                                                              |
 | [Cyris](https://cyris.moe)                               | 美工 & 前端                          | 花如解笑还多事，石不能言最可人(o゜▽゜)o☆x                    |
-| [雾雨霜星](http://www.shuangxing.top)                    | Java、前端                           | 雾间觉雨，霜空望星                                             |
-| [一大加贝](https://tianheg.co/)                          | 前端、阅读、观影                     | 社会人，永远年轻！                                             |
-| [Thrive Blog](https://liuyuyang.net/)                    | 前端、大学生活                       | 记录一个架构师的崛起                                           |
-| [Les'blog](https://lesx.top/)                            | 刷机                                 | 独立思考，保持清醒                                             |
-| [一个球的博客](https://jw1.dev)                          | Front-end Developer / Music Producer |                                                                |
+| [雾雨霜星](http://www.shuangxing.top)                    | Java、前端                           | 雾间觉雨，霜空望星                                           |
+| [一大加贝](https://tianheg.co/)                          | 前端、阅读、观影                     | 社会人，永远年轻！                                           |
+| [Thrive Blog](https://liuyuyang.net/)                    | 前端、大学生活                       | 记录一个架构师的崛起                                         |
+| [Les'blog](https://lesx.top/)                            | 刷机                                 | 独立思考，保持清醒                                           |
+| [一个球的博客](https://jw1.dev)                          | Front-end Developer / Music Producer |                                                              |
+| [Kaciras' Blog](https://blog.kaciras.com/)               | 前端、编程 • 生活 • 梦想             | 自学码农 / 热爱技术 / 全栈开发 / 二刺螈 / 啥都想学           |
 
 ### 单~~恋~~链 😂/有趣的人
 
